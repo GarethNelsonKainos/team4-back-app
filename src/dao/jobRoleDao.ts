@@ -1,25 +1,26 @@
 import { JobRole } from "../models/jobRole";
+import { prisma } from "../db";
 
 export class JobRoleDao {
   async getJobRoles(): Promise<JobRole[]> {
-    // For now, we'll return some sample data.
-    return [
-      {
-        jobRoleId: 1,
-        roleName: "Software Engineer",
-        location: "London",
-        capabilityId: 1,
-        bandId: 1,
-        closingDate: new Date("2024-12-31"),
+    // Fetch job roles from database with related capability and band data
+    const jobRoles = await prisma.jobRole.findMany({
+      include: {
+        capability: true,
+        band: true,
       },
-      {
-        jobRoleId: 2,
-        roleName: "Data Scientist",
-        location: "New York",
-        capabilityId: 2,
-        bandId: 2,
-        closingDate: new Date("2025-01-15"),
-      },
-    ];
+    });
+
+    // Map Prisma data to our JobRole model format
+    return jobRoles.map((jr) => ({
+      jobRoleId: jr.jobRoleId,
+      roleName: jr.roleName || "",
+      location: jr.jobLocation || "",
+      capabilityId: jr.capabilityId,
+      bandId: jr.bandId,
+      closingDate: jr.closingDate || new Date(),
+      capability: jr.capability,
+      band: jr.band,
+    }));
   }
 }

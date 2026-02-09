@@ -18,4 +18,14 @@ export interface JobRole {
 
   // The closing date for applications, stored as a string (like "2026-02-09").
   closingDate: Date;
+
+  // Optional: included relations from Prisma
+  capability?: {
+    capabilityId: number;
+    capabilityName: string | null;
+  };
+  band?: {
+    bandId: number;
+    bandName: string | null;
+  };
 }
