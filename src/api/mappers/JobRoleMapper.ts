@@ -1,4 +1,4 @@
-import { JobRole } from '../models/JobRole';
+import { JobRole } from '../models/jobRole';
 import { JobRoleResponse } from '../models/jobRoleResponse';
 
 /**
