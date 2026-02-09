@@ -27,6 +27,9 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "express": "^5.2.1"
+    "@types/nunjucks": "^3.2.6",
+    "axios": "^1.13.5",
+    "express": "^5.2.1",
+    "nunjucks": "^3.2.4"
   }
 }
