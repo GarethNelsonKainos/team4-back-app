@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Models based on database-schema.sql
+model Band {
+  bandId    Int       @id @default(autoincrement())
+  bandName  Int?   
+  jobRoles  JobRole[]
+}
+
+model Capability {
+  capabilityId   Int       @id @default(autoincrement())
+  capabilityName String?   @db.VarChar(100)
+  jobRoles       JobRole[]
+}
+
+model JobRole {
+  jobRoleId    Int        @id @default(autoincrement())
+  roleName     String?    @db.VarChar(200)
+  jobLocation  String?    @db.VarChar(100)
+  capabilityId Int
+  bandId       Int
+  closingDate  DateTime?  @db.Date
+  capability   Capability @relation(fields: [capabilityId], references: [capabilityId])
+  band         Band       @relation(fields: [bandId], references: [bandId])
+
+  @@map("JobRoles")
+}
