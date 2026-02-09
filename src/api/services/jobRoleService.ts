@@ -1,6 +1,6 @@
-import { JobRoleDao } from '../dao/JobRoleDao';
+import { JobRoleDao } from '../dao/jobRoleDao';
 import { JobRoleMapper } from '../mappers/JobRoleMapper';
-import { JobRoleResponse } from '../models/jobRoleResponse';
+import { JobRoleResponse } from '../models/JobRoleResponse';
 
 /**
  * Service layer for Job Roles business logic

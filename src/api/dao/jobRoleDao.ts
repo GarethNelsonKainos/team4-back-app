@@ -1,4 +1,4 @@
-import { JobRole } from '../models/jobRole';
+import { JobRole } from '../models/JobRole';
 // REFACTOR WHEN PRISMA IS LIVE: import { PrismaClient } from '@prisma/client';
 
 /**

@@ -1,5 +1,5 @@
-import { JobRole } from '../models/jobRole';
-import { JobRoleResponse } from '../models/jobRoleResponse';
+import { JobRole } from '../models/JobRole';
+import { JobRoleResponse } from '../models/JobRoleResponse';
 
 /**
  * Maps JobRole entities to JobRoleResponse DTOs
