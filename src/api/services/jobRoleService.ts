@@ -1,4 +1,4 @@
-import { JobRoleDao } from '../dao/jobRoleDao';
+import { JobRoleDao } from '../dao/JobRoleDao';
 import { JobRoleMapper } from '../mappers/JobRoleMapper';
 import { JobRoleResponse } from '../models/JobRoleResponse';
 

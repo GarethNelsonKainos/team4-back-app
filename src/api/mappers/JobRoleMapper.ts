@@ -20,3 +20,4 @@ export class JobRoleMapper {
     return jobRoles.map(jobRole => this.toResponse(jobRole));
   }
 }
+
