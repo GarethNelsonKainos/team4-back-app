@@ -1,20 +1,20 @@
--- Database Schema for Job Roles Application
+-- Database Schema for Job Roles Application (PostgreSQL)
 
 -- Create Band table
 CREATE TABLE Band (
-    bandId INT PRIMARY KEY AUTO_INCREMENT,
+    bandId SERIAL PRIMARY KEY,
     bandName VARCHAR(100) NOT NULL
 );
 
 -- Create Capability table
 CREATE TABLE Capability (
-    capabilityId INT PRIMARY KEY AUTO_INCREMENT,
+    capabilityId SERIAL PRIMARY KEY,
     capabilityName VARCHAR(100) NOT NULL
 );
 
 -- Create Job-roles table
 CREATE TABLE JobRoles (
-    jobRoleId INT PRIMARY KEY AUTO_INCREMENT,
+    jobRoleId SERIAL PRIMARY KEY,
     roleName VARCHAR(200) NOT NULL,
     location VARCHAR(100) NOT NULL,
     capabilityId INT NOT NULL,
