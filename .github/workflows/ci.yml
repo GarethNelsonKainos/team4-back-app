@@ -10,21 +10,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test_db
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
     steps:
      - uses: actions/checkout@v4
     
@@ -43,11 +28,6 @@ jobs:
      - name: Generate Prisma Client
        run: npx prisma generate
     
-     - name: Run Prisma migrations
-       env:
-         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
-       run: npx prisma migrate deploy
-    
      - name: Build
        run: npm run build
     
@@ -64,9 +44,5 @@ jobs:
          flags: unidb
          name: codecov-umbrella-ci
 
-     - name: Deploy
-       env:
-         API_KEY: ${{ secrets.API_KEY }}
-         DATABASE_URL: ${{ secrets.DATABASE_URL }}
-       run: npm run deploy
+     
 
