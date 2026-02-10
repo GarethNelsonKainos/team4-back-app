@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../src/generated/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 
@@ -16,19 +16,19 @@ async function main() {
   // Create Bands
   const band1 = await prisma.band.create({
     data: {
-      bandName: "Associate",
+      bandname: "Associate",
     },
   });
 
   const band2 = await prisma.band.create({
     data: {
-      bandName: "Senior Associate",
+      bandname: "Senior Associate",
     },
   });
 
   const band3 = await prisma.band.create({
     data: {
-      bandName: "Consultant",
+      bandname: "Consultant",
     },
   });
 
@@ -37,62 +37,62 @@ async function main() {
   // Create Capabilities
   const capability1 = await prisma.capability.create({
     data: {
-      capabilityName: "Engineering",
+      capabilityname: "Engineering",
     },
   });
 
   const capability2 = await prisma.capability.create({
     data: {
-      capabilityName: "Data & AI",
+      capabilityname: "Data & AI",
     },
   });
 
   const capability3 = await prisma.capability.create({
     data: {
-      capabilityName: "Platforms",
+      capabilityname: "Platforms",
     },
   });
 
   console.log("✅ Created capabilities");
 
   // Create Job Roles
-  await prisma.jobRole.create({
+  await prisma.jobroles.create({
     data: {
-      roleName: "Software Engineer",
-      jobLocation: "London",
-      capabilityId: capability1.capabilityId,
-      bandId: band1.bandId,
-      closingDate: new Date("2026-03-31"),
+      rolename: "Software Engineer",
+      joblocation: "London",
+      capabilityid: capability1.capabilityid,
+      bandid: band1.bandid,
+      closingdate: new Date("2026-03-31"),
     },
   });
 
-  await prisma.jobRole.create({
+  await prisma.jobroles.create({
     data: {
-      roleName: "Senior Software Engineer",
-      jobLocation: "Manchester",
-      capabilityId: capability1.capabilityId,
-      bandId: band2.bandId,
-      closingDate: new Date("2026-04-15"),
+      rolename: "Senior Software Engineer",
+      joblocation: "Manchester",
+      capabilityid: capability1.capabilityid,
+      bandid: band2.bandid,
+      closingdate: new Date("2026-04-15"),
     },
   });
 
-  await prisma.jobRole.create({
+  await prisma.jobroles.create({
     data: {
-      roleName: "Data Scientist",
-      jobLocation: "Belfast",
-      capabilityId: capability2.capabilityId,
-      bandId: band2.bandId,
-      closingDate: new Date("2026-03-20"),
+      rolename: "Data Scientist",
+      joblocation: "Belfast",
+      capabilityid: capability2.capabilityid,
+      bandid: band2.bandid,
+      closingdate: new Date("2026-03-20"),
     },
   });
 
-  await prisma.jobRole.create({
+  await prisma.jobroles.create({
     data: {
-      roleName: "Platform Engineer",
-      jobLocation: "Edinburgh",
-      capabilityId: capability3.capabilityId,
-      bandId: band3.bandId,
-      closingDate: new Date("2026-04-01"),
+      rolename: "Platform Engineer",
+      joblocation: "Edinburgh",
+      capabilityid: capability3.capabilityid,
+      bandid: band3.bandid,
+      closingdate: new Date("2026-04-01"),
     },
   });
 
