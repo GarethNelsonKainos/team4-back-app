@@ -16,5 +16,5 @@ export interface JobRoleResponse {
   band: string;
 
   // Closing date as a string (e.g. "2026-02-09").
-  closingDate: Date;
+  closingDate: string;
 }
