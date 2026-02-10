@@ -11,7 +11,8 @@
     "seed": "tsx prisma/seed.ts",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "coverage": "vitest --coverage"
+    "coverage": "vitest --coverage",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
