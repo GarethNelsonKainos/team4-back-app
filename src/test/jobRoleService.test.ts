@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, Mock } from "vitest";
-import { JobRoleService } from "../services/jobRoleService";
-import { JobRoleDao } from "../dao/jobRoleDao";
-import { JobRole } from "../models/jobRole";
-import { JobRoleResponse } from "../models/jobRoleResponse";
+import { JobRoleService } from "../services/jobRoleService.js";
+import { JobRoleDao } from "../dao/jobRoleDao.js";
+import { JobRole } from "../models/jobRole.js";
+import { JobRoleResponse } from "../models/jobRoleResponse.js";
 
 vi.mock("../dao/jobRoleDao");
 
@@ -17,7 +17,7 @@ describe("JobRoleService", () => {
   });
 
   it("should get job roles and map them to responses", async () => {
-    const closingDate = new Date("2026-02-09");
+    const closingDate = "2026-02-09";
     const mockJobRoles: JobRole[] = [
       {
         jobRoleId: 1,
@@ -51,14 +51,14 @@ describe("JobRoleService", () => {
   });
 
   it("should handle missing capability and band relations", async () => {
-    const closingDate = new Date("2026-02-09");
+    const closingDate = "2026-02-09";
     const mockJobRoles: JobRole[] = [
       {
         jobRoleId: 1,
         roleName: "Software Engineer",
         location: "Manchester",
-        capability: undefined, // Missing capability
-        band: undefined, // Missing band
+        capability: undefined, 
+        band: undefined, 
         capabilityId: 1,
         bandId: 1,
         closingDate: closingDate,
@@ -70,8 +70,8 @@ describe("JobRoleService", () => {
         jobRoleId: 1,
         roleName: "Software Engineer",
         location: "Manchester",
-        capability: "Unknown", // Expect fallback
-        band: "Unknown", // Expect fallback
+        capability: "Unknown", 
+        band: "Unknown", 
         closingDate: closingDate,
       },
     ];

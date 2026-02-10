@@ -46,6 +46,7 @@
     "@types/nunjucks": "^3.2.6",
     "axios": "^1.13.5",
     "dotenv": "^17.2.4",
+    "express": "^5.2.1",
     "nunjucks": "^3.2.4",
     "pg": "^8.18.0"
   }
