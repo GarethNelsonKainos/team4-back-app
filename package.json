@@ -7,7 +7,11 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "format": "biome format --write",
+    "lint": "biome lint --write",
+    "check": "biome check --write",
+    "ci:check": "biome ci ."
   },
   "repository": {
     "type": "git",
@@ -30,6 +34,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@biomejs/biome": "^2.3.14",
     "@prisma/adapter-pg": "^7.3.0",
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
