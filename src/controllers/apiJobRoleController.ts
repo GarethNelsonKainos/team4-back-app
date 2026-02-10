@@ -13,6 +13,7 @@ export class ApiJobRoleController {
       const jobRoles = await this.jobRoleService.getJobRoles();
       res.json(jobRoles);
     } catch (error) {
+      console.error("Error in getJobRoles:", error);
       res.status(500).json({ message: "Failed to get job roles" });
     }
   };
