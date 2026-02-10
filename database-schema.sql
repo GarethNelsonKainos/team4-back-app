@@ -1,25 +1,25 @@
 -- Database Schema for Job Roles Application (PostgreSQL)
 
--- Create Band table
-CREATE TABLE Band (
-    bandId SERIAL PRIMARY KEY,
-    bandName VARCHAR(100)
+-- Create band table
+CREATE TABLE band (
+    bandid SERIAL PRIMARY KEY,
+    bandname VARCHAR(100)
 );
 
--- Create Capability table
-CREATE TABLE Capability (
-    capabilityId SERIAL PRIMARY KEY,
-    capabilityName VARCHAR(100)
+-- Create capability table
+CREATE TABLE capability (
+    capabilityid SERIAL PRIMARY KEY,
+    capabilityname VARCHAR(100)
 );
 
--- Create Job-roles table
-CREATE TABLE JobRoles (
-    jobRoleId SERIAL PRIMARY KEY,
-    roleName VARCHAR(200),
-    jobLocation VARCHAR(100),
-    capabilityId INT NOT NULL,
-    bandId INT NOT NULL,
-    closingDate DATE,
-    FOREIGN KEY (capabilityId) REFERENCES Capability(capabilityId),
-    FOREIGN KEY (bandId) REFERENCES Band(bandId)
+-- Create job roles table
+CREATE TABLE jobroles (
+    jobroleid SERIAL PRIMARY KEY,
+    rolename VARCHAR(200),
+    joblocation VARCHAR(100),
+    capabilityid INT NOT NULL,
+    bandid INT NOT NULL,
+    closingdate DATE,
+    FOREIGN KEY (capabilityid) REFERENCES capability(capabilityid),
+    FOREIGN KEY (bandid) REFERENCES band(bandid)
 );
