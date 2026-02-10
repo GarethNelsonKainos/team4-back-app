@@ -5,7 +5,7 @@
   "description": "Team 4 Backend Application Feb/March 2026",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev":"tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "format": "biome format --write",
@@ -36,4 +36,5 @@
     "dotenv": "^17.2.4",
     "express": "^5.2.1"
   }
+    
 }
