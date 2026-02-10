@@ -51,7 +51,7 @@ jobs:
     - name: Build
       run: npm run build
     
-    - name: Run tests (if you have them)
+    - name: Run tests
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
       run: npm test
