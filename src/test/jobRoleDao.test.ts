@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mockDeep, mockReset, DeepMockProxy } from "vitest-mock-extended";
 import { PrismaClient } from "@prisma/client";
-import { JobRoleDao } from "../dao/jobRoleDao";
-import { prisma } from "../db";
-import { JobRole } from "../models/jobRole";
+import { JobRoleDao } from "../dao/jobRoleDao.js";
+import { prisma } from "../db.js";
+import { JobRole } from "../models/jobRole.js";
 
 vi.mock("../db", () => ({
   __esModule: true,
@@ -20,7 +20,7 @@ describe("JobRoleDao", () => {
   });
 
   it("should return job roles from the database", async () => {
-    const closingDate = new Date();
+    const closingDate = new Date("2026-02-09");
     const mockDbJobRoles = [
       {
         jobRoleId: 1,
@@ -47,7 +47,7 @@ describe("JobRoleDao", () => {
         location: "Manchester",
         capabilityId: 1,
         bandId: 1,
-        closingDate: closingDate,
+        closingDate: "2026-02-09",
         capability: {
           capabilityId: 1,
           capabilityName: "Engineering",
@@ -59,7 +59,7 @@ describe("JobRoleDao", () => {
       },
     ];
 
-    prismaMock.jobRole.findMany.mockResolvedValue(mockDbJobRoles);
+    prismaMock.jobRole.findMany.mockResolvedValue(mockDbJobRoles as any);
 
     const result = await jobRoleDao.getJobRoles();
 
@@ -74,9 +74,7 @@ describe("JobRoleDao", () => {
   });
 
   it("should handle null values from the database and apply fallbacks", async () => {
-    const fixedDate = new Date();
-    vi.useFakeTimers();
-    vi.setSystemTime(fixedDate);
+    const fixedDate = new Date("2026-02-09");
 
     const mockDbJobRolesWithNulls = [
       {
@@ -104,7 +102,7 @@ describe("JobRoleDao", () => {
         location: "",
         capabilityId: 2,
         bandId: 2,
-        closingDate: fixedDate,
+        closingDate: "",
         capability: {
           capabilityId: 2,
           capabilityName: "Data",
@@ -116,7 +114,9 @@ describe("JobRoleDao", () => {
       },
     ];
 
-    prismaMock.jobRole.findMany.mockResolvedValue(mockDbJobRolesWithNulls);
+    prismaMock.jobRole.findMany.mockResolvedValue(
+      mockDbJobRolesWithNulls as any,
+    );
 
     const result = await jobRoleDao.getJobRoles();
 
@@ -128,7 +128,5 @@ describe("JobRoleDao", () => {
         band: true,
       },
     });
-
-    vi.useRealTimers();
   });
 });

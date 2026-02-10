@@ -1,31 +1,37 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-model band {
-  bandid   Int        @id @default(autoincrement())
-  bandname String?    @db.VarChar(100)
-  jobroles jobroles[]
+model Band {
+  bandId   Int       @id @default(autoincrement()) @map("bandid")
+  bandName String?   @db.VarChar(100) @map("bandname")
+  jobRoles JobRole[]
+
+  @@map("band")
 }
 
-model capability {
-  capabilityid   Int        @id @default(autoincrement())
-  capabilityname String?    @db.VarChar(100)
-  jobroles       jobroles[]
+model Capability {
+  capabilityId   Int       @id @default(autoincrement()) @map("capabilityid")
+  capabilityName String?   @db.VarChar(100) @map("capabilityname")
+  jobRoles       JobRole[]
+
+  @@map("capability")
 }
 
-model jobroles {
-  jobroleid    Int        @id @default(autoincrement())
-  rolename     String     @db.VarChar(200)
-  joblocation  String     @db.VarChar(100)
-  capabilityid Int
-  bandid       Int
-  closingdate  DateTime   @db.Date
-  band         band       @relation(fields: [bandid], references: [bandid])
-  capability   capability @relation(fields: [capabilityid], references: [capabilityid])
+model JobRole {
+  jobRoleId    Int        @id @default(autoincrement()) @map("jobroleid")
+  roleName     String     @db.VarChar(200) @map("rolename")
+  jobLocation  String     @db.VarChar(100) @map("joblocation")
+  capabilityId Int        @map("capabilityid")
+  bandId       Int        @map("bandid")
+  closingDate  DateTime   @db.Date @map("closingdate")
+  
+  band         Band       @relation(fields: [bandId], references: [bandId])
+  capability   Capability @relation(fields: [capabilityId], references: [capabilityId])
+
+  @@map("jobroles")
 }

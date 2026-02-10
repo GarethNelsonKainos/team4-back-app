@@ -1,15 +1,14 @@
 import { describe, it, expect, vi } from "vitest";
 import request from "supertest";
-import { app } from "../index"; // Import the configured app
+import { app } from "../index";
 import { JobRoleService } from "../services/jobRoleService";
 import { JobRoleResponse } from "../models/jobRoleResponse";
 
-// Mock the service
 vi.mock("../services/jobRoleService");
 
 describe("GET /api/job-roles", () => {
   it("should return a list of job roles", async () => {
-    const closingDate = new Date("2026-02-09");
+    const closingDate = "2026-02-09";
     const mockJobRoleResponses: JobRoleResponse[] = [
       {
         jobRoleId: 1,
@@ -21,7 +20,6 @@ describe("GET /api/job-roles", () => {
       },
     ];
 
-    // Mock the implementation of getJobRoles
     vi.spyOn(JobRoleService.prototype, "getJobRoles").mockResolvedValue(
       mockJobRoleResponses,
     );
@@ -29,16 +27,10 @@ describe("GET /api/job-roles", () => {
     const response = await request(app).get("/api/job-roles");
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual(
-      mockJobRoleResponses.map((r) => ({
-        ...r,
-        closingDate: r.closingDate.toISOString(),
-      })),
-    );
+    expect(response.body).toEqual(mockJobRoleResponses);
   });
 
   it("should return 500 if service throws an error", async () => {
-    // Mock the implementation to throw an error
     vi.spyOn(JobRoleService.prototype, "getJobRoles").mockRejectedValue(
       new Error("Database error"),
     );
