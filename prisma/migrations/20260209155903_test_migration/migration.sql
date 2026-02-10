@@ -5,5 +5,5 @@
 
 */
 -- AlterTable
-ALTER TABLE "band" DROP COLUMN "bandname",
+ALTER TABLE "Band" DROP COLUMN "bandName",
 ADD COLUMN     "bandName" INTEGER;

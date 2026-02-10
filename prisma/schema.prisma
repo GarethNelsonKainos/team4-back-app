@@ -11,26 +11,30 @@ datasource db {
 
 // Models based on database-schema.sql
 model Band {
-  bandId    Int       @id @default(autoincrement())
-  bandName  Int?   
+  bandId    Int       @id @default(autoincrement()) @map("bandid")
+  bandName  String?   @db.VarChar(100) @map("bandname")
   jobRoles  JobRole[]
+
+  @@map("band")
 }
 
 model Capability {
-  capabilityId   Int       @id @default(autoincrement())
-  capabilityName String?   @db.VarChar(100)
+  capabilityId   Int       @id @default(autoincrement()) @map("capabilityid")
+  capabilityName String?   @db.VarChar(100) @map("capabilityname")
   jobRoles       JobRole[]
+
+  @@map("capability")
 }
 
 model JobRole {
-  jobRoleId    Int        @id @default(autoincrement())
-  roleName     String?    @db.VarChar(200)
-  jobLocation  String?    @db.VarChar(100)
-  capabilityId Int
-  bandId       Int
-  closingDate  DateTime?  @db.Date
+  jobRoleId    Int        @id @default(autoincrement()) @map("jobroleid")
+  roleName     String?    @db.VarChar(200) @map("rolename")
+  jobLocation  String?    @db.VarChar(100) @map("joblocation")
+  capabilityId Int        @map("capabilityid")
+  bandId       Int        @map("bandid")
+  closingDate  DateTime?  @db.Date @map("closingdate")
   capability   Capability @relation(fields: [capabilityId], references: [capabilityId])
   band         Band       @relation(fields: [bandId], references: [bandId])
 
-  @@map("JobRoles")
+  @@map("jobroles")
 }
