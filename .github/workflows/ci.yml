@@ -25,9 +25,6 @@ jobs:
      - name: Run Biome checks
        run: npm run ci:check
     
-     - name: Generate Prisma Client
-       run: npx prisma generate
-    
      - name: Build
        run: npm run build
     
