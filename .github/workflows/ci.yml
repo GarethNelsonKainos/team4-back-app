@@ -14,6 +14,9 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
+
     services:
       postgres:
         image: postgres:14
