@@ -53,13 +53,13 @@ describe("JobRoleDao", () => {
 			},
 		];
 
-		prismaMock.jobRoles.findMany.mockResolvedValue(mockDbJobRoles);
+		prismaMock.jobRole.findMany.mockResolvedValue(mockDbJobRoles);
 
 		const result = await jobRoleDao.getJobRoles();
 
 		expect(result).toEqual(expectedJobRoles);
 
-		expect(prismaMock.jobRoles.findMany).toHaveBeenCalledWith({
+		expect(prismaMock.jobRole.findMany).toHaveBeenCalledWith({
 			include: {
 				capability: true,
 				band: true,
@@ -108,15 +108,17 @@ describe("JobRoleDao", () => {
 			},
 		];
 
-		prismaMock.jobRoles.findMany.mockResolvedValue(
-			mockDbJobRolesWithNulls as typeof mockDbJobRolesWithNulls,
+		prismaMock.jobRole.findMany.mockResolvedValue(
+			mockDbJobRolesWithNulls as unknown as Awaited<
+				ReturnType<typeof prismaMock.jobRole.findMany>
+			>,
 		);
 
 		const result = await jobRoleDao.getJobRoles();
 
 		expect(result).toEqual(expectedJobRoles);
 
-		expect(prismaMock.jobRoles.findMany).toHaveBeenCalledWith({
+		expect(prismaMock.jobRole.findMany).toHaveBeenCalledWith({
 			include: {
 				capability: true,
 				band: true,
