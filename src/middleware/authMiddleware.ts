@@ -1,61 +1,70 @@
-import { Request, Response, NextFunction } from 'express';
-import { JwtService } from '../services/jwtService';
-
+import type { NextFunction, Request, Response } from "express";
+import { JwtService } from "../services/jwtService";
 
 declare global {
-  namespace Express {
-    interface Request {
-      userId?: number;
-      userEmail?: string;
-    }
-  }
+	namespace Express {
+		interface Request {
+			userId?: number;
+			userEmail?: string;
+		}
+	}
 }
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
-  try {
-    const authHeader = req.headers.authorization;
-    
-    if (!authHeader) {
-      res.status(401).json({ message: 'Authorization header is missing' });
-      return;
-    }
+export const authMiddleware = (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): void => {
+	try {
+		const authHeader = req.headers.authorization;
 
-    const parts = authHeader.split(' ');
-    if (parts.length !== 2 || parts[0] !== 'Bearer') {
-      res.status(401).json({ message: 'Invalid authorization header format. Use: Bearer <token>' });
-      return;
-    }
+		if (!authHeader) {
+			res.status(401).json({ message: "Authorization header is missing" });
+			return;
+		}
 
-    const token = parts[1];
+		const parts = authHeader.split(" ");
+		if (parts.length !== 2 || parts[0] !== "Bearer") {
+			res.status(401).json({
+				message: "Invalid authorization header format. Use: Bearer <token>",
+			});
+			return;
+		}
 
-    // Validate token is in correct JWT format (header.payload.signature)
-    if (!token || token.trim() === '') {
-      res.status(401).json({ message: 'Token is empty' });
-      return;
-    }
+		const token = parts[1];
 
-    const tokenParts = token.split('.');
-    if (tokenParts.length !== 3) {
-      res.status(401).json({ message: 'Invalid token format. JWT must have 3 parts (header.payload.signature)' });
-      return;
-    }
+		// Validate token is in correct JWT format (header.payload.signature)
+		if (!token || token.trim() === "") {
+			res.status(401).json({ message: "Token is empty" });
+			return;
+		}
 
-    // Ensure each part is non-empty
-    if (tokenParts.some(part => !part || part.trim() === '')) {
-      res.status(401).json({ message: 'Invalid token format. JWT parts cannot be empty' });
-      return;
-    }
+		const tokenParts = token.split(".");
+		if (tokenParts.length !== 3) {
+			res.status(401).json({
+				message:
+					"Invalid token format. JWT must have 3 parts (header.payload.signature)",
+			});
+			return;
+		}
 
-    const jwtService = new JwtService();
-    const decoded = jwtService.verifyToken(token);
+		// Ensure each part is non-empty
+		if (tokenParts.some((part) => !part || part.trim() === "")) {
+			res
+				.status(401)
+				.json({ message: "Invalid token format. JWT parts cannot be empty" });
+			return;
+		}
 
-    req.userId = decoded.userId;
-    req.userEmail = decoded.userEmail;
+		const jwtService = new JwtService();
+		const decoded = jwtService.verifyToken(token);
 
-    next();
+		req.userId = decoded.userId;
+		req.userEmail = decoded.userEmail;
 
-  } catch (error) {
-    console.error('Error during token verification:', error);
-    res.status(401).json({ message: 'Invalid or expired token' });
-  }
+		next();
+	} catch (error) {
+		console.error("Error during token verification:", error);
+		res.status(401).json({ message: "Invalid or expired token" });
+	}
 };

@@ -1,149 +1,165 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import type { User } from "@prisma/client";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { UserDao } from "../dao/userDao.js";
 import * as dbModule from "../db.js";
 
 // Mock Prisma with proper structure
 vi.mock("../db.js", () => ({
-  prisma: {
-    user: {
-      findUnique: vi.fn(),
-      create: vi.fn(),
-      update: vi.fn(),
-    },
-  },
+	prisma: {
+		user: {
+			findUnique: vi.fn(),
+			create: vi.fn(),
+			update: vi.fn(),
+		},
+	},
 }));
 
 describe("UserDao", () => {
-  let userDao: UserDao;
-  let mockUser: any;
-  let prisma: any;
+	let userDao: UserDao;
+	let mockUser: User;
+	let prisma: typeof dbModule.prisma;
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-    prisma = (dbModule as any).prisma;
-    
-    // Setup mock user data
-    mockUser = {
-      userId: 1,
-      userEmail: "test@example.com",
-      userPassword: "$2b$10$hashedpassword",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-  });
+	beforeEach(() => {
+		vi.clearAllMocks();
+		prisma = dbModule.prisma;
 
-  describe("getUserByEmail", () => {
-    it("should return user when email exists", async () => {
-      userDao = new UserDao();
-      vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(mockUser);
+		// Setup mock user data
+		mockUser = {
+			userId: 1,
+			userEmail: "test@example.com",
+			userPassword: "$2b$10$hashedpassword",
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		};
+	});
 
-      const result = await userDao.getUserByEmail("test@example.com");
+	describe("getUserByEmail", () => {
+		it("should return user when email exists", async () => {
+			userDao = new UserDao();
+			vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(mockUser);
 
-      expect(result).toEqual(mockUser);
-      expect(prisma.user.findUnique).toHaveBeenCalledWith({
-        where: { userEmail: "test@example.com" },
-      });
-    });
+			const result = await userDao.getUserByEmail("test@example.com");
 
-    it("should return null when email does not exist", async () => {
-      userDao = new UserDao();
-      vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(null);
+			expect(result).toEqual(mockUser);
+			expect(prisma.user.findUnique).toHaveBeenCalledWith({
+				where: { userEmail: "test@example.com" },
+			});
+		});
 
-      const result = await userDao.getUserByEmail("notfound@example.com");
+		it("should return null when email does not exist", async () => {
+			userDao = new UserDao();
+			vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(null);
 
-      expect(result).toBeNull();
-      expect(prisma.user.findUnique).toHaveBeenCalledWith({
-        where: { userEmail: "notfound@example.com" },
-      });
-    });
+			const result = await userDao.getUserByEmail("notfound@example.com");
 
-    it("should throw error if database query fails", async () => {
-      userDao = new UserDao();
-      vi.mocked(prisma.user.findUnique).mockRejectedValueOnce(new Error("Database error"));
+			expect(result).toBeNull();
+			expect(prisma.user.findUnique).toHaveBeenCalledWith({
+				where: { userEmail: "notfound@example.com" },
+			});
+		});
 
-      await expect(userDao.getUserByEmail("test@example.com")).rejects.toThrow("Database error");
-    });
-  });
+		it("should throw error if database query fails", async () => {
+			userDao = new UserDao();
+			vi.mocked(prisma.user.findUnique).mockRejectedValueOnce(
+				new Error("Database error"),
+			);
 
-  describe("getUserForLogin", () => {
-    it("should return user with password hash for login", async () => {
-      userDao = new UserDao();
-      vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(mockUser);
+			await expect(userDao.getUserByEmail("test@example.com")).rejects.toThrow(
+				"Database error",
+			);
+		});
+	});
 
-      const result = await userDao.getUserForLogin("test@example.com");
+	describe("getUserForLogin", () => {
+		it("should return user with password hash for login", async () => {
+			userDao = new UserDao();
+			vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(mockUser);
 
-      expect(result).toEqual(mockUser);
-      expect(prisma.user.findUnique).toHaveBeenCalledWith({
-        where: { userEmail: "test@example.com" },
-      });
-    });
+			const result = await userDao.getUserForLogin("test@example.com");
 
-    it("should return null if user not found", async () => {
-      userDao = new UserDao();
-      vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(null);
+			expect(result).toEqual(mockUser);
+			expect(prisma.user.findUnique).toHaveBeenCalledWith({
+				where: { userEmail: "test@example.com" },
+			});
+		});
 
-      const result = await userDao.getUserForLogin("notfound@example.com");
+		it("should return null if user not found", async () => {
+			userDao = new UserDao();
+			vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(null);
 
-      expect(result).toBeNull();
-    });
+			const result = await userDao.getUserForLogin("notfound@example.com");
 
-    it("should throw error if database query fails", async () => {
-      userDao = new UserDao();
-      vi.mocked(prisma.user.findUnique).mockRejectedValueOnce(new Error("Database error"));
+			expect(result).toBeNull();
+		});
 
-      await expect(userDao.getUserForLogin("test@example.com")).rejects.toThrow("Database error");
-    });
-  });
+		it("should throw error if database query fails", async () => {
+			userDao = new UserDao();
+			vi.mocked(prisma.user.findUnique).mockRejectedValueOnce(
+				new Error("Database error"),
+			);
 
-  describe("createUser", () => {
-    it("should create and return a new user", async () => {
-      userDao = new UserDao();
-      vi.mocked(prisma.user.create).mockResolvedValueOnce(mockUser);
+			await expect(userDao.getUserForLogin("test@example.com")).rejects.toThrow(
+				"Database error",
+			);
+		});
+	});
 
-      const result = await userDao.createUser("test@example.com", "hashedpassword123");
+	describe("createUser", () => {
+		it("should create and return a new user", async () => {
+			userDao = new UserDao();
+			vi.mocked(prisma.user.create).mockResolvedValueOnce(mockUser);
 
-      expect(result).toEqual(mockUser);
-      expect(prisma.user.create).toHaveBeenCalledWith({
-        data: {
-          userEmail: "test@example.com",
-          userPassword: "hashedpassword123",
-        },
-      });
-    });
+			const result = await userDao.createUser(
+				"test@example.com",
+				"hashedpassword123",
+			);
 
-    it("should throw error if user creation fails", async () => {
-      userDao = new UserDao();
-      vi.mocked(prisma.user.create).mockRejectedValueOnce(new Error("Email already exists"));
+			expect(result).toEqual(mockUser);
+			expect(prisma.user.create).toHaveBeenCalledWith({
+				data: {
+					userEmail: "test@example.com",
+					userPassword: "hashedpassword123",
+				},
+			});
+		});
 
-      await expect(userDao.createUser("test@example.com", "hashedpassword")).rejects.toThrow(
-        "Email already exists"
-      );
-    });
-  });
+		it("should throw error if user creation fails", async () => {
+			userDao = new UserDao();
+			vi.mocked(prisma.user.create).mockRejectedValueOnce(
+				new Error("Email already exists"),
+			);
 
-  describe("updateUserPassword", () => {
-    it("should update and return the user with new password", async () => {
-      userDao = new UserDao();
-      const updatedUser = {
-        ...mockUser,
-        userPassword: "newhashedpassword",
-        updatedAt: new Date(),
-      };
-      vi.mocked(prisma.user.update).mockResolvedValueOnce(updatedUser);
+			await expect(
+				userDao.createUser("test@example.com", "hashedpassword"),
+			).rejects.toThrow("Email already exists");
+		});
+	});
 
-      const result = await userDao.updateUserPassword(1, "newhashedpassword");
+	describe("updateUserPassword", () => {
+		it("should update and return the user with new password", async () => {
+			userDao = new UserDao();
+			const updatedUser = {
+				...mockUser,
+				userPassword: "newhashedpassword",
+				updatedAt: new Date(),
+			};
+			vi.mocked(prisma.user.update).mockResolvedValueOnce(updatedUser);
 
-      expect(result).toEqual(updatedUser);
-      expect(prisma.user.update).toHaveBeenCalled();
-    });
+			const result = await userDao.updateUserPassword(1, "newhashedpassword");
 
-    it("should throw error if user not found", async () => {
-      userDao = new UserDao();
-      vi.mocked(prisma.user.update).mockRejectedValueOnce(new Error("User not found"));
+			expect(result).toEqual(updatedUser);
+			expect(prisma.user.update).toHaveBeenCalled();
+		});
 
-      await expect(userDao.updateUserPassword(999, "newhashedpassword")).rejects.toThrow(
-        "User not found"
-      );
-    });
-  });
+		it("should throw error if user not found", async () => {
+			userDao = new UserDao();
+			vi.mocked(prisma.user.update).mockRejectedValueOnce(
+				new Error("User not found"),
+			);
+
+			await expect(
+				userDao.updateUserPassword(999, "newhashedpassword"),
+			).rejects.toThrow("User not found");
+		});
+	});
 });

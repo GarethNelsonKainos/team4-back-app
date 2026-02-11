@@ -1,3 +1,4 @@
+import type { NextFunction, Request, Response } from "express";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiJobRoleController } from "../controllers/apiJobRoleController";
@@ -7,10 +8,10 @@ import type { JobRoleService } from "../services/jobRoleService";
 
 vi.mock("../services/jobRoleService");
 vi.mock("../middleware/authMiddleware", () => ({
-  authMiddleware: (req: any, res: any, next: any) => {
-    req.userId = 1; // Set a fake userId for testing
-    next();
-  },
+	authMiddleware: (req: Request, _res: Response, next: NextFunction) => {
+		(req as Request & { userId: number }).userId = 1; // Set a fake userId for testing
+		next();
+	},
 }));
 
 describe("GET /api/job-roles", () => {
