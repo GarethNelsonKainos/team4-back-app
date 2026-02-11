@@ -1,21 +1,21 @@
-import { JobRoleDao } from "../dao/jobRoleDao";
-import { JobRoleResponse } from "../models/jobRoleResponse";
+import type { JobRoleDao } from "../dao/jobRoleDao";
 import { JobRoleMapper } from "../mappers/jobRoleMapper";
+import type { JobRoleResponse } from "../models/jobRoleResponse";
 
 export class JobRoleService {
-  private jobRoleDao: JobRoleDao;
+	private jobRoleDao: JobRoleDao;
 
-  constructor(jobRoleDao: JobRoleDao) {
-    this.jobRoleDao = jobRoleDao;
-  }
+	constructor(jobRoleDao: JobRoleDao) {
+		this.jobRoleDao = jobRoleDao;
+	}
 
-  public async getJobRoles(): Promise<JobRoleResponse[]> {
-    const jobRoles = await this.jobRoleDao.getJobRoles();
+	public async getJobRoles(): Promise<JobRoleResponse[]> {
+		const jobRoles = await this.jobRoleDao.getJobRoles();
 
-    const jobRoleResponses: JobRoleResponse[] = jobRoles.map((jobRole) => {
-      return JobRoleMapper.toResponse(jobRole);
-    });
+		const jobRoleResponses: JobRoleResponse[] = jobRoles.map((jobRole) => {
+			return JobRoleMapper.toResponse(jobRole);
+		});
 
-    return jobRoleResponses;
-  }
+		return jobRoleResponses;
+	}
 }
