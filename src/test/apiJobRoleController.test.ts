@@ -1,7 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import request from "supertest";
-import { app } from "../index";
+import { createApp } from "../index";
 import { JobRoleService } from "../services/jobRoleService";
+import { ApiJobRoleController } from "../controllers/apiJobRoleController";
 import { JobRoleResponse } from "../models/jobRoleResponse";
 
 vi.mock("../services/jobRoleService");
@@ -13,6 +14,14 @@ vi.mock("../middleware/authMiddleware", () => ({
 }));
 
 describe("GET /api/job-roles", () => {
+  let mockJobRoleService: JobRoleService;
+
+  beforeEach(() => {
+    mockJobRoleService = {
+      getJobRoles: vi.fn(),
+    } as unknown as JobRoleService;
+  });
+
   it("should return a list of job roles", async () => {
     const closingDate = "2026-02-09";
     const mockJobRoleResponses: JobRoleResponse[] = [
@@ -26,9 +35,12 @@ describe("GET /api/job-roles", () => {
       },
     ];
 
-    vi.spyOn(JobRoleService.prototype, "getJobRoles").mockResolvedValue(
+    vi.mocked(mockJobRoleService.getJobRoles).mockResolvedValue(
       mockJobRoleResponses,
     );
+
+    const controller = new ApiJobRoleController(mockJobRoleService);
+    const app = createApp(controller);
 
     const response = await request(app).get("/api/job-roles");
 
@@ -37,9 +49,12 @@ describe("GET /api/job-roles", () => {
   });
 
   it("should return 500 if service throws an error", async () => {
-    vi.spyOn(JobRoleService.prototype, "getJobRoles").mockRejectedValue(
+    vi.mocked(mockJobRoleService.getJobRoles).mockRejectedValue(
       new Error("Database error"),
     );
+
+    const controller = new ApiJobRoleController(mockJobRoleService);
+    const app = createApp(controller);
 
     const response = await request(app).get("/api/job-roles");
 
