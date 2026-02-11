@@ -1,14 +1,14 @@
 import "dotenv/config";
 import express from "express";
 import { ApiJobRoleController } from "./controllers/apiJobRoleController";
-import { JobRoleDao } from "./dao/jobRoleDao";
-import { prisma } from "./db";
 import { LoginController } from "./controllers/loginController";
+import { JobRoleDao } from "./dao/jobRoleDao";
 import { UserDao } from "./dao/userDao";
-import { PasswordService } from "./services/passwordService";
-import { JwtService } from "./services/jwtService";
+import { prisma } from "./db";
 import { authMiddleware } from "./middleware/authMiddleware";
 import { JobRoleService } from "./services/jobRoleService";
+import { JwtService } from "./services/jwtService";
+import { PasswordService } from "./services/passwordService";
 
 export function createApp(jobRoleController?: ApiJobRoleController) {
 	const app = express();
@@ -22,24 +22,28 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
 			return new ApiJobRoleController(jobRoleService);
 		})();
 
-  const userDao = new UserDao();
-  const passwordService = new PasswordService();
-  const jwtService = new JwtService();
+	const userDao = new UserDao();
+	const passwordService = new PasswordService();
+	const jwtService = new JwtService();
 
-  const loginController = new LoginController(userDao, passwordService, jwtService);
+	const loginController = new LoginController(
+		userDao,
+		passwordService,
+		jwtService,
+	);
 
-  app.use(express.json());
+	app.use(express.json());
 
-  // Public routes (no authentication required)
-  app.post("/api/login", loginController.login);
-  app.post("/api/register", loginController.register);
+	// Public routes (no authentication required)
+	app.post("/api/login", loginController.login);
+	app.post("/api/register", loginController.register);
 
-  //logout currently deactivated until frontend linkup
-  // app.post("/api/logout", loginController.logout);
+	//logout currently deactivated until frontend linkup
+	// app.post("/api/logout", loginController.logout);
 
-  // Protected routes (authentication required)
-  // app.post("/api/update-password", authMiddleware, loginController.updatePassword);
-  app.get("/api/job-roles", authMiddleware, controller.getJobRoles);
+	// Protected routes (authentication required)
+	// app.post("/api/update-password", authMiddleware, loginController.updatePassword);
+	app.get("/api/job-roles", authMiddleware, controller.getJobRoles);
 
 	return app;
 }
@@ -47,10 +51,9 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
 const app = createApp();
 
 if (process.env.NODE_ENV !== "test") {
-  app.listen(process.env.API_PORT, () => {
-    console.log(`Server listening on port ${process.env.API_PORT}`);
-  });
+	app.listen(process.env.API_PORT, () => {
+		console.log(`Server listening on port ${process.env.API_PORT}`);
+	});
 }
 
 export { app };
-

@@ -1,12 +1,10 @@
-import { User } from "@prisma/client";
-import { UserResponse } from "../models/userResponse";
+import type { User } from "@prisma/client";
+import type { UserResponse } from "../models/userResponse";
 
-export class UserMapper {
-  static toResponse(user: User): UserResponse {
-    return {
-      userId: user.userId,
-      userEmail: user.userEmail,
-      createdAt: user.createdAt,
-    };
-  }
+export function toUserResponse(user: User): UserResponse {
+	return {
+		userId: user.userId,
+		userEmail: user.userEmail,
+		createdAt: user.createdAt,
+	};
 }
