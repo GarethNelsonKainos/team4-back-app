@@ -9,12 +9,14 @@ import { prisma } from "./db";
 export function createApp(jobRoleController?: ApiJobRoleController) {
   const app = express();
 
-  // Dependency injection setup - use provided controller or create default one
-  const controller = jobRoleController || (() => {
-    const jobRoleDao = new JobRoleDao(prisma);
-    const jobRoleService = new JobRoleService(jobRoleDao);
-    return new ApiJobRoleController(jobRoleService);
-  })();
+  // Dependency injection setup
+  const controller =
+    jobRoleController ||
+    (() => {
+      const jobRoleDao = new JobRoleDao(prisma);
+      const jobRoleService = new JobRoleService(jobRoleDao);
+      return new ApiJobRoleController(jobRoleService);
+    })();
 
   app.use(express.json());
 

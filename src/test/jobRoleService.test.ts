@@ -12,7 +12,7 @@ describe("JobRoleService", () => {
     mockJobRoleDao = {
       getJobRoles: vi.fn(),
     } as unknown as JobRoleDao;
-    
+
     jobRoleService = new JobRoleService(mockJobRoleDao);
   });
 
