@@ -1,9 +1,15 @@
 import { JobRole } from "../models/jobRole";
-import { prisma } from "../db";
+import { PrismaClient } from "@prisma/client";
 
 export class JobRoleDao {
+  private prisma: PrismaClient;
+
+  constructor(prisma: PrismaClient) {
+    this.prisma = prisma;
+  }
+
   async getJobRoles(): Promise<JobRole[]> {
-    const jobRoles = await prisma.jobRole.findMany({
+    const jobRoles = await this.prisma.jobRole.findMany({
       include: {
         capability: true,
         band: true,

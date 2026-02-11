@@ -5,8 +5,8 @@ import { JobRoleMapper } from "../mappers/jobRoleMapper";
 export class JobRoleService {
   private jobRoleDao: JobRoleDao;
 
-  constructor() {
-    this.jobRoleDao = new JobRoleDao();
+  constructor(jobRoleDao: JobRoleDao) {
+    this.jobRoleDao = jobRoleDao;
   }
 
   public async getJobRoles(): Promise<JobRoleResponse[]> {

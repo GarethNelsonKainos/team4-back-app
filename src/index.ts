@@ -2,15 +2,26 @@ import "dotenv/config";
 import express from "express";
 import { Request, Response, NextFunction } from "express";
 import { ApiJobRoleController } from "./controllers/apiJobRoleController";
+import { JobRoleService } from "./services/jobRoleService";
+import { JobRoleDao } from "./dao/jobRoleDao";
+import { prisma } from "./db";
 import { LoginController } from "./controllers/loginController";
 import { authMiddleware } from "./middleware/authMiddleware";
 
-const app = express();
+export function createApp(jobRoleController?: ApiJobRoleController) {
+  const app = express();
 
-const apiJobRoleController = new ApiJobRoleController();
+  // Dependency injection setup
+  const controller =
+    jobRoleController ||
+    (() => {
+      const jobRoleDao = new JobRoleDao(prisma);
+      const jobRoleService = new JobRoleService(jobRoleDao);
+      return new ApiJobRoleController(jobRoleService);
+    })();
 const loginController = new LoginController();
 
-app.use(express.json());
+  app.use(express.json());
 
 // Public routes (no authentication required)
 app.post("/api/login", loginController.login);
@@ -19,7 +30,12 @@ app.post("/api/logout", loginController.logout);
 
 // Protected routes (authentication required)
 app.post("/api/update-password", authMiddleware, loginController.updatePassword);
-app.get("/api/job-roles", authMiddleware, apiJobRoleController.getJobRoles);
+app.get("/api/job-roles", authMiddleware, controller.getJobRoles);
+
+  return app;
+}
+
+const app = createApp();
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(3000, () => {
