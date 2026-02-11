@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@prisma/client";
+import * as prismaPkg from "@prisma/client";
 import pg from "pg";
 
 // Create a connection pool using the DATABASE_URL
@@ -12,7 +12,7 @@ const pool = new pg.Pool({
 const adapter = new PrismaPg(pool);
 
 // Create Prisma Client with the adapter
-const prisma = new PrismaClient({ adapter });
+const prisma = new prismaPkg.PrismaClient({ adapter });
 
 async function main() {
 	console.log("Seeding database");
