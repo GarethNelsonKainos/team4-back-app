@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach, beforeAll } from "vitest";
 import { LoginController } from "../controllers/loginController.js";
-import { UserDao } from "../dao/userDao.js";
-import * as passwordServiceModule from "../services/passwordService.js";
-import * as jwtServiceModule from "../services/jwtService.js";
 
 describe("LoginController", () => {
   let loginController: LoginController;
   let mockUser: any;
+  let mockUserDao: any;
+  let mockPasswordService: any;
+  let mockJwtService: any;
 
   beforeAll(() => {
     // Ensure JWT_SECRET is set for tests
@@ -27,13 +27,27 @@ describe("LoginController", () => {
       updatedAt: new Date(),
     };
 
-    // Create controller
-    loginController = new LoginController();
+    mockUserDao = {
+      getUserForLogin: vi.fn().mockResolvedValue(mockUser),
+      getUserByEmail: vi.fn().mockResolvedValue(null),
+      createUser: vi.fn().mockResolvedValue(mockUser),
+    };
 
-    // Mock UserDao methods
-    vi.spyOn(UserDao.prototype, "getUserForLogin").mockResolvedValue(mockUser);
-    vi.spyOn(UserDao.prototype, "getUserByEmail").mockResolvedValue(null);
-    vi.spyOn(UserDao.prototype, "createUser").mockResolvedValue(mockUser);
+    mockPasswordService = {
+      verifyPassword: vi.fn().mockResolvedValue(true),
+      hashPassword: vi.fn().mockResolvedValue("hashed.password"),
+    };
+
+    mockJwtService = {
+      generateToken: vi.fn().mockReturnValue("fake.jwt.token"),
+    };
+
+    // Create controller with injected deps
+    loginController = new LoginController(
+      mockUserDao,
+      mockPasswordService,
+      mockJwtService
+    );
   });
 
   describe("login", () => {
@@ -51,7 +65,7 @@ describe("LoginController", () => {
     });
 
     it("should return 401 if user is not found", async () => {
-      vi.spyOn(UserDao.prototype, "getUserForLogin").mockResolvedValueOnce(null);
+      mockUserDao.getUserForLogin.mockResolvedValueOnce(null);
 
       const req: any = { body: { email: "notfound@example.com", password: "password123" } };
       const res: any = {
@@ -66,7 +80,7 @@ describe("LoginController", () => {
     });
 
     it("should return 401 if password is invalid", async () => {
-      vi.spyOn(passwordServiceModule.passwordService, "verifyPassword").mockResolvedValueOnce(false);
+      mockPasswordService.verifyPassword.mockResolvedValueOnce(false);
 
       const req: any = { body: { email: "test@example.com", password: "wrongpassword" } };
       const res: any = {
@@ -81,9 +95,9 @@ describe("LoginController", () => {
     });
 
     it("should return 200 with token on successful login", async () => {
-      vi.spyOn(UserDao.prototype, "getUserForLogin").mockResolvedValueOnce(mockUser);
-      vi.spyOn(passwordServiceModule.passwordService, "verifyPassword").mockResolvedValueOnce(true);
-      vi.spyOn(jwtServiceModule.jwtService, "generateToken").mockReturnValueOnce("fake.jwt.token");
+      mockUserDao.getUserForLogin.mockResolvedValueOnce(mockUser);
+      mockPasswordService.verifyPassword.mockResolvedValueOnce(true);
+      mockJwtService.generateToken.mockReturnValueOnce("fake.jwt.token");
 
       const req: any = { body: { email: "test@example.com", password: "password123" } };
       const res: any = {
@@ -113,7 +127,7 @@ describe("LoginController", () => {
     });
 
     it("should return 409 if email already exists", async () => {
-      vi.spyOn(UserDao.prototype, "getUserByEmail").mockResolvedValueOnce(mockUser);
+      mockUserDao.getUserByEmail.mockResolvedValueOnce(mockUser);
 
       const req: any = { body: { email: "test@example.com", password: "password123" } };
       const res: any = {
@@ -128,9 +142,9 @@ describe("LoginController", () => {
     });
 
     it("should return 201 on successful registration", async () => {
-      vi.spyOn(UserDao.prototype, "getUserByEmail").mockResolvedValueOnce(null);
-      vi.spyOn(passwordServiceModule.passwordService, "hashPassword").mockResolvedValueOnce("hashed.password");
-      vi.spyOn(UserDao.prototype, "createUser").mockResolvedValueOnce(mockUser);
+      mockUserDao.getUserByEmail.mockResolvedValueOnce(null);
+      mockPasswordService.hashPassword.mockResolvedValueOnce("hashed.password");
+      mockUserDao.createUser.mockResolvedValueOnce(mockUser);
 
       const req: any = { body: { email: "newuser@example.com", password: "password123" } };
       const res: any = {
@@ -145,18 +159,20 @@ describe("LoginController", () => {
     });
   });
 
-  describe("logout", () => {
-    it("should return 200 on logout", async () => {
-      const req: any = {};
-      const res: any = {
-        status: vi.fn().mockReturnThis(),
-        json: vi.fn(),
-      };
+//logout function currently inactive
 
-      await loginController.logout(req, res);
+//   describe("logout", () => {
+//     it("should return 200 on logout", async () => {
+//       const req: any = {};
+//       const res: any = {
+//         status: vi.fn().mockReturnThis(),
+//         json: vi.fn(),
+//       };
+
+//       await loginController.logout(req, res);
       
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({ message: "Logged out successfully" });
-    });
-  });
+//       expect(res.status).toHaveBeenCalledWith(200);
+//       expect(res.json).toHaveBeenCalledWith({ message: "Logged out successfully" });
+//     });
+//   });
 });

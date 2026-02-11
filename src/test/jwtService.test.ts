@@ -1,17 +1,25 @@
 import { describe, it, expect, beforeEach, beforeAll } from "vitest";
-import { jwtService } from "../services/jwtService.js";
+import { JwtService } from "../services/jwtService.js";
 
 describe("JwtService", () => {
+  let jwtService: JwtService;
+
   beforeAll(() => {
     // Ensure JWT_SECRET is set for tests
     if (!process.env.JWT_SECRET) {
       process.env.JWT_SECRET = "test-secret-key-for-testing-purposes-only";
     }
   });
+
+  beforeEach(() => {
+    jwtService = new JwtService();
+  });
+
   describe("generateToken", () => {
     it("should generate a valid JWT token", () => {
       const userId = 123;
-      const token = jwtService.generateToken(userId);
+      const userEmail = "test@example.com";
+      const token = jwtService.generateToken(userId, userEmail);
 
       expect(token).toBeDefined();
       expect(typeof token).toBe("string");
@@ -20,15 +28,15 @@ describe("JwtService", () => {
     });
 
     it("should generate different tokens for different users", () => {
-      const token1 = jwtService.generateToken(1);
-      const token2 = jwtService.generateToken(2);
+      const token1 = jwtService.generateToken(1, "user1@example.com");
+      const token2 = jwtService.generateToken(2, "user2@example.com");
 
       expect(token1).not.toBe(token2);
     });
 
     it("should throw an error if userId is invalid", () => {
       try {
-        jwtService.generateToken(null as any);
+        jwtService.generateToken(null as any, "test@example.com");
         expect.fail("Should have thrown an error");
       } catch (error: any) {
         expect(error.message).toContain("User ID must be a valid number");
@@ -37,7 +45,7 @@ describe("JwtService", () => {
 
     it("should throw an error if userId is not a number", () => {
       try {
-        jwtService.generateToken("123" as any);
+        jwtService.generateToken("123" as any, "test@example.com");
         expect.fail("Should have thrown an error");
       } catch (error: any) {
         expect(error.message).toContain("User ID must be a valid number");
@@ -50,7 +58,7 @@ describe("JwtService", () => {
       delete process.env.JWT_SECRET;
 
       try {
-        jwtService.generateToken(123);
+        jwtService.generateToken(123, "test@example.com");
         expect.fail("Should have thrown an error");
       } catch (error: any) {
         expect(error.message).toContain("JWT_SECRET is not defined");
@@ -67,7 +75,7 @@ describe("JwtService", () => {
     let validToken: string;
 
     beforeEach(() => {
-      validToken = jwtService.generateToken(123);
+      validToken = jwtService.generateToken(123, "test@example.com");
     });
 
     it("should verify and decode a valid token", () => {
@@ -75,6 +83,7 @@ describe("JwtService", () => {
 
       expect(decoded).toBeDefined();
       expect(decoded.userId).toBe(123);
+      expect(decoded.userEmail).toBe("test@example.com");
       expect(decoded.iat).toBeDefined(); // issued at time
       expect(decoded.exp).toBeDefined(); // expiration time
     });
@@ -124,10 +133,12 @@ describe("JwtService", () => {
 
     it("should contain correct payload data", () => {
       const userId = 456;
-      const token = jwtService.generateToken(userId);
+      const userEmail = "user456@example.com";
+      const token = jwtService.generateToken(userId, userEmail);
       const decoded = jwtService.verifyToken(token);
 
       expect(decoded.userId).toBe(userId);
+      expect(decoded.userEmail).toBe(userEmail);
     });
   });
 });

@@ -1,13 +1,22 @@
 import jwt from 'jsonwebtoken';
 
+export interface JwtPayload {
+    userId: number;
+    userEmail: string;
+    iat?: number;  // Issued at time (added automatically by JWT)
+    exp?: number;  // Expiration time (added automatically by JWT)
+}
 
+export class JwtService {
 
-class JwtService {
-
-    generateToken(userId: number): string {
+    generateToken(userId: number, userEmail: string): string {
         try {
             if (!userId || typeof userId !== 'number') {
                 throw new Error('User ID must be a valid number');
+            }
+
+            if (!userEmail || typeof userEmail !== 'string') {
+                throw new Error('User email must be a valid string');
             }
 
             const secret = process.env.JWT_SECRET;
@@ -17,7 +26,7 @@ class JwtService {
 
             const expiresIn: string | number = process.env.JWT_EXPIRATION || '1h';
 
-            const payload = { userId };
+            const payload: JwtPayload = { userId, userEmail };
 
             const token = jwt.sign(payload, secret, { expiresIn } as jwt.SignOptions);
 
@@ -31,7 +40,7 @@ class JwtService {
     }
 
     
-    verifyToken(token: string): any {
+    verifyToken(token: string): JwtPayload {
         try {
             if (!token || typeof token !== 'string') {
                 throw new Error('Token must be a non-empty string');
@@ -42,7 +51,7 @@ class JwtService {
                 throw new Error('JWT_SECRET is not defined in environment variables');
             }
 
-            const payload = jwt.verify(token, secret);
+            const payload = jwt.verify(token, secret) as JwtPayload;
 
             return payload;
             
@@ -52,5 +61,3 @@ class JwtService {
         }
     }
 }
-
-export const jwtService = new JwtService();

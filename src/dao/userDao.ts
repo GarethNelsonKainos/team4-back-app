@@ -1,27 +1,16 @@
 import { prisma } from "../db";
-import { User } from "../generated/client";
+import { User } from "@prisma/client";
 
 export class UserDao {
-    async getUserByEmail(email: string): Promise<Pick<User, "userId" | "userEmail" | "createdAt" | "updatedAt"> | null> {
+    async getUserByEmail(email: string): Promise<User | null> {
         return prisma.user.findUnique({
             where: { userEmail: email },
-            select: {
-                userId: true,
-                userEmail: true,
-                createdAt: true,
-                updatedAt: true,
-            },
         });
     }
 
-    async getUserForLogin(email: string): Promise<Pick<User, "userId" | "userEmail" | "userPassword"> | null> {
+    async getUserForLogin(email: string): Promise<User | null> {
         return prisma.user.findUnique({
             where: { userEmail: email },
-            select: {
-                userId: true,
-                userEmail: true,
-                userPassword: true,
-            },
         });
     }
 
@@ -41,14 +30,9 @@ export class UserDao {
         });
     }
 
-    async getUserById(userId: number): Promise<Pick<User, "userId" | "userEmail" | "userPassword"> | null> {
+    async getUserById(userId: number): Promise<User | null> {
         return prisma.user.findUnique({
             where: { userId },
-            select: {
-                userId: true,
-                userEmail: true,
-                userPassword: true,
-            },
         });
     }
 }
