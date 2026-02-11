@@ -1,4 +1,4 @@
-import type { User } from "@prisma/client";
+import type { User } from "../generated/client";
 import type { Request, Response } from "express";
 import type { Mocked } from "vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";

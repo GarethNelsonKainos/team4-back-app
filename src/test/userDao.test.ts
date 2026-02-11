@@ -1,4 +1,4 @@
-import type { User } from "@prisma/client";
+import type { User } from "../generated/client";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { UserDao } from "../dao/userDao.js";
 import * as dbModule from "../db.js";
