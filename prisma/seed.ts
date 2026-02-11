@@ -1,7 +1,18 @@
 import "dotenv/config";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
+import pg from "pg";
 
-const prisma = new PrismaClient();
+// Create a connection pool using the DATABASE_URL
+const pool = new pg.Pool({
+	connectionString: process.env.DATABASE_URL,
+});
+
+// Wrap the pool in Prisma's pg adapter (required in Prisma v7)
+const adapter = new PrismaPg(pool);
+
+// Create Prisma Client with the adapter
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
 	console.log("Seeding database");
@@ -83,4 +94,5 @@ main()
 	})
 	.finally(async () => {
 		await prisma.$disconnect();
+		await pool.end();
 	});
