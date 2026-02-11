@@ -41,16 +41,6 @@ jobs:
      - name: Install dependencies
        run: npm ci
     
-     - name: Run database migrations
-       env:
-         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
-       run: npx prisma migrate deploy
-    
-     - name: Seed database
-       env:
-         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
-       run: npm run seed
-    
      - name: Run Biome checks
        run: npm run ci:check
     
@@ -58,8 +48,6 @@ jobs:
        run: npm run build
     
      - name: Run tests
-       env:
-         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
        run: npm run test
 
      - name: Upload code coverage report
