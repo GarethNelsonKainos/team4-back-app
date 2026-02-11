@@ -4,8 +4,8 @@ import { JobRoleService } from "../services/jobRoleService";
 export class ApiJobRoleController {
   private jobRoleService: JobRoleService;
 
-  constructor() {
-    this.jobRoleService = new JobRoleService();
+  constructor(jobRoleService: JobRoleService) {
+    this.jobRoleService = jobRoleService;
   }
 
   public getJobRoles = async (req: Request, res: Response): Promise<void> => {

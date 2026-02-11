@@ -1,22 +1,16 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { mockDeep, mockReset, DeepMockProxy } from "vitest-mock-extended";
 import { PrismaClient } from "@prisma/client";
-import { JobRoleDao } from "../dao/jobRoleDao.js";
-import { prisma } from "../db.js";
-import { JobRole } from "../models/jobRole.js";
-
-vi.mock("../db", () => ({
-  __esModule: true,
-  prisma: mockDeep<PrismaClient>(),
-}));
-
-const prismaMock = prisma as unknown as DeepMockProxy<PrismaClient>;
+import { JobRoleDao } from "../dao/jobRoleDao";
+import { JobRole } from "../models/jobRole";
 
 describe("JobRoleDao", () => {
-  const jobRoleDao = new JobRoleDao();
+  let prismaMock: DeepMockProxy<PrismaClient>;
+  let jobRoleDao: JobRoleDao;
 
   beforeEach(() => {
-    mockReset(prismaMock);
+    prismaMock = mockDeep<PrismaClient>();
+    jobRoleDao = new JobRoleDao(prismaMock);
   });
 
   it("should return job roles from the database", async () => {
