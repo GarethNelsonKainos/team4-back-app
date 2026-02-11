@@ -1,15 +1,36 @@
-import express from 'express';
-import { Request, Response, NextFunction } from 'express';
+import "dotenv/config";
+import express from "express";
+import { Request, Response, NextFunction } from "express";
+import { ApiJobRoleController } from "./controllers/apiJobRoleController";
+import { JobRoleService } from "./services/jobRoleService";
+import { JobRoleDao } from "./dao/jobRoleDao";
+import { prisma } from "./db";
 
-const app = express();
-const port = 3000
+export function createApp(jobRoleController?: ApiJobRoleController) {
+  const app = express();
 
-app.use(express.json());
+  // Dependency injection setup
+  const controller =
+    jobRoleController ||
+    (() => {
+      const jobRoleDao = new JobRoleDao(prisma);
+      const jobRoleService = new JobRoleService(jobRoleDao);
+      return new ApiJobRoleController(jobRoleService);
+    })();
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
-    res.send('Hello world!');
-});
+  app.use(express.json());
 
-app.listen(port, () => {
-    console.log(`App listening on port ${port}`);
-})
+  app.get("/api/job-roles", controller.getJobRoles);
+
+  return app;
+}
+
+const app = createApp();
+
+if (process.env.NODE_ENV !== "test") {
+  app.listen(3000, () => {
+    console.log("Server listening on port 3000");
+  });
+}
+
+export { app };
