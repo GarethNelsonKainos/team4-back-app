@@ -5,6 +5,12 @@ import { JobRoleService } from "../services/jobRoleService";
 import { JobRoleResponse } from "../models/jobRoleResponse";
 
 vi.mock("../services/jobRoleService");
+vi.mock("../middleware/authMiddleware", () => ({
+  authMiddleware: (req: any, res: any, next: any) => {
+    req.userId = 1; // Set a fake userId for testing
+    next();
+  },
+}));
 
 describe("GET /api/job-roles", () => {
   it("should return a list of job roles", async () => {
