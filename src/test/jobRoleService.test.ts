@@ -1,19 +1,19 @@
-import { describe, it, expect, vi, beforeEach, Mock } from "vitest";
-import { JobRoleService } from "../services/jobRoleService.js";
-import { JobRoleDao } from "../dao/jobRoleDao.js";
-import { JobRole } from "../models/jobRole.js";
-import { JobRoleResponse } from "../models/jobRoleResponse.js";
-
-vi.mock("../dao/jobRoleDao");
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { JobRoleService } from "../services/jobRoleService";
+import { JobRoleDao } from "../dao/jobRoleDao";
+import { JobRole } from "../models/jobRole";
+import { JobRoleResponse } from "../models/jobRoleResponse";
 
 describe("JobRoleService", () => {
-  const jobRoleService = new JobRoleService();
-  let getJobRolesMock: Mock;
+  let jobRoleService: JobRoleService;
+  let mockJobRoleDao: JobRoleDao;
 
   beforeEach(() => {
-    // Clear mocks before each test
-    vi.clearAllMocks();
-    getJobRolesMock = vi.spyOn(JobRoleDao.prototype, "getJobRoles");
+    mockJobRoleDao = {
+      getJobRoles: vi.fn(),
+    } as unknown as JobRoleDao;
+    
+    jobRoleService = new JobRoleService(mockJobRoleDao);
   });
 
   it("should get job roles and map them to responses", async () => {
@@ -42,12 +42,12 @@ describe("JobRoleService", () => {
       },
     ];
 
-    getJobRolesMock.mockResolvedValue(mockJobRoles);
+    vi.mocked(mockJobRoleDao.getJobRoles).mockResolvedValue(mockJobRoles);
 
     const result = await jobRoleService.getJobRoles();
 
     expect(result).toEqual(expectedResponses);
-    expect(getJobRolesMock).toHaveBeenCalledOnce();
+    expect(mockJobRoleDao.getJobRoles).toHaveBeenCalledOnce();
   });
 
   it("should handle missing capability and band relations", async () => {
@@ -57,8 +57,8 @@ describe("JobRoleService", () => {
         jobRoleId: 1,
         roleName: "Software Engineer",
         location: "Manchester",
-        capability: undefined, 
-        band: undefined, 
+        capability: undefined,
+        band: undefined,
         capabilityId: 1,
         bandId: 1,
         closingDate: closingDate,
@@ -70,17 +70,17 @@ describe("JobRoleService", () => {
         jobRoleId: 1,
         roleName: "Software Engineer",
         location: "Manchester",
-        capability: "Unknown", 
-        band: "Unknown", 
+        capability: "Unknown",
+        band: "Unknown",
         closingDate: closingDate,
       },
     ];
 
-    getJobRolesMock.mockResolvedValue(mockJobRoles);
+    vi.mocked(mockJobRoleDao.getJobRoles).mockResolvedValue(mockJobRoles);
 
     const result = await jobRoleService.getJobRoles();
 
     expect(result).toEqual(expectedResponses);
-    expect(getJobRolesMock).toHaveBeenCalledOnce();
+    expect(mockJobRoleDao.getJobRoles).toHaveBeenCalledOnce();
   });
 });
