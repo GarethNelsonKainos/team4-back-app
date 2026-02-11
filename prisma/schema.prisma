@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Band {
+  bandId   Int       @id @default(autoincrement()) @map("bandid")
+  bandName String?   @db.VarChar(100) @map("bandname")
+  jobRoles JobRole[]
+
+  @@map("band")
+}
+
+model Capability {
+  capabilityId   Int       @id @default(autoincrement()) @map("capabilityid")
+  capabilityName String?   @db.VarChar(100) @map("capabilityname")
+  jobRoles       JobRole[]
+
+  @@map("capability")
+}
+
+model JobRole {
+  jobRoleId    Int        @id @default(autoincrement()) @map("jobroleid")
+  roleName     String     @db.VarChar(200) @map("rolename")
+  jobLocation  String     @db.VarChar(100) @map("joblocation")
+  capabilityId Int        @map("capabilityid")
+  bandId       Int        @map("bandid")
+  closingDate  DateTime   @db.Date @map("closingdate")
+  
+  band         Band       @relation(fields: [bandId], references: [bandId])
+  capability   Capability @relation(fields: [capabilityId], references: [capabilityId])
+
+  @@map("jobroles")
+}
