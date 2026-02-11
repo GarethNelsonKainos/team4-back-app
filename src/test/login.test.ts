@@ -1,9 +1,9 @@
-import type { User } from "../generated/client";
 import type { Request, Response } from "express";
 import type { Mocked } from "vitest";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { LoginController } from "../controllers/loginController.js";
 import type { UserDao } from "../dao/userDao.js";
+import type { User } from "../generated/client";
 import type { JwtService } from "../services/jwtService.js";
 import type { PasswordService } from "../services/passwordService.js";
 
