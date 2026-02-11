@@ -1,10 +1,10 @@
-import type { JobRole } from "../models/jobRole";
 import type {
+	Band,
+	Capability,
 	PrismaClient,
 	JobRole as PrismaJobRole,
-	Capability,
-	Band,
 } from "@prisma/client";
+import type { JobRole } from "../models/jobRole";
 
 export class JobRoleDao {
 	private prisma: PrismaClient;
