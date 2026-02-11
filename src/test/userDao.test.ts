@@ -42,12 +42,6 @@ describe("UserDao", () => {
       expect(result).toEqual(mockUser);
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
         where: { userEmail: "test@example.com" },
-        select: {
-          userId: true,
-          userEmail: true,
-          createdAt: true,
-          updatedAt: true,
-        },
       });
     });
 
@@ -60,12 +54,6 @@ describe("UserDao", () => {
       expect(result).toBeNull();
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
         where: { userEmail: "notfound@example.com" },
-        select: {
-          userId: true,
-          userEmail: true,
-          createdAt: true,
-          updatedAt: true,
-        },
       });
     });
 
@@ -80,23 +68,13 @@ describe("UserDao", () => {
   describe("getUserForLogin", () => {
     it("should return user with password hash for login", async () => {
       userDao = new UserDao();
-      const userWithPassword = {
-        userId: 1,
-        userEmail: "test@example.com",
-        userPassword: "$2b$10$hashedpassword",
-      };
-      vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(userWithPassword);
+      vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(mockUser);
 
       const result = await userDao.getUserForLogin("test@example.com");
 
-      expect(result).toEqual(userWithPassword);
+      expect(result).toEqual(mockUser);
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
         where: { userEmail: "test@example.com" },
-        select: {
-          userId: true,
-          userEmail: true,
-          userPassword: true,
-        },
       });
     });
 

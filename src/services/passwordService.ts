@@ -1,13 +1,15 @@
 import bcrypt from 'bcrypt';
 
 
-class PasswordService {
+export class PasswordService {
     async hashPassword(plainPassword: string): Promise<string> {
     try {
         if (!plainPassword || typeof plainPassword !== 'string') {
             throw new Error('Password must be a non-empty string');
         }
-        const saltRounds = 10;
+        //bycrypt automatically generates a salt and includes it in the hashed password, so we don't need to manage the salt separately
+
+        const saltRounds = Number(process.env.SALT_ROUNDS);
         const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
         return hashedPassword;
     } catch (error) {
@@ -27,5 +29,3 @@ class PasswordService {
         }
     }
 }
-
-export const passwordService = new PasswordService();

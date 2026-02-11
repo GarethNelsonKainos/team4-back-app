@@ -1,13 +1,18 @@
 import { Request, Response } from "express";
-import { jwtService } from "../services/jwtService";
-import { passwordService } from "../services/passwordService";
+import { JwtService } from "../services/jwtService";
+import { PasswordService } from "../services/passwordService";
 import { UserDao } from "../dao/userDao";
+import { UserMapper } from "../mappers/userMapper";
 
 export class LoginController {
   private userDao: UserDao;
+  private passwordService: PasswordService;
+  private jwtService: JwtService;
   
-  constructor() {
-    this.userDao = new UserDao();
+  constructor(userDao: UserDao, passwordService: PasswordService, jwtService: JwtService) {
+    this.userDao = userDao;
+    this.passwordService = passwordService;
+    this.jwtService = jwtService;
   }
 
   public login = async (req: Request, res: Response): Promise<void> => {
@@ -24,13 +29,13 @@ export class LoginController {
             return;
         }
 
-        const isPasswordValid = await passwordService.verifyPassword(password, user.userPassword);
+        const isPasswordValid = await this.passwordService.verifyPassword(password, user.userPassword);
         if (!isPasswordValid) {
             res.status(401).json({ message: 'Invalid email or password' });
             return;
         }
 
-        const token = jwtService.generateToken(user.userId);
+        const token = this.jwtService.generateToken(user.userId, user.userEmail);
         res.status(200).json({ token });
     } catch (error) {
         console.error('Error during login:', error);
@@ -58,16 +63,13 @@ export class LoginController {
             return;
         }
 
-        const hashedPassword = await passwordService.hashPassword(password);
+        //return with hashed and salt 
+        const hashedPassword = await this.passwordService.hashPassword(password);
         const newUser = await this.userDao.createUser(email, hashedPassword);
 
         res.status(201).json({
             message: "User registered successfully",
-            user: {
-                userId: newUser.userId,
-                userEmail: newUser.userEmail,
-                createdAt: newUser.createdAt,
-            },
+            user: UserMapper.toResponse(newUser),
         });
     } catch (error) {
         console.error('Error during registration:', error);
@@ -75,52 +77,62 @@ export class LoginController {
     }
   };
 
-  public logout = async (req: Request, res: Response): Promise<void> => {
-    try {
-        // Logout is primarily handled client-side (client removes token from storage)
-        // Server just confirms the logout
-        res.status(200).json({ message: "Logged out successfully" });
-    } catch (error) {
-        console.error('Error during logout:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-  };
+//   public logout = async (req: Request, res: Response): Promise<void> => {
+//     try {
+//         // Logout is primarily handled client-side (client removes token from storage)
+//         // Server just confirms the logout
+//         res.status(200).json({ message: "Logged out successfully" });
+//     } catch (error) {
+//         console.error('Error during logout:', error);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+//   };
 
-  public updatePassword = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const userId = (req as any).userId;
-        const { oldPassword, newPassword } = req.body as { oldPassword?: string; newPassword?: string };
 
-        if (!oldPassword || !newPassword) {
-            res.status(400).json({ message: "Old password and new password are required" });
-            return;
-        }
+//logic for updating password needs reworked
+//current setup requires user to be logged in and have a token 
+// but if they have forgotten their password this is impossible
+// only use old password for comparison purposes to ensure new is not same as old
+// apply this later when front end functionality is linked to back end
 
-        if (newPassword.length < 6) {
-            res.status(400).json({ message: "New password must be at least 6 characters long" });
-            return;
-        }
+//   public updatePassword = async (req: Request, res: Response): Promise<void> => {
+//     try {
+//         const userId = req.userId;
+//         // dont enforce old password entry, just compare in db
+//         //remove all old password data
+//         const { oldPassword, newPassword } = req.body as { oldPassword?: string; newPassword?: string };
 
-        const user = await this.userDao.getUserById(userId);
-        if (!user) {
-            res.status(404).json({ message: "User not found" });
-            return;
-        }
+//         if (!oldPassword || !newPassword) {
+//             res.status(400).json({ message: "Old password and new password are required" });
+//             return;
+//         }
 
-        const isPasswordValid = await passwordService.verifyPassword(oldPassword, user.userPassword);
-        if (!isPasswordValid) {
-            res.status(401).json({ message: "Current password is incorrect" });
-            return;
-        }
+//         if (newPassword.length < 6) {
+//             res.status(400).json({ message: "New password must be at least 6 characters long" });
+//             return;
+//         }
 
-        const hashedPassword = await passwordService.hashPassword(newPassword);
-        await this.userDao.updateUserPassword(userId, hashedPassword);
+//         //rethink logic, cannot compare old password if user is not logged in, need to verify token first, then compare old password with db, then update with new password
+//         const user = await this.userDao.getUserById(userId);
+//         if (!user) {
+//             res.status(404).json({ message: "User not found" });
+//             return;
+//         }
 
-        res.status(200).json({ message: "Password updated successfully" });
-    } catch (error) {
-        console.error('Error updating password:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-  };
-}
+//         const isPasswordValid = await passwordService.verifyPassword(oldPassword, user.userPassword);
+//         if (!isPasswordValid) {
+//             res.status(401).json({ message: "Current password is incorrect" });
+//             return;
+//         }
+
+//         const hashedPassword = await passwordService.hashPassword(newPassword);
+//         await this.userDao.updateUserPassword(userId, hashedPassword);
+
+//         res.status(200).json({ message: "Password updated successfully" });
+//     } catch (error) {
+//         console.error('Error updating password:', error);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+//   };
+ }
 
