@@ -1,4 +1,4 @@
-import type { User } from "@prisma/client";
+import type { User } from "../generated/client";
 import { prisma } from "../db";
 
 export class UserDao {

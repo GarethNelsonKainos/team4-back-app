@@ -3,7 +3,7 @@ import type {
 	Capability,
 	PrismaClient,
 	JobRole as PrismaJobRole,
-} from "@prisma/client";
+} from "../generated/client";
 import type { JobRole } from "../models/jobRole";
 
 export class JobRoleDao {

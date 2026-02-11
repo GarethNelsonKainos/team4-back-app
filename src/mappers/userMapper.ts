@@ -1,4 +1,4 @@
-import type { User } from "@prisma/client";
+import type { User } from "../generated/client";
 import type { UserResponse } from "../models/userResponse";
 
 export function toUserResponse(user: User): UserResponse {
