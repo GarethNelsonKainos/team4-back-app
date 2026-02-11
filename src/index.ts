@@ -1,7 +1,6 @@
 import "dotenv/config";
 import express from "express";
 import { ApiJobRoleController } from "./controllers/apiJobRoleController";
-import { JobRoleService } from "./services/jobRoleService";
 import { JobRoleDao } from "./dao/jobRoleDao";
 import { prisma } from "./db";
 import { LoginController } from "./controllers/loginController";
@@ -9,18 +8,19 @@ import { UserDao } from "./dao/userDao";
 import { PasswordService } from "./services/passwordService";
 import { JwtService } from "./services/jwtService";
 import { authMiddleware } from "./middleware/authMiddleware";
+import { JobRoleService } from "./services/jobRoleService";
 
 export function createApp(jobRoleController?: ApiJobRoleController) {
-  const app = express();
+	const app = express();
 
-  // Dependency injection setup
-  const controller =
-    jobRoleController ||
-    (() => {
-      const jobRoleDao = new JobRoleDao(prisma);
-      const jobRoleService = new JobRoleService(jobRoleDao);
-      return new ApiJobRoleController(jobRoleService);
-    })();
+	// Dependency injection setup
+	const controller =
+		jobRoleController ||
+		(() => {
+			const jobRoleDao = new JobRoleDao(prisma);
+			const jobRoleService = new JobRoleService(jobRoleDao);
+			return new ApiJobRoleController(jobRoleService);
+		})();
 
   const userDao = new UserDao();
   const passwordService = new PasswordService();
@@ -41,7 +41,7 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
   // app.post("/api/update-password", authMiddleware, loginController.updatePassword);
   app.get("/api/job-roles", authMiddleware, controller.getJobRoles);
 
-  return app;
+	return app;
 }
 
 const app = createApp();
