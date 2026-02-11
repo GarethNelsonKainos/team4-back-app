@@ -1,5 +1,6 @@
-import type { User } from "../generated/client";
 import { prisma } from "../db";
+import type { User } from "../generated/client";
+
 
 export class UserDao {
 	async getUserByEmail(email: string): Promise<User | null> {
