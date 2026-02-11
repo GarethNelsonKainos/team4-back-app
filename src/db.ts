@@ -1,5 +1,5 @@
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@prisma/client";
+import * as prismaPkg from "@prisma/client";
 import pg from "pg";
 
 // Create a connection pool using the DATABASE_URL from .env
@@ -11,7 +11,7 @@ const pool = new pg.Pool({
 const adapter = new PrismaPg(pool);
 
 // Create Prisma Client with the adapter (required in Prisma v7)
-export const prisma = new PrismaClient({ adapter });
+export const prisma = new prismaPkg.PrismaClient({ adapter });
 
 // Graceful shutdown: disconnect Prisma when the process terminates
 process.on("beforeExit", async () => {
