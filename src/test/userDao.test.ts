@@ -1,7 +1,7 @@
-import type { User } from "../generated/client";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { UserDao } from "../dao/userDao.js";
+import type { User } from "../generated/client";
 import * as dbModule from "../db.js";
+import { UserDao } from "../dao/userDao.js";
 
 // Mock Prisma with proper structure
 vi.mock("../db.js", () => ({
