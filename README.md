@@ -90,6 +90,98 @@ Your API will be running at http://localhost:3000
 
 Visit http://localhost:3000/api/job-roles to see the job roles from your database.
 
+## Development Commands
+
+### Running the Application
+
+**Development mode** (with hot reload):
+```bash
+npm run dev
+```
+The server will restart automatically when you make changes to the code.
+
+**Production mode**:
+```bash
+npm run build  # Compile TypeScript to JavaScript
+npm start      # Run the compiled application
+```
+
+### Building the Application
+
+Compile TypeScript to JavaScript (output in `dist/` folder):
+```bash
+npm run build
+```
+
+### Testing
+
+**Run all tests**:
+```bash
+npm test
+```
+
+**Run tests with interactive UI**:
+```bash
+npm run test:ui
+```
+
+**Run tests with coverage report**:
+```bash
+npm run coverage
+```
+Coverage reports are generated in the `coverage/` folder. Open `coverage/index.html` in your browser to view detailed coverage.
+
+### Database Migrations
+
+**Create a new migration** (after changing `schema.prisma`):
+```bash
+npx prisma migrate dev --name your_migration_name
+```
+
+**Apply existing migrations**:
+```bash
+npx prisma migrate dev
+```
+
+**Reset database** (⚠️ deletes all data):
+```bash
+npx prisma migrate reset
+```
+
+**View migration status**:
+```bash
+npx prisma migrate status
+```
+
+**Generate Prisma Client** (after schema changes):
+```bash
+npx prisma generate
+```
+
+### Linting and Formatting
+
+This project uses [Biome](https://biomejs.dev/) for linting and formatting.
+
+**Format code**:
+```bash
+npm run format
+```
+
+**Lint and fix issues**:
+```bash
+npm run lint
+```
+
+**Format and lint together**:
+```bash
+npm run check
+```
+
+**CI check** (for CI/CD pipelines - doesn't modify files):
+```bash
+npm run ci:check
+```
+
 ## Useful Commands
 
 - **Check running Prisma servers**: `npx prisma dev ls`

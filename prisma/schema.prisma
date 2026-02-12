@@ -23,6 +23,14 @@ model Capability {
   @@map("capability")
 }
 
+model Status {
+  statusId   Int       @id @default(autoincrement()) @map("statusid")
+  statusName String    @unique @db.VarChar(100) @map("statusname")
+  jobRoles   JobRole[]
+
+  @@map("status")
+}
+
 model JobRole {
   jobRoleId    Int        @id @default(autoincrement()) @map("jobroleid")
   roleName     String     @db.VarChar(200) @map("rolename")
@@ -30,9 +38,15 @@ model JobRole {
   capabilityId Int        @map("capabilityid")
   bandId       Int        @map("bandid")
   closingDate  DateTime   @db.Date @map("closingdate")
+  description  String     @db.Text @map("description")
+  responsibilities String     @db.Text @map("responsibilities")
+  sharepointUrl    String     @db.VarChar(500) @map("sharepointurl")
+  statusId              Int   @map("statusid")
+  numberOfOpenPositions Int   @map("numberofopenpositions")
   
   band         Band       @relation(fields: [bandId], references: [bandId])
   capability   Capability @relation(fields: [capabilityId], references: [capabilityId])
+  status       Status     @relation(fields: [statusId], references: [statusId])
 
   @@map("jobroles")
 }

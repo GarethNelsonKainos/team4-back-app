@@ -5,6 +5,7 @@ export namespace JobRoleMapper {
 	export function toResponse(jobRole: JobRole): JobRoleResponse {
 		const capabilityName = jobRole.capability?.capabilityName || "Unknown";
 		const bandName = jobRole.band?.bandName || "Unknown";
+		const statusName = jobRole.status?.statusName || "Unknown";
 
 		return {
 			jobRoleId: jobRole.jobRoleId,
@@ -13,6 +14,11 @@ export namespace JobRoleMapper {
 			capability: capabilityName,
 			band: bandName,
 			closingDate: jobRole.closingDate,
+			description: jobRole.description,
+			responsibilities: jobRole.responsibilities,
+			sharepointUrl: jobRole.sharepointUrl,
+			status: statusName,
+			numberOfOpenPositions: jobRole.numberOfOpenPositions,
 		};
 	}
 }
