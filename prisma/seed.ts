@@ -17,6 +17,15 @@ const prisma = new prismaPkg.PrismaClient({ adapter });
 async function main() {
 	console.log("Seeding database");
 
+	// Create Statuses first
+	const openStatus = await prisma.status.create({
+		data: { statusName: "Open" },
+	});
+
+	const _closedStatus = await prisma.status.create({
+		data: { statusName: "Closed" },
+	});
+
 	// Create Bands
 	const associateBand = await prisma.band.create({
 		data: { bandName: "Associate" },
@@ -43,7 +52,7 @@ async function main() {
 		data: { capabilityName: "Platforms" },
 	});
 
-	// Create Job Roles
+	// Create Job Roles with all required fields
 	await prisma.jobRole.create({
 		data: {
 			roleName: "Software Engineer",
@@ -51,6 +60,12 @@ async function main() {
 			capabilityId: engineeringCapability.capabilityId,
 			bandId: associateBand.bandId,
 			closingDate: new Date("2026-03-31"),
+			description: "Join our Engineering team as a Software Engineer...",
+			responsibilities: "Design and develop software solutions...",
+			sharepointUrl:
+				"https://kainos.sharepoint.com/sites/careers/software-engineer",
+			statusId: openStatus.statusId,
+			numberOfOpenPositions: 3,
 		},
 	});
 
@@ -61,6 +76,13 @@ async function main() {
 			capabilityId: engineeringCapability.capabilityId,
 			bandId: seniorAssociateBand.bandId,
 			closingDate: new Date("2026-04-15"),
+			description: "Lead technical projects as a Senior Software Engineer...",
+			responsibilities:
+				"Lead development teams and mentor junior developers...",
+			sharepointUrl:
+				"https://kainos.sharepoint.com/sites/careers/senior-software-engineer",
+			statusId: openStatus.statusId,
+			numberOfOpenPositions: 2,
 		},
 	});
 
@@ -71,6 +93,14 @@ async function main() {
 			capabilityId: dataAndAICapability.capabilityId,
 			bandId: seniorAssociateBand.bandId,
 			closingDate: new Date("2026-03-20"),
+			description:
+				"Apply advanced analytics and machine learning techniques...",
+			responsibilities:
+				"Develop predictive models and analyze large datasets...",
+			sharepointUrl:
+				"https://kainos.sharepoint.com/sites/careers/data-scientist",
+			statusId: openStatus.statusId,
+			numberOfOpenPositions: 1,
 		},
 	});
 
@@ -81,6 +111,14 @@ async function main() {
 			capabilityId: platformsCapability.capabilityId,
 			bandId: consultantBand.bandId,
 			closingDate: new Date("2026-04-01"),
+			description:
+				"Build and maintain cloud infrastructure and deployment pipelines...",
+			responsibilities:
+				"Design scalable cloud architectures and automate deployments...",
+			sharepointUrl:
+				"https://kainos.sharepoint.com/sites/careers/platform-engineer",
+			statusId: openStatus.statusId,
+			numberOfOpenPositions: 2,
 		},
 	});
 

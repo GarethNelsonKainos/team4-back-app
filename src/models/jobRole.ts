@@ -5,6 +5,11 @@ export interface JobRole {
 	capabilityId: number;
 	bandId: number;
 	closingDate: string;
+	description: string;
+	responsibilities: string;
+	sharepointUrl: string;
+	statusId: number;
+	numberOfOpenPositions: number;
 
 	capability?: {
 		capabilityId: number;
@@ -13,5 +18,9 @@ export interface JobRole {
 	band?: {
 		bandId: number;
 		bandName: string | null;
+	};
+	status?: {
+		statusId: number;
+		statusName: string;
 	};
 }

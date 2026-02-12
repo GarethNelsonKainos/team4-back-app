@@ -18,6 +18,7 @@ export class JobRoleDao {
 			include: {
 				capability: true,
 				band: true,
+				status: true,
 			},
 		});
 
@@ -26,6 +27,7 @@ export class JobRoleDao {
 				jr: PrismaJobRole & {
 					capability: Capability | null;
 					band: Band | null;
+					status: Status | null;
 				},
 			) => ({
 				jobRoleId: jr.jobRoleId,
@@ -36,6 +38,11 @@ export class JobRoleDao {
 				closingDate: jr.closingDate
 					? jr.closingDate.toISOString().split("T")[0]
 					: "",
+				description: jr.description,
+				responsibilities: jr.responsibilities,
+				sharepointUrl: jr.sharepointUrl,
+				statusId: jr.statusId,
+				numberOfOpenPositions: jr.numberOfOpenPositions,
 				capability: jr.capability
 					? {
 							capabilityId: jr.capability.capabilityId,
@@ -46,6 +53,12 @@ export class JobRoleDao {
 					? {
 							bandId: jr.band.bandId,
 							bandName: jr.band.bandName,
+						}
+					: undefined,
+				status: jr.status
+					? {
+							statusId: jr.status.statusId,
+							statusName: jr.status.statusName,
 						}
 					: undefined,
 			}),

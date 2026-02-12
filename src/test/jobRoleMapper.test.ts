@@ -9,6 +9,11 @@ const baseJobRole: JobRole = {
 	capabilityId: 1,
 	bandId: 1,
 	closingDate: "2026-02-09",
+	description: "A role for software engineers",
+	responsibilities: "Develop software solutions",
+	sharepointUrl: "https://sharepoint.example.com/job/1",
+	statusId: 1,
+	numberOfOpenPositions: 3,
 	capability: {
 		capabilityId: 1,
 		capabilityName: "Engineering",
@@ -16,6 +21,10 @@ const baseJobRole: JobRole = {
 	band: {
 		bandId: 1,
 		bandName: "Associate",
+	},
+	status: {
+		statusId: 1,
+		statusName: "Open",
 	},
 };
 
@@ -30,6 +39,11 @@ describe("JobRoleMapper", () => {
 			capability: "Engineering",
 			band: "Associate",
 			closingDate: "2026-02-09",
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			status: "Open",
+			numberOfOpenPositions: 3,
 		});
 	});
 
@@ -58,5 +72,13 @@ describe("JobRoleMapper", () => {
 		const result = JobRoleMapper.toResponse(jobRole);
 
 		expect(result.capability).toBe("Unknown");
+	});
+
+	it("should handle missing status and use Unknown", () => {
+		const jobRole = { ...baseJobRole, status: undefined };
+
+		const result = JobRoleMapper.toResponse(jobRole);
+
+		expect(result.status).toBe("Unknown");
 	});
 });
