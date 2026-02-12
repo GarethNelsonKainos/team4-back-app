@@ -24,6 +24,11 @@ describe("GET /api/job-roles", () => {
 				capability: "Engineering",
 				band: "Associate",
 				closingDate: closingDate,
+				description: "A role for software engineers",
+				responsibilities: "Develop software solutions",
+				sharepointUrl: "https://sharepoint.example.com/job/1",
+				status: "Open",
+				numberOfOpenPositions: 3,
 			},
 		];
 
