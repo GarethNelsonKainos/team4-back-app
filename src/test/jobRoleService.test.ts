@@ -25,9 +25,15 @@ describe("JobRoleService", () => {
 				location: "Manchester",
 				capability: { capabilityId: 1, capabilityName: "Engineering" },
 				band: { bandId: 1, bandName: "Associate" },
+				status: { statusId: 1, statusName: "Open" },
 				capabilityId: 1,
 				bandId: 1,
 				closingDate: closingDate,
+				description: "A role for software engineers",
+				responsibilities: "Develop software solutions",
+				sharepointUrl: "https://sharepoint.example.com/job/1",
+				statusId: 1,
+				numberOfOpenPositions: 3,
 			},
 		];
 
@@ -39,6 +45,11 @@ describe("JobRoleService", () => {
 				capability: "Engineering",
 				band: "Associate",
 				closingDate: closingDate,
+				description: "A role for software engineers",
+				responsibilities: "Develop software solutions",
+				sharepointUrl: "https://sharepoint.example.com/job/1",
+				status: "Open",
+				numberOfOpenPositions: 3,
 			},
 		];
 
@@ -59,9 +70,15 @@ describe("JobRoleService", () => {
 				location: "Manchester",
 				capability: undefined,
 				band: undefined,
+				status: undefined,
 				capabilityId: 1,
 				bandId: 1,
 				closingDate: closingDate,
+				description: "A role for software engineers",
+				responsibilities: "Develop software solutions",
+				sharepointUrl: "https://sharepoint.example.com/job/1",
+				statusId: 1,
+				numberOfOpenPositions: 3,
 			},
 		];
 
@@ -73,6 +90,11 @@ describe("JobRoleService", () => {
 				capability: "Unknown",
 				band: "Unknown",
 				closingDate: closingDate,
+				description: "A role for software engineers",
+				responsibilities: "Develop software solutions",
+				sharepointUrl: "https://sharepoint.example.com/job/1",
+				status: "Unknown",
+				numberOfOpenPositions: 3,
 			},
 		];
 

@@ -5,4 +5,9 @@ export interface JobRoleResponse {
 	capability: string;
 	band: string;
 	closingDate: string;
+	description: string;
+	responsibilities: string;
+	sharepointUrl: string;
+	status: string;
+	numberOfOpenPositions: number;
 }
