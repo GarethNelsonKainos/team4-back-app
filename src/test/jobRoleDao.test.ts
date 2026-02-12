@@ -23,6 +23,11 @@ describe("JobRoleDao", () => {
 				capabilityId: 1,
 				bandId: 1,
 				closingDate: closingDate,
+				description: "A role for software engineers",
+				responsibilities: "Develop software solutions",
+				sharepointUrl: "https://sharepoint.example.com/job/1",
+				statusId: 1,
+				numberOfOpenPositions: 3,
 				capability: {
 					capabilityId: 1,
 					capabilityName: "Engineering",
@@ -30,6 +35,10 @@ describe("JobRoleDao", () => {
 				band: {
 					bandId: 1,
 					bandName: "Associate",
+				},
+				status: {
+					statusId: 1,
+					statusName: "Open",
 				},
 			},
 		];
@@ -42,6 +51,11 @@ describe("JobRoleDao", () => {
 				capabilityId: 1,
 				bandId: 1,
 				closingDate: "2026-02-09",
+				description: "A role for software engineers",
+				responsibilities: "Develop software solutions",
+				sharepointUrl: "https://sharepoint.example.com/job/1",
+				statusId: 1,
+				numberOfOpenPositions: 3,
 				capability: {
 					capabilityId: 1,
 					capabilityName: "Engineering",
@@ -49,6 +63,10 @@ describe("JobRoleDao", () => {
 				band: {
 					bandId: 1,
 					bandName: "Associate",
+				},
+				status: {
+					statusId: 1,
+					statusName: "Open",
 				},
 			},
 		];
@@ -63,6 +81,7 @@ describe("JobRoleDao", () => {
 			include: {
 				capability: true,
 				band: true,
+				status: true,
 			},
 		});
 	});
@@ -78,6 +97,11 @@ describe("JobRoleDao", () => {
 				capabilityId: 2,
 				bandId: 2,
 				closingDate: null,
+				description: "Description for role",
+				responsibilities: "Responsibilities for role",
+				sharepointUrl: "https://sharepoint.example.com/job/2",
+				statusId: 1,
+				numberOfOpenPositions: 2,
 				capability: {
 					capabilityId: 2,
 					capabilityName: "Data",
@@ -85,6 +109,10 @@ describe("JobRoleDao", () => {
 				band: {
 					bandId: 2,
 					bandName: "Consultant",
+				},
+				status: {
+					statusId: 1,
+					statusName: "Open",
 				},
 			},
 		];
@@ -97,6 +125,11 @@ describe("JobRoleDao", () => {
 				capabilityId: 2,
 				bandId: 2,
 				closingDate: "",
+				description: "Description for role",
+				responsibilities: "Responsibilities for role",
+				sharepointUrl: "https://sharepoint.example.com/job/2",
+				statusId: 1,
+				numberOfOpenPositions: 2,
 				capability: {
 					capabilityId: 2,
 					capabilityName: "Data",
@@ -104,6 +137,10 @@ describe("JobRoleDao", () => {
 				band: {
 					bandId: 2,
 					bandName: "Consultant",
+				},
+				status: {
+					statusId: 1,
+					statusName: "Open",
 				},
 			},
 		];
@@ -122,6 +159,7 @@ describe("JobRoleDao", () => {
 			include: {
 				capability: true,
 				band: true,
+				status: true,
 			},
 		});
 	});
@@ -136,8 +174,14 @@ describe("JobRoleDao", () => {
 				capabilityId: 3,
 				bandId: 3,
 				closingDate: closingDate,
+				description: "PM role",
+				responsibilities: "Manage products",
+				sharepointUrl: "https://sharepoint.example.com/job/3",
+				statusId: 1,
+				numberOfOpenPositions: 1,
 				capability: null,
 				band: null,
+				status: null,
 			},
 		];
 
@@ -149,8 +193,14 @@ describe("JobRoleDao", () => {
 				capabilityId: 3,
 				bandId: 3,
 				closingDate: "2026-02-09",
+				description: "PM role",
+				responsibilities: "Manage products",
+				sharepointUrl: "https://sharepoint.example.com/job/3",
+				statusId: 1,
+				numberOfOpenPositions: 1,
 				capability: undefined,
 				band: undefined,
+				status: undefined,
 			},
 		];
 
@@ -168,6 +218,7 @@ describe("JobRoleDao", () => {
 			include: {
 				capability: true,
 				band: true,
+				status: true,
 			},
 		});
 	});
