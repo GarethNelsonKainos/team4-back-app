@@ -24,7 +24,7 @@ model Capability {
 
 model Status {
   statusId   Int       @id @default(autoincrement()) @map("statusid")
-  statusName String    @db.VarChar(100) @map("statusname")
+  statusName String    @unique @db.VarChar(100) @map("statusname")
   jobRoles   JobRole[]
 
   @@map("status")
