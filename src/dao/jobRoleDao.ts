@@ -4,7 +4,7 @@ import type {
 	PrismaClient,
 	JobRole as PrismaJobRole,
 	Status,
-} from "@prisma/client";
+} from "../generated/client";
 import type { JobRole } from "../models/jobRole";
 
 export class JobRoleDao {

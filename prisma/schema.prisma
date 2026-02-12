@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/"
 }
 
 datasource db {
@@ -48,4 +49,14 @@ model JobRole {
   status       Status     @relation(fields: [statusId], references: [statusId])
 
   @@map("jobroles")
+}
+
+model User {
+  userId        Int       @id @default(autoincrement()) @map("userid")
+  userEmail     String    @unique @db.VarChar(200) @map("useremail")
+  userPassword  String    @db.VarChar(255) @map("userpassword")
+  createdAt     DateTime  @default(now()) @map("createdat")
+  updatedAt     DateTime  @updatedAt @map("updatedat")
+
+  @@map("user")
 }

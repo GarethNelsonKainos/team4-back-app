@@ -1,12 +1,26 @@
 import "dotenv/config";
+import cors from "cors";
 import express from "express";
 import { ApiJobRoleController } from "./controllers/apiJobRoleController";
+import { LoginController } from "./controllers/loginController";
 import { JobRoleDao } from "./dao/jobRoleDao";
+import { UserDao } from "./dao/userDao";
 import { prisma } from "./db";
+import { authMiddleware } from "./middleware/authMiddleware";
 import { JobRoleService } from "./services/jobRoleService";
+import { JwtService } from "./services/jwtService";
+import { PasswordService } from "./services/passwordService";
 
 export function createApp(jobRoleController?: ApiJobRoleController) {
 	const app = express();
+
+	// Enable CORS for frontend (allow requests from port 3000)
+	app.use(
+		cors({
+			origin: "http://localhost:3000",
+			credentials: true,
+		}),
+	);
 
 	// Dependency injection setup
 	const controller =
@@ -17,9 +31,28 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
 			return new ApiJobRoleController(jobRoleService);
 		})();
 
+	const userDao = new UserDao();
+	const passwordService = new PasswordService();
+	const jwtService = new JwtService();
+
+	const loginController = new LoginController(
+		userDao,
+		passwordService,
+		jwtService,
+	);
+
 	app.use(express.json());
 
-	app.get("/api/job-roles", controller.getJobRoles);
+	// Public routes (no authentication required)
+	app.post("/api/login", loginController.login);
+	app.post("/api/register", loginController.register);
+
+	//logout currently deactivated until frontend linkup
+	// app.post("/api/logout", loginController.logout);
+
+	// Protected routes (authentication required)
+	// app.post("/api/update-password", authMiddleware, loginController.updatePassword);
+	app.get("/api/job-roles", authMiddleware, controller.getJobRoles);
 
 	return app;
 }
@@ -27,8 +60,8 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
 const app = createApp();
 
 if (process.env.NODE_ENV !== "test") {
-	app.listen(3000, () => {
-		console.log("Server listening on port 3000");
+	app.listen(process.env.API_PORT, () => {
+		console.log(`Server listening on port ${process.env.API_PORT}`);
 	});
 }
 

@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
-import * as prismaPkg from "@prisma/client";
 import pg from "pg";
+import * as prismaPkg from "../src/generated/client";
 
 // Create a connection pool using the DATABASE_URL
 const pool = new pg.Pool({

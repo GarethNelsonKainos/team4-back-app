@@ -1,7 +1,7 @@
-import type { PrismaClient } from "@prisma/client";
 import { beforeEach, describe, expect, it } from "vitest";
 import { type DeepMockProxy, mockDeep } from "vitest-mock-extended";
 import { JobRoleDao } from "../dao/jobRoleDao";
+import type { PrismaClient } from "../generated/client";
 import type { JobRole } from "../models/jobRole";
 
 describe("JobRoleDao", () => {
