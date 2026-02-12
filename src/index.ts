@@ -1,4 +1,5 @@
 import "dotenv/config";
+import cors from "cors";
 import express from "express";
 import { ApiJobRoleController } from "./controllers/apiJobRoleController";
 import { LoginController } from "./controllers/loginController";
@@ -12,6 +13,14 @@ import { PasswordService } from "./services/passwordService";
 
 export function createApp(jobRoleController?: ApiJobRoleController) {
 	const app = express();
+
+	// Enable CORS for frontend (allow requests from port 3000)
+	app.use(
+		cors({
+			origin: "http://localhost:3000",
+			credentials: true,
+		}),
+	);
 
 	// Dependency injection setup
 	const controller =
