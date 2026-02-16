@@ -10,12 +10,7 @@ export class JobRoleService {
 	}
 
 	public async getJobRoles(): Promise<JobRoleResponse[]> {
-		const jobRoles = await this.jobRoleDao.getJobRoles();
-
-		const jobRoleResponses: JobRoleResponse[] = jobRoles.map((jobRole) => {
-			return JobRoleMapper.toResponse(jobRole);
-		});
-
-		return jobRoleResponses;
+		const jobRolesData = await this.jobRoleDao.getJobRoles();
+		return jobRolesData.map((jobRole) => JobRoleMapper.toResponse(jobRole));
 	}
 }

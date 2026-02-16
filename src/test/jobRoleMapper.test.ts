@@ -1,18 +1,17 @@
 import { describe, expect, it } from "vitest";
 import { JobRoleMapper } from "../mappers/jobRoleMapper";
-import type { JobRole } from "../models/jobRole";
+import type { JobRoleData } from "../models/jobRoleData";
 
-const baseJobRole: JobRole = {
+const closingDate = new Date("2026-02-09");
+
+const basePrismaJobRole: JobRoleData = {
 	jobRoleId: 1,
 	roleName: "Software Engineer",
-	location: "Manchester",
-	capabilityId: 1,
-	bandId: 1,
-	closingDate: "2026-02-09",
+	jobLocation: "Manchester",
+	closingDate: closingDate,
 	description: "A role for software engineers",
 	responsibilities: "Develop software solutions",
 	sharepointUrl: "https://sharepoint.example.com/job/1",
-	statusId: 1,
 	numberOfOpenPositions: 3,
 	capability: {
 		capabilityId: 1,
@@ -30,7 +29,7 @@ const baseJobRole: JobRole = {
 
 describe("JobRoleMapper", () => {
 	it("should map a job role to response", () => {
-		const result = JobRoleMapper.toResponse(baseJobRole);
+		const result = JobRoleMapper.toResponse(basePrismaJobRole);
 
 		expect(result).toEqual({
 			jobRoleId: 1,
@@ -48,7 +47,7 @@ describe("JobRoleMapper", () => {
 	});
 
 	it("should handle missing capability and use Unknown", () => {
-		const jobRole = { ...baseJobRole, capability: undefined };
+		const jobRole = { ...basePrismaJobRole, capability: null };
 
 		const result = JobRoleMapper.toResponse(jobRole);
 
@@ -56,7 +55,7 @@ describe("JobRoleMapper", () => {
 	});
 
 	it("should handle missing band and use Unknown", () => {
-		const jobRole = { ...baseJobRole, band: undefined };
+		const jobRole = { ...basePrismaJobRole, band: null };
 
 		const result = JobRoleMapper.toResponse(jobRole);
 
@@ -65,7 +64,7 @@ describe("JobRoleMapper", () => {
 
 	it("should handle null capability name", () => {
 		const jobRole = {
-			...baseJobRole,
+			...basePrismaJobRole,
 			capability: { capabilityId: 1, capabilityName: null },
 		};
 
@@ -75,10 +74,43 @@ describe("JobRoleMapper", () => {
 	});
 
 	it("should handle missing status and use Unknown", () => {
-		const jobRole = { ...baseJobRole, status: undefined };
+		const jobRole = { ...basePrismaJobRole, status: null };
 
 		const result = JobRoleMapper.toResponse(jobRole);
 
 		expect(result.status).toBe("Unknown");
+	});
+
+	it("should map multiple job roles consistently", () => {
+		const closingDate2 = new Date("2026-03-20");
+		const anotherJobRole: JobRoleData = {
+			...basePrismaJobRole,
+			jobRoleId: 2,
+			roleName: "Data Analyst",
+			jobLocation: "London",
+			closingDate: closingDate2,
+		};
+
+		const result1 = JobRoleMapper.toResponse(basePrismaJobRole);
+		const result2 = JobRoleMapper.toResponse(anotherJobRole);
+
+		expect(result1.roleName).toBe("Software Engineer");
+		expect(result2.roleName).toBe("Data Analyst");
+		expect(result1.location).toBe("Manchester");
+		expect(result2.location).toBe("London");
+	});
+
+	it("should handle different statuses", () => {
+		const closedJobRole: JobRoleData = {
+			...basePrismaJobRole,
+			status: {
+				statusId: 2,
+				statusName: "Closed",
+			},
+		};
+
+		const result = JobRoleMapper.toResponse(closedJobRole);
+
+		expect(result.status).toBe("Closed");
 	});
 });
