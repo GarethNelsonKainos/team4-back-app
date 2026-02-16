@@ -6,7 +6,6 @@ import { LoginController } from "./controllers/loginController";
 import { JobRoleDao } from "./dao/jobRoleDao";
 import { UserDao } from "./dao/userDao";
 import { prisma } from "./db";
-import { authMiddleware } from "./middleware/authMiddleware";
 import { JobRoleService } from "./services/jobRoleService";
 import { JwtService } from "./services/jwtService";
 import { PasswordService } from "./services/passwordService";
