@@ -39,6 +39,10 @@ async function main() {
 		data: { bandName: "Consultant" },
 	});
 
+	const managerBand = await prisma.band.create({
+		data: { bandName: "Manager" },
+	});
+
 	// Create Capabilities
 	const engineeringCapability = await prisma.capability.create({
 		data: { capabilityName: "Engineering" },
@@ -50,6 +54,10 @@ async function main() {
 
 	const platformsCapability = await prisma.capability.create({
 		data: { capabilityName: "Platforms" },
+	});
+
+	const productSpecialistCapability = await prisma.capability.create({
+		data: { capabilityName: "Product Specialist" },
 	});
 
 	// Create Job Roles with all required fields
@@ -119,6 +127,24 @@ async function main() {
 				"https://kainos.sharepoint.com/sites/careers/platform-engineer",
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 2,
+		},
+	});
+
+	await prisma.jobRole.create({
+		data: {
+			roleName: "Intelligent Automation Solution Architect",
+			jobLocation: "Belfast",
+			capabilityId: productSpecialistCapability.capabilityId,
+			bandId: managerBand.bandId,
+			closingDate: new Date("2026-04-30"),
+			description:
+				"As an Intelligent Automation Solution Architect (Manager) in Kainos, you will lead multi-skilled delivery teams to design and deliver high quality Intelligent Automation solutions which delight our customers and impact the lives of users worldwide.",
+			responsibilities:
+				"• Working with customer architects to agree functional and non-functional designs, advising customers and managers on the estimated effort, technical implications and complexity surrounding your designs.\n• Managing, coaching and developing a small number of staff, with a focus on managing employee performance and assisting in their career development.\n• Directing and leading your team as you solve challenging problems together.\n• As a technical leader, you working with your peers to develop policy and standards, share knowledge and mentor those around you. You'll do this whilst advising about new technologies and approaches, with room to learn, develop and grow.",
+			sharepointUrl:
+				"https://kainossoftwareltd.sharepoint.com/sites/Career/JobProfiles/Engineering/Job%20Profile%20-%20Intelligent%20Automation%20Solution%20Architect%20(M).pdf",
+			statusId: openStatus.statusId,
+			numberOfOpenPositions: 1,
 		},
 	});
 
