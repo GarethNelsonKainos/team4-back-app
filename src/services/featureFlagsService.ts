@@ -12,7 +12,7 @@ export class FeatureFlagsService {
 		const flags: FeatureFlags = {
 			JOB_DETAIL_VIEW: this.parseEnvBoolean(
 				process.env.FEATURE_FLAG_JOB_DETAIL_VIEW,
-				false,
+				true,
 			),
 			JOB_APPLY: this.parseEnvBoolean(
 				process.env.FEATURE_FLAG_JOB_APPLY,
