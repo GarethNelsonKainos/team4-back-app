@@ -2,11 +2,13 @@ import "dotenv/config";
 import cors from "cors";
 import express from "express";
 import { ApiJobRoleController } from "./controllers/apiJobRoleController";
+import { FeatureFlagsController } from "./controllers/featureFlagsController";
 import { LoginController } from "./controllers/loginController";
 import { JobRoleDao } from "./dao/jobRoleDao";
 import { UserDao } from "./dao/userDao";
 import { prisma } from "./db";
 import { authMiddleware } from "./middleware/authMiddleware";
+import { FeatureFlagsService } from "./services/featureFlagsService";
 import { JobRoleService } from "./services/jobRoleService";
 import { JwtService } from "./services/jwtService";
 import { PasswordService } from "./services/passwordService";
@@ -41,18 +43,24 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
 		jwtService,
 	);
 
+	const featureFlagsService = new FeatureFlagsService();
+	const featureFlagsController = new FeatureFlagsController(
+		featureFlagsService,
+	);
+
 	app.use(express.json());
 
 	// Public routes (no authentication required)
 	app.post("/api/login", loginController.login);
 	app.post("/api/register", loginController.register);
+	app.get("/api/feature-flags", featureFlagsController.getFeatureFlags);
 
 	//logout currently deactivated until frontend linkup
 	// app.post("/api/logout", loginController.logout);
 
 	// Protected routes (authentication required)
 	// app.post("/api/update-password", authMiddleware, loginController.updatePassword);
-	app.get("/api/job-roles", authMiddleware, controller.getJobRoles);
+	app.get("/api/job-roles", /*authMiddleware,*/ controller.getJobRoles);
 
 	return app;
 }
