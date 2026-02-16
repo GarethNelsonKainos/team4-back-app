@@ -1,24 +1,22 @@
-import type { JobRole } from "../models/jobRole";
+import type { JobRoleWithRelations } from "../dao/jobRoleDao";
 import type { JobRoleResponse } from "../models/jobRoleResponse";
 
 export namespace JobRoleMapper {
-	export function toResponse(jobRole: JobRole): JobRoleResponse {
-		const capabilityName = jobRole.capability?.capabilityName || "Unknown";
-		const bandName = jobRole.band?.bandName || "Unknown";
-		const statusName = jobRole.status?.statusName || "Unknown";
-
+	export function toResponse(
+		prismaJobRole: JobRoleWithRelations,
+	): JobRoleResponse {
 		return {
-			jobRoleId: jobRole.jobRoleId,
-			roleName: jobRole.roleName,
-			location: jobRole.location,
-			capability: capabilityName,
-			band: bandName,
-			closingDate: jobRole.closingDate,
-			description: jobRole.description,
-			responsibilities: jobRole.responsibilities,
-			sharepointUrl: jobRole.sharepointUrl,
-			status: statusName,
-			numberOfOpenPositions: jobRole.numberOfOpenPositions,
+			jobRoleId: prismaJobRole.jobRoleId,
+			roleName: prismaJobRole.roleName,
+			location: prismaJobRole.jobLocation,
+			capability: prismaJobRole.capability?.capabilityName ?? "Unknown",
+			band: prismaJobRole.band?.bandName ?? "Unknown",
+			closingDate: prismaJobRole.closingDate.toISOString().split("T")[0],
+			description: prismaJobRole.description,
+			responsibilities: prismaJobRole.responsibilities,
+			sharepointUrl: prismaJobRole.sharepointUrl,
+			status: prismaJobRole.status?.statusName ?? "Unknown",
+			numberOfOpenPositions: prismaJobRole.numberOfOpenPositions,
 		};
 	}
 }
