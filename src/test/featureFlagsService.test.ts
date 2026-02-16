@@ -1,13 +1,13 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { FeatureFlagsService } from "../services/featureFlagsService";
+import type { Request, Response } from "express";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { FeatureFlagsController } from "../controllers/featureFlagsController";
-import { Request, Response } from "express";
+import { FeatureFlagsService } from "../services/featureFlagsService";
 
 describe("FeatureFlagsService", () => {
-	let service: FeatureFlagsService;
+	let _service: FeatureFlagsService;
 
 	beforeEach(() => {
-		service = new FeatureFlagsService();
+		_service = new FeatureFlagsService();
 	});
 
 	it("should return feature flags with default values", () => {

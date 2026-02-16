@@ -7,7 +7,6 @@ import { LoginController } from "./controllers/loginController";
 import { JobRoleDao } from "./dao/jobRoleDao";
 import { UserDao } from "./dao/userDao";
 import { prisma } from "./db";
-import { authMiddleware } from "./middleware/authMiddleware";
 import { FeatureFlagsService } from "./services/featureFlagsService";
 import { JobRoleService } from "./services/jobRoleService";
 import { JwtService } from "./services/jwtService";

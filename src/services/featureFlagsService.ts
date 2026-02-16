@@ -28,7 +28,10 @@ export class FeatureFlagsService {
 	 * Supports: "true", "1", "yes" as true values
 	 * Everything else is false
 	 */
-	private parseEnvBoolean(value: string | undefined, defaultValue: boolean): boolean {
+	private parseEnvBoolean(
+		value: string | undefined,
+		defaultValue: boolean,
+	): boolean {
 		if (value === undefined) {
 			return defaultValue;
 		}

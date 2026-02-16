@@ -1,5 +1,8 @@
-import { Request, Response } from "express";
-import { FeatureFlagsService, type FeatureFlags } from "../services/featureFlagsService";
+import type { Request, Response } from "express";
+import type {
+	FeatureFlags,
+	FeatureFlagsService,
+} from "../services/featureFlagsService";
 
 export class FeatureFlagsController {
 	private featureFlagsService: FeatureFlagsService;
@@ -14,7 +17,7 @@ export class FeatureFlagsController {
 	 * Returns all feature flags as a JSON object
 	 * Public endpoint - no authentication required
 	 */
-	getFeatureFlags(req: Request, res: Response): void {
+	getFeatureFlags(_req: Request, res: Response): void {
 		const flags: FeatureFlags = this.featureFlagsService.getFeatureFlags();
 		res.status(200).json(flags);
 	}
