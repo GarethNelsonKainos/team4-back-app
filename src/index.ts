@@ -52,7 +52,12 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
 
 	// Protected routes (authentication required)
 	// app.post("/api/update-password", authMiddleware, loginController.updatePassword);
-	app.get("/api/job-roles", authMiddleware, controller.getJobRoles);
+	// app.get("/api/job-roles", authMiddleware, controller.getJobRoles);
+	app.get("/api/job-roles", /* authMiddleware, */ controller.getJobRoles);
+	app.get(
+		"/api/job-roles/:id",
+		/* authMiddleware, */ controller.getJobRoleById,
+	);
 
 	return app;
 }

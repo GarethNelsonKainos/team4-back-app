@@ -18,4 +18,16 @@ export class JobRoleService {
 
 		return jobRoleResponses;
 	}
+
+	public async getJobRoleById(
+		jobRoleId: number,
+	): Promise<JobRoleResponse | null> {
+		const jobRole = await this.jobRoleDao.getJobRoleById(jobRoleId);
+
+		if (!jobRole) {
+			return null;
+		}
+
+		return JobRoleMapper.toResponse(jobRole);
+	}
 }

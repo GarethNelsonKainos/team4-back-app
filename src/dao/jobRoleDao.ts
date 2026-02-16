@@ -65,4 +65,53 @@ export class JobRoleDao {
 			}),
 		);
 	}
+
+	async getJobRoleById(jobRoleId: number): Promise<JobRole | null> {
+		const jobRole = await this.prisma.jobRole.findUnique({
+			where: { jobRoleId },
+			include: {
+				capability: true,
+				band: true,
+				status: true,
+			},
+		});
+
+		if (!jobRole) {
+			return null;
+		}
+
+		return {
+			jobRoleId: jobRole.jobRoleId,
+			roleName: jobRole.roleName || "",
+			location: jobRole.jobLocation || "",
+			capabilityId: jobRole.capabilityId,
+			bandId: jobRole.bandId,
+			closingDate: jobRole.closingDate
+				? jobRole.closingDate.toISOString().split("T")[0]
+				: "",
+			description: jobRole.description,
+			responsibilities: jobRole.responsibilities,
+			sharepointUrl: jobRole.sharepointUrl,
+			statusId: jobRole.statusId,
+			numberOfOpenPositions: jobRole.numberOfOpenPositions,
+			capability: jobRole.capability
+				? {
+						capabilityId: jobRole.capability.capabilityId,
+						capabilityName: jobRole.capability.capabilityName,
+					}
+				: undefined,
+			band: jobRole.band
+				? {
+						bandId: jobRole.band.bandId,
+						bandName: jobRole.band.bandName,
+					}
+				: undefined,
+			status: jobRole.status
+				? {
+						statusId: jobRole.status.statusId,
+						statusName: jobRole.status.statusName,
+					}
+				: undefined,
+		};
+	}
 }

@@ -17,4 +17,33 @@ export class ApiJobRoleController {
 			res.status(500).json({ message: "Failed to get job roles" });
 		}
 	};
+
+	public getJobRoleById = async (
+		req: Request,
+		res: Response,
+	): Promise<void> => {
+		try {
+			const idParam = Array.isArray(req.params.id)
+				? req.params.id[0]
+				: req.params.id;
+			const jobRoleId = Number.parseInt(idParam);
+
+			if (Number.isNaN(jobRoleId)) {
+				res.status(400).json({ message: "Invalid job role ID" });
+				return;
+			}
+
+			const jobRole = await this.jobRoleService.getJobRoleById(jobRoleId);
+
+			if (!jobRole) {
+				res.status(404).json({ message: "Job role not found" });
+				return;
+			}
+
+			res.status(200).json(jobRole);
+		} catch (error) {
+			console.error("Error in getJobRoleById:", error);
+			res.status(500).json({ message: "Failed to get job role" });
+		}
+	};
 }
