@@ -26,7 +26,7 @@ export class ApiJobRoleController {
 			const idParam = Array.isArray(req.params.id)
 				? req.params.id[0]
 				: req.params.id;
-			const jobRoleId = Number.parseInt(idParam);
+			const jobRoleId = Number.parseInt(idParam, 10);
 
 			if (Number.isNaN(jobRoleId)) {
 				res.status(400).json({ message: "Invalid job role ID" });

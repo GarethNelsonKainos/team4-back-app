@@ -27,11 +27,11 @@ async function main() {
 	});
 
 	// Create Bands
-	const apprenticeBand = await prisma.band.create({
+	const _apprenticeBand = await prisma.band.create({
 		data: { bandName: "Apprentice" },
 	});
 
-	const traineeBand = await prisma.band.create({
+	const _traineeBand = await prisma.band.create({
 		data: { bandName: "Trainee" },
 	});
 
