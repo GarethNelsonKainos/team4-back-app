@@ -10,7 +10,7 @@ export class JobRoleService {
 	}
 
 	public async getJobRoles(): Promise<JobRoleResponse[]> {
-		const prismaJobRoles = await this.jobRoleDao.getJobRoles();
-		return prismaJobRoles.map((jobRole) => JobRoleMapper.toResponse(jobRole));
+		const jobRolesData = await this.jobRoleDao.getJobRoles();
+		return jobRolesData.map((jobRole) => JobRoleMapper.toResponse(jobRole));
 	}
 }

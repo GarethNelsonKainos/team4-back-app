@@ -1,20 +1,17 @@
 import { describe, expect, it } from "vitest";
-import type { JobRoleWithRelations } from "../dao/jobRoleDao";
 import { JobRoleMapper } from "../mappers/jobRoleMapper";
+import type { JobRoleData } from "../models/jobRoleData";
 
 const closingDate = new Date("2026-02-09");
 
-const basePrismaJobRole: JobRoleWithRelations = {
+const basePrismaJobRole: JobRoleData = {
 	jobRoleId: 1,
 	roleName: "Software Engineer",
 	jobLocation: "Manchester",
-	capabilityId: 1,
-	bandId: 1,
 	closingDate: closingDate,
 	description: "A role for software engineers",
 	responsibilities: "Develop software solutions",
 	sharepointUrl: "https://sharepoint.example.com/job/1",
-	statusId: 1,
 	numberOfOpenPositions: 3,
 	capability: {
 		capabilityId: 1,
@@ -86,7 +83,7 @@ describe("JobRoleMapper", () => {
 
 	it("should map multiple job roles consistently", () => {
 		const closingDate2 = new Date("2026-03-20");
-		const anotherJobRole: JobRoleWithRelations = {
+		const anotherJobRole: JobRoleData = {
 			...basePrismaJobRole,
 			jobRoleId: 2,
 			roleName: "Data Analyst",
@@ -104,7 +101,7 @@ describe("JobRoleMapper", () => {
 	});
 
 	it("should handle different statuses", () => {
-		const closedJobRole: JobRoleWithRelations = {
+		const closedJobRole: JobRoleData = {
 			...basePrismaJobRole,
 			status: {
 				statusId: 2,
