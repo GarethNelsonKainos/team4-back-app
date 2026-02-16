@@ -52,11 +52,37 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
 
   // Protected routes (authentication required)
   app.use("/api", authMiddleware);
-  // app.post("/api/update-password", loginController.updatePassword);
+
+  // Job Roles endpoints
+  // List all job roles - ADMIN and APPLICANT can view
   app.get(
     "/api/job-roles",
     requireRoles(["ADMIN", "APPLICANT"]),
     controller.getJobRoles,
+  );
+
+  // Get specific job role - ADMIN and APPLICANT can view
+  app.get(
+    "/api/job-roles/:id",
+    requireRoles(["ADMIN", "APPLICANT"]),
+    controller.getJobRoleById,
+  );
+
+  // Create job role - ADMIN only
+  app.post("/api/job-roles", requireRoles(["ADMIN"]), controller.createJobRole);
+
+  // Update job role - ADMIN only
+  app.put(
+    "/api/job-roles/:id",
+    requireRoles(["ADMIN"]),
+    controller.updateJobRole,
+  );
+
+  // Delete job role - ADMIN only
+  app.delete(
+    "/api/job-roles/:id",
+    requireRoles(["ADMIN"]),
+    controller.deleteJobRole,
   );
 
   return app;
