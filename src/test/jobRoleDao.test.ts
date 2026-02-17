@@ -165,4 +165,184 @@ describe("JobRoleDao", () => {
 			},
 		});
 	});
+
+	it("should get a single job role by id", async () => {
+		const closingDate = new Date("2026-02-09");
+		const mockDbJobRole: JobRoleData = {
+			jobRoleId: 1,
+			roleName: "Software Engineer",
+			jobLocation: "Manchester",
+			closingDate: closingDate,
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			numberOfOpenPositions: 3,
+			capability: {
+				capabilityId: 1,
+				capabilityName: "Engineering",
+			},
+			band: {
+				bandId: 1,
+				bandName: "Associate",
+			},
+			status: {
+				statusId: 1,
+				statusName: "Open",
+			},
+		};
+
+		prismaMock.jobRole.findUnique.mockResolvedValue(
+			mockDbJobRole as unknown as Awaited<
+				ReturnType<typeof prismaMock.jobRole.findUnique>
+			>,
+		);
+
+		const result = await jobRoleDao.getJobRoleById(1);
+
+		expect(result).toEqual(mockDbJobRole);
+		expect(prismaMock.jobRole.findUnique).toHaveBeenCalledWith({
+			where: { jobRoleId: 1 },
+			include: {
+				capability: true,
+				band: true,
+				status: true,
+			},
+		});
+	});
+
+	it("should return null if job role not found by id", async () => {
+		prismaMock.jobRole.findUnique.mockResolvedValue(null);
+
+		const result = await jobRoleDao.getJobRoleById(999);
+
+		expect(result).toBeNull();
+		expect(prismaMock.jobRole.findUnique).toHaveBeenCalledWith({
+			where: { jobRoleId: 999 },
+			include: {
+				capability: true,
+				band: true,
+				status: true,
+			},
+		});
+	});
+
+	it("should create a new job role", async () => {
+		const closingDate = new Date("2026-02-09");
+		const createInput = {
+			roleName: "Software Engineer",
+			jobLocation: "Manchester",
+			capabilityId: 1,
+			bandId: 1,
+			closingDate: closingDate,
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			statusId: 1,
+			numberOfOpenPositions: 3,
+		};
+
+		const mockDbJobRole: JobRoleData = {
+			jobRoleId: 1,
+			roleName: "Software Engineer",
+			jobLocation: "Manchester",
+			closingDate: closingDate,
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			numberOfOpenPositions: 3,
+			capability: {
+				capabilityId: 1,
+				capabilityName: "Engineering",
+			},
+			band: {
+				bandId: 1,
+				bandName: "Associate",
+			},
+			status: {
+				statusId: 1,
+				statusName: "Open",
+			},
+		};
+
+		prismaMock.jobRole.create.mockResolvedValue(
+			mockDbJobRole as unknown as Awaited<
+				ReturnType<typeof prismaMock.jobRole.create>
+			>,
+		);
+
+		const result = await jobRoleDao.createJobRole(createInput);
+
+		expect(result).toEqual(mockDbJobRole);
+		expect(prismaMock.jobRole.create).toHaveBeenCalledWith({
+			data: createInput,
+			include: {
+				capability: true,
+				band: true,
+				status: true,
+			},
+		});
+	});
+
+	it("should update a job role", async () => {
+		const closingDate = new Date("2026-02-09");
+		const updateInput = {
+			roleName: "Senior Software Engineer",
+		};
+
+		const mockDbJobRole: JobRoleData = {
+			jobRoleId: 1,
+			roleName: "Senior Software Engineer",
+			jobLocation: "Manchester",
+			closingDate: closingDate,
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			numberOfOpenPositions: 3,
+			capability: {
+				capabilityId: 1,
+				capabilityName: "Engineering",
+			},
+			band: {
+				bandId: 1,
+				bandName: "Associate",
+			},
+			status: {
+				statusId: 1,
+				statusName: "Open",
+			},
+		};
+
+		prismaMock.jobRole.update.mockResolvedValue(
+			mockDbJobRole as unknown as Awaited<
+				ReturnType<typeof prismaMock.jobRole.update>
+			>,
+		);
+
+		const result = await jobRoleDao.updateJobRole(1, updateInput);
+
+		expect(result).toEqual(mockDbJobRole);
+		expect(prismaMock.jobRole.update).toHaveBeenCalledWith({
+			where: { jobRoleId: 1 },
+			data: updateInput,
+			include: {
+				capability: true,
+				band: true,
+				status: true,
+			},
+		});
+	});
+
+	it("should delete a job role", async () => {
+		prismaMock.jobRole.delete.mockResolvedValue(
+			undefined as unknown as Awaited<
+				ReturnType<typeof prismaMock.jobRole.delete>
+			>,
+		);
+
+		await jobRoleDao.deleteJobRole(1);
+
+		expect(prismaMock.jobRole.delete).toHaveBeenCalledWith({
+			where: { jobRoleId: 1 },
+		});
+	});
 });

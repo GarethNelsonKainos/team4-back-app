@@ -1,5 +1,5 @@
 import { prisma } from "../db";
-import type { User } from "../generated/client";
+import type { User, UserRole } from "../generated/client";
 
 export class UserDao {
 	async getUserByEmail(email: string): Promise<User | null> {
@@ -14,11 +14,16 @@ export class UserDao {
 		});
 	}
 
-	async createUser(email: string, hashedPassword: string): Promise<User> {
+	async createUser(
+		email: string,
+		hashedPassword: string,
+		role: UserRole = "APPLICANT",
+	): Promise<User> {
 		return prisma.user.create({
 			data: {
 				userEmail: email,
 				userPassword: hashedPassword,
+				userRole: role,
 			},
 		});
 	}

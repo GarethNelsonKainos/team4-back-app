@@ -45,7 +45,11 @@ export class LoginController {
 				return;
 			}
 
-			const token = this.jwtService.generateToken(user.userId, user.userEmail);
+			const token = this.jwtService.generateToken(
+				user.userId,
+				user.userEmail,
+				user.userRole,
+			);
 			res.status(200).json({ token });
 		} catch (error) {
 			console.error("Error during login:", error);
