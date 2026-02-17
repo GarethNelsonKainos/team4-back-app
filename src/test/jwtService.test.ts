@@ -19,7 +19,7 @@ describe("JwtService", () => {
 		it("should generate a valid JWT token", () => {
 			const userId = 123;
 			const userEmail = "test@example.com";
-			const token = jwtService.generateToken(userId, userEmail);
+			const token = jwtService.generateToken(userId, userEmail, "ADMIN");
 
 			expect(token).toBeDefined();
 			expect(typeof token).toBe("string");
@@ -28,15 +28,23 @@ describe("JwtService", () => {
 		});
 
 		it("should generate different tokens for different users", () => {
-			const token1 = jwtService.generateToken(1, "user1@example.com");
-			const token2 = jwtService.generateToken(2, "user2@example.com");
+			const token1 = jwtService.generateToken(1, "user1@example.com", "ADMIN");
+			const token2 = jwtService.generateToken(
+				2,
+				"user2@example.com",
+				"APPLICANT",
+			);
 
 			expect(token1).not.toBe(token2);
 		});
 
 		it("should throw an error if userId is invalid", () => {
 			try {
-				jwtService.generateToken(null as unknown as number, "test@example.com");
+				jwtService.generateToken(
+					null as unknown as number,
+					"test@example.com",
+					"ADMIN",
+				);
 				expect.fail("Should have thrown an error");
 			} catch (error: unknown) {
 				expect((error as Error).message).toContain(
@@ -50,6 +58,7 @@ describe("JwtService", () => {
 				jwtService.generateToken(
 					"123" as unknown as number,
 					"test@example.com",
+					"ADMIN",
 				);
 				expect.fail("Should have thrown an error");
 			} catch (error: unknown) {
@@ -65,7 +74,7 @@ describe("JwtService", () => {
 			delete process.env.JWT_SECRET;
 
 			try {
-				jwtService.generateToken(123, "test@example.com");
+				jwtService.generateToken(123, "test@example.com", "ADMIN");
 				expect.fail("Should have thrown an error");
 			} catch (error: unknown) {
 				expect((error as Error).message).toContain("JWT_SECRET is not defined");
@@ -82,7 +91,7 @@ describe("JwtService", () => {
 		let validToken: string;
 
 		beforeEach(() => {
-			validToken = jwtService.generateToken(123, "test@example.com");
+			validToken = jwtService.generateToken(123, "test@example.com", "ADMIN");
 		});
 
 		it("should verify and decode a valid token", () => {
@@ -143,11 +152,12 @@ describe("JwtService", () => {
 		it("should contain correct payload data", () => {
 			const userId = 456;
 			const userEmail = "user456@example.com";
-			const token = jwtService.generateToken(userId, userEmail);
+			const token = jwtService.generateToken(userId, userEmail, "APPLICANT");
 			const decoded = jwtService.verifyToken(token);
 
 			expect(decoded.userId).toBe(userId);
 			expect(decoded.userEmail).toBe(userEmail);
+			expect(decoded.userRole).toBe("APPLICANT");
 		});
 	});
 });

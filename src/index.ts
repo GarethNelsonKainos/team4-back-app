@@ -6,7 +6,7 @@ import { LoginController } from "./controllers/loginController";
 import { JobRoleDao } from "./dao/jobRoleDao";
 import { UserDao } from "./dao/userDao";
 import { prisma } from "./db";
-import { authMiddleware } from "./middleware/authMiddleware";
+import { authMiddleware, requireRoles } from "./middleware/authMiddleware";
 import { JobRoleService } from "./services/jobRoleService";
 import { JwtService } from "./services/jwtService";
 import { PasswordService } from "./services/passwordService";
@@ -50,9 +50,29 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
 	//logout currently deactivated until frontend linkup
 	// app.post("/api/logout", loginController.logout);
 
+	// Public Job Roles endpoints (no authentication required)
+	app.get("/api/job-roles", controller.getJobRoles);
+	app.get("/api/job-roles/:id", controller.getJobRoleById);
+
 	// Protected routes (authentication required)
-	// app.post("/api/update-password", authMiddleware, loginController.updatePassword);
-	app.get("/api/job-roles", authMiddleware, controller.getJobRoles);
+	app.use("/api", authMiddleware);
+
+	// Create job role - ADMIN only
+	app.post("/api/job-roles", requireRoles(["ADMIN"]), controller.createJobRole);
+
+	// Update job role - ADMIN only
+	app.put(
+		"/api/job-roles/:id",
+		requireRoles(["ADMIN"]),
+		controller.updateJobRole,
+	);
+
+	// Delete job role - ADMIN only
+	app.delete(
+		"/api/job-roles/:id",
+		requireRoles(["ADMIN"]),
+		controller.deleteJobRole,
+	);
 
 	return app;
 }
