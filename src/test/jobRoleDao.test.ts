@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { type DeepMockProxy, mockDeep } from "vitest-mock-extended";
-import { JobRoleDao } from "../dao/jobRoleDao";
+import { JobRoleDao, type JobRoleWithRelations } from "../dao/jobRoleDao";
 import type { PrismaClient } from "../generated/client";
-import type { JobRole } from "../models/jobRole";
 
 describe("JobRoleDao", () => {
 	let prismaMock: DeepMockProxy<PrismaClient>;
@@ -15,7 +14,7 @@ describe("JobRoleDao", () => {
 
 	it("should return job roles from the database", async () => {
 		const closingDate = new Date("2026-02-09");
-		const mockDbJobRoles = [
+		const mockDbJobRoles: JobRoleWithRelations[] = [
 			{
 				jobRoleId: 1,
 				roleName: "Software Engineer",
@@ -23,34 +22,6 @@ describe("JobRoleDao", () => {
 				capabilityId: 1,
 				bandId: 1,
 				closingDate: closingDate,
-				description: "A role for software engineers",
-				responsibilities: "Develop software solutions",
-				sharepointUrl: "https://sharepoint.example.com/job/1",
-				statusId: 1,
-				numberOfOpenPositions: 3,
-				capability: {
-					capabilityId: 1,
-					capabilityName: "Engineering",
-				},
-				band: {
-					bandId: 1,
-					bandName: "Associate",
-				},
-				status: {
-					statusId: 1,
-					statusName: "Open",
-				},
-			},
-		];
-
-		const expectedJobRoles: JobRole[] = [
-			{
-				jobRoleId: 1,
-				roleName: "Software Engineer",
-				location: "Manchester",
-				capabilityId: 1,
-				bandId: 1,
-				closingDate: "2026-02-09",
 				description: "A role for software engineers",
 				responsibilities: "Develop software solutions",
 				sharepointUrl: "https://sharepoint.example.com/job/1",
@@ -75,7 +46,7 @@ describe("JobRoleDao", () => {
 
 		const result = await jobRoleDao.getJobRoles();
 
-		expect(result).toEqual(expectedJobRoles);
+		expect(result).toEqual(mockDbJobRoles);
 
 		expect(prismaMock.jobRole.findMany).toHaveBeenCalledWith({
 			include: {
@@ -86,17 +57,16 @@ describe("JobRoleDao", () => {
 		});
 	});
 
-	it("should handle null values from the database and apply fallbacks", async () => {
-		const _fixedDate = new Date("2026-02-09");
-
-		const mockDbJobRolesWithNulls = [
+	it("should handle additional job roles from the database", async () => {
+		const closingDate = new Date("2026-02-10");
+		const mockDbJobRolesAdditional: JobRoleWithRelations[] = [
 			{
 				jobRoleId: 2,
-				roleName: null,
-				jobLocation: null,
+				roleName: "Data Analyst",
+				jobLocation: "London",
 				capabilityId: 2,
 				bandId: 2,
-				closingDate: null,
+				closingDate: closingDate,
 				description: "Description for role",
 				responsibilities: "Responsibilities for role",
 				sharepointUrl: "https://sharepoint.example.com/job/2",
@@ -117,43 +87,11 @@ describe("JobRoleDao", () => {
 			},
 		];
 
-		const expectedJobRoles: JobRole[] = [
-			{
-				jobRoleId: 2,
-				roleName: "",
-				location: "",
-				capabilityId: 2,
-				bandId: 2,
-				closingDate: "",
-				description: "Description for role",
-				responsibilities: "Responsibilities for role",
-				sharepointUrl: "https://sharepoint.example.com/job/2",
-				statusId: 1,
-				numberOfOpenPositions: 2,
-				capability: {
-					capabilityId: 2,
-					capabilityName: "Data",
-				},
-				band: {
-					bandId: 2,
-					bandName: "Consultant",
-				},
-				status: {
-					statusId: 1,
-					statusName: "Open",
-				},
-			},
-		];
-
-		prismaMock.jobRole.findMany.mockResolvedValue(
-			mockDbJobRolesWithNulls as unknown as Awaited<
-				ReturnType<typeof prismaMock.jobRole.findMany>
-			>,
-		);
+		prismaMock.jobRole.findMany.mockResolvedValue(mockDbJobRolesAdditional);
 
 		const result = await jobRoleDao.getJobRoles();
 
-		expect(result).toEqual(expectedJobRoles);
+		expect(result).toEqual(mockDbJobRolesAdditional);
 
 		expect(prismaMock.jobRole.findMany).toHaveBeenCalledWith({
 			include: {
@@ -166,7 +104,7 @@ describe("JobRoleDao", () => {
 
 	it("should handle null capability and band relations", async () => {
 		const closingDate = new Date("2026-02-09");
-		const mockDbJobRolesWithNullRelations = [
+		const mockDbJobRolesWithNullRelations: JobRoleWithRelations[] = [
 			{
 				jobRoleId: 3,
 				roleName: "Product Manager",
@@ -185,34 +123,11 @@ describe("JobRoleDao", () => {
 			},
 		];
 
-		const expectedJobRoles: JobRole[] = [
-			{
-				jobRoleId: 3,
-				roleName: "Product Manager",
-				location: "London",
-				capabilityId: 3,
-				bandId: 3,
-				closingDate: "2026-02-09",
-				description: "PM role",
-				responsibilities: "Manage products",
-				sharepointUrl: "https://sharepoint.example.com/job/3",
-				statusId: 1,
-				numberOfOpenPositions: 1,
-				capability: undefined,
-				band: undefined,
-				status: undefined,
-			},
-		];
-
-		prismaMock.jobRole.findMany.mockResolvedValue(
-			mockDbJobRolesWithNullRelations as unknown as Awaited<
-				ReturnType<typeof prismaMock.jobRole.findMany>
-			>,
-		);
+		prismaMock.jobRole.findMany.mockResolvedValue(mockDbJobRolesWithNullRelations);
 
 		const result = await jobRoleDao.getJobRoles();
 
-		expect(result).toEqual(expectedJobRoles);
+		expect(result).toEqual(mockDbJobRolesWithNullRelations);
 
 		expect(prismaMock.jobRole.findMany).toHaveBeenCalledWith({
 			include: {
@@ -226,7 +141,7 @@ describe("JobRoleDao", () => {
 	describe("getJobRoleById", () => {
 		it("should return a job role by ID from the database", async () => {
 			const closingDate = new Date("2026-02-09");
-			const mockDbJobRole = {
+			const mockDbJobRole: JobRoleWithRelations = {
 				jobRoleId: 1,
 				roleName: "Software Engineer",
 				jobLocation: "Manchester",
@@ -252,37 +167,11 @@ describe("JobRoleDao", () => {
 				},
 			};
 
-			const expectedJobRole: JobRole = {
-				jobRoleId: 1,
-				roleName: "Software Engineer",
-				location: "Manchester",
-				capabilityId: 1,
-				bandId: 1,
-				closingDate: "2026-02-09",
-				description: "A role for software engineers",
-				responsibilities: "Develop software solutions",
-				sharepointUrl: "https://sharepoint.example.com/job/1",
-				statusId: 1,
-				numberOfOpenPositions: 3,
-				capability: {
-					capabilityId: 1,
-					capabilityName: "Engineering",
-				},
-				band: {
-					bandId: 1,
-					bandName: "Associate",
-				},
-				status: {
-					statusId: 1,
-					statusName: "Open",
-				},
-			};
-
 			prismaMock.jobRole.findUnique.mockResolvedValue(mockDbJobRole);
 
 			const result = await jobRoleDao.getJobRoleById(1);
 
-			expect(result).toEqual(expectedJobRole);
+			expect(result).toEqual(mockDbJobRole);
 			expect(prismaMock.jobRole.findUnique).toHaveBeenCalledWith({
 				where: { jobRoleId: 1 },
 				include: {
@@ -309,14 +198,15 @@ describe("JobRoleDao", () => {
 			});
 		});
 
-		it("should handle null values in job role fields", async () => {
-			const mockDbJobRoleWithNulls = {
+		it("should handle specific job role fields correctly", async () => {
+			const closingDate = new Date("2026-02-10");
+			const mockDbJobRoleSpecific: JobRoleWithRelations = {
 				jobRoleId: 2,
-				roleName: null,
-				jobLocation: null,
+				roleName: "Data Analyst",
+				jobLocation: "London",
 				capabilityId: 2,
 				bandId: 2,
-				closingDate: null,
+				closingDate: closingDate,
 				description: "Description for role",
 				responsibilities: "Responsibilities for role",
 				sharepointUrl: "https://sharepoint.example.com/job/2",
@@ -336,41 +226,11 @@ describe("JobRoleDao", () => {
 				},
 			};
 
-			const expectedJobRole: JobRole = {
-				jobRoleId: 2,
-				roleName: "",
-				location: "",
-				capabilityId: 2,
-				bandId: 2,
-				closingDate: "",
-				description: "Description for role",
-				responsibilities: "Responsibilities for role",
-				sharepointUrl: "https://sharepoint.example.com/job/2",
-				statusId: 1,
-				numberOfOpenPositions: 2,
-				capability: {
-					capabilityId: 2,
-					capabilityName: "Data",
-				},
-				band: {
-					bandId: 2,
-					bandName: "Consultant",
-				},
-				status: {
-					statusId: 1,
-					statusName: "Open",
-				},
-			};
-
-			prismaMock.jobRole.findUnique.mockResolvedValue(
-				mockDbJobRoleWithNulls as unknown as Awaited<
-					ReturnType<typeof prismaMock.jobRole.findUnique>
-				>,
-			);
+			prismaMock.jobRole.findUnique.mockResolvedValue(mockDbJobRoleSpecific);
 
 			const result = await jobRoleDao.getJobRoleById(2);
 
-			expect(result).toEqual(expectedJobRole);
+			expect(result).toEqual(mockDbJobRoleSpecific);
 			expect(prismaMock.jobRole.findUnique).toHaveBeenCalledWith({
 				where: { jobRoleId: 2 },
 				include: {

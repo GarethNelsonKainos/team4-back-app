@@ -10,7 +10,11 @@ export class JobRoleService {
 	}
 
 	public async getJobRoles(): Promise<JobRoleResponse[]> {
-		const jobRoles = await this.jobRoleDao.getJobRoles();
+		const prismaJobRoles = await this.jobRoleDao.getJobRoles();
+
+		const jobRoles = prismaJobRoles.map((prismaJobRole) =>
+			JobRoleMapper.fromPrisma(prismaJobRole),
+		);
 
 		const jobRoleResponses: JobRoleResponse[] = jobRoles.map((jobRole) => {
 			return JobRoleMapper.toResponse(jobRole);
@@ -22,12 +26,13 @@ export class JobRoleService {
 	public async getJobRoleById(
 		jobRoleId: number,
 	): Promise<JobRoleResponse | null> {
-		const jobRole = await this.jobRoleDao.getJobRoleById(jobRoleId);
+		const prismaJobRole = await this.jobRoleDao.getJobRoleById(jobRoleId);
 
-		if (!jobRole) {
+		if (!prismaJobRole) {
 			return null;
 		}
 
+		const jobRole = JobRoleMapper.fromPrisma(prismaJobRole);
 		return JobRoleMapper.toResponse(jobRole);
 	}
 }
