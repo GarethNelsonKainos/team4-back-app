@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { JobRoleDao, JobRoleWithRelations } from "../dao/jobRoleDao";
+import type { JobRoleDao } from "../dao/jobRoleDao";
+import type { JobRoleData } from "../models/jobRoleData";
 import type { JobRoleResponse } from "../models/jobRoleResponse";
 import { JobRoleService } from "../services/jobRoleService";
 
@@ -18,18 +19,15 @@ describe("JobRoleService", () => {
 
 	it("should get job roles and map them to responses", async () => {
 		const closingDate = new Date("2026-02-09");
-		const mockPrismaJobRoles: JobRoleWithRelations[] = [
+		const mockPrismaJobRoles: JobRoleData[] = [
 			{
 				jobRoleId: 1,
 				roleName: "Software Engineer",
 				jobLocation: "Manchester",
-				capabilityId: 1,
-				bandId: 1,
 				closingDate: closingDate,
 				description: "A role for software engineers",
 				responsibilities: "Develop software solutions",
 				sharepointUrl: "https://sharepoint.example.com/job/1",
-				statusId: 1,
 				numberOfOpenPositions: 3,
 				capability: { capabilityId: 1, capabilityName: "Engineering" },
 				band: { bandId: 1, bandName: "Associate" },
@@ -53,7 +51,11 @@ describe("JobRoleService", () => {
 			},
 		];
 
-		vi.mocked(mockJobRoleDao.getJobRoles).mockResolvedValue(mockPrismaJobRoles);
+		vi.mocked(mockJobRoleDao.getJobRoles).mockResolvedValue(
+			mockPrismaJobRoles as unknown as Awaited<
+				ReturnType<typeof mockJobRoleDao.getJobRoles>
+			>,
+		);
 
 		const result = await jobRoleService.getJobRoles();
 
@@ -63,18 +65,15 @@ describe("JobRoleService", () => {
 
 	it("should handle missing capability and band relations", async () => {
 		const closingDate = new Date("2026-02-09");
-		const mockPrismaJobRoles: JobRoleWithRelations[] = [
+		const mockPrismaJobRoles: JobRoleData[] = [
 			{
 				jobRoleId: 1,
 				roleName: "Software Engineer",
 				jobLocation: "Manchester",
-				capabilityId: 1,
-				bandId: 1,
 				closingDate: closingDate,
 				description: "A role for software engineers",
 				responsibilities: "Develop software solutions",
 				sharepointUrl: "https://sharepoint.example.com/job/1",
-				statusId: 1,
 				numberOfOpenPositions: 3,
 				capability: null,
 				band: null,
@@ -98,7 +97,11 @@ describe("JobRoleService", () => {
 			},
 		];
 
-		vi.mocked(mockJobRoleDao.getJobRoles).mockResolvedValue(mockPrismaJobRoles);
+		vi.mocked(mockJobRoleDao.getJobRoles).mockResolvedValue(
+			mockPrismaJobRoles as unknown as Awaited<
+				ReturnType<typeof mockJobRoleDao.getJobRoles>
+			>,
+		);
 
 		const result = await jobRoleService.getJobRoles();
 
@@ -109,17 +112,14 @@ describe("JobRoleService", () => {
 	describe("getJobRoleById", () => {
 		it("should return mapped job role response when DAO returns a role", async () => {
 			const closingDate = new Date("2026-02-09");
-			const mockPrismaJobRole: JobRoleWithRelations = {
+			const mockPrismaJobRole: JobRoleData = {
 				jobRoleId: 1,
 				roleName: "Software Engineer",
 				jobLocation: "Manchester",
-				capabilityId: 1,
-				bandId: 1,
 				closingDate: closingDate,
 				description: "A role for software engineers",
 				responsibilities: "Develop software solutions",
 				sharepointUrl: "https://sharepoint.example.com/job/1",
-				statusId: 1,
 				numberOfOpenPositions: 3,
 				capability: { capabilityId: 1, capabilityName: "Engineering" },
 				band: { bandId: 1, bandName: "Associate" },
@@ -140,7 +140,11 @@ describe("JobRoleService", () => {
 				numberOfOpenPositions: 3,
 			};
 
-			vi.mocked(mockJobRoleDao.getJobRoleById).mockResolvedValue(mockPrismaJobRole);
+			vi.mocked(mockJobRoleDao.getJobRoleById).mockResolvedValue(
+				mockPrismaJobRole as unknown as Awaited<
+					ReturnType<typeof mockJobRoleDao.getJobRoleById>
+				>,
+			);
 
 			const result = await jobRoleService.getJobRoleById(1);
 
@@ -159,17 +163,14 @@ describe("JobRoleService", () => {
 
 		it("should handle missing relations when DAO returns a role", async () => {
 			const closingDate = new Date("2026-02-09");
-			const mockPrismaJobRole: JobRoleWithRelations = {
+			const mockPrismaJobRole: JobRoleData = {
 				jobRoleId: 1,
 				roleName: "Software Engineer",
 				jobLocation: "Manchester",
-				capabilityId: 1,
-				bandId: 1,
 				closingDate: closingDate,
 				description: "A role for software engineers",
 				responsibilities: "Develop software solutions",
 				sharepointUrl: "https://sharepoint.example.com/job/1",
-				statusId: 1,
 				numberOfOpenPositions: 3,
 				capability: null,
 				band: null,
@@ -190,7 +191,11 @@ describe("JobRoleService", () => {
 				numberOfOpenPositions: 3,
 			};
 
-			vi.mocked(mockJobRoleDao.getJobRoleById).mockResolvedValue(mockPrismaJobRole);
+			vi.mocked(mockJobRoleDao.getJobRoleById).mockResolvedValue(
+				mockPrismaJobRole as unknown as Awaited<
+					ReturnType<typeof mockJobRoleDao.getJobRoleById>
+				>,
+			);
 
 			const result = await jobRoleService.getJobRoleById(1);
 

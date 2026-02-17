@@ -1,16 +1,4 @@
-import type {
-	Band,
-	Capability,
-	PrismaClient,
-	JobRole as PrismaJobRole,
-	Status,
-} from "../generated/client";
-
-export type JobRoleWithRelations = PrismaJobRole & {
-	capability: Capability | null;
-	band: Band | null;
-	status: Status | null;
-};
+import type { PrismaClient } from "../generated/client";
 
 export class JobRoleDao {
 	private prisma: PrismaClient;
@@ -19,8 +7,8 @@ export class JobRoleDao {
 		this.prisma = prisma;
 	}
 
-	async getJobRoles(): Promise<JobRoleWithRelations[]> {
-		return await this.prisma.jobRole.findMany({
+	async getJobRoles() {
+		return this.prisma.jobRole.findMany({
 			include: {
 				capability: true,
 				band: true,
@@ -29,8 +17,8 @@ export class JobRoleDao {
 		});
 	}
 
-	async getJobRoleById(jobRoleId: number): Promise<JobRoleWithRelations | null> {
-		return await this.prisma.jobRole.findUnique({
+	async getJobRoleById(jobRoleId: number) {
+		return this.prisma.jobRole.findUnique({
 			where: { jobRoleId },
 			include: {
 				capability: true,
