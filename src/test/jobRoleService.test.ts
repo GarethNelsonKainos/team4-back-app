@@ -224,6 +224,20 @@ describe("JobRoleService", () => {
 			roleName: "Senior Software Engineer",
 		};
 
+		const mockExistingJobRole: JobRoleData = {
+			jobRoleId: 1,
+			roleName: "Software Engineer",
+			jobLocation: "Manchester",
+			closingDate: closingDate,
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			numberOfOpenPositions: 3,
+			capability: { capabilityId: 1, capabilityName: "Engineering" },
+			band: { bandId: 1, bandName: "Associate" },
+			status: { statusId: 1, statusName: "Open" },
+		};
+
 		const mockJobRoleData: JobRoleData = {
 			jobRoleId: 1,
 			roleName: "Senior Software Engineer",
@@ -252,6 +266,12 @@ describe("JobRoleService", () => {
 			numberOfOpenPositions: 3,
 		};
 
+		vi.mocked(mockJobRoleDao.getJobRoleById).mockResolvedValue(
+			mockExistingJobRole as unknown as Awaited<
+				ReturnType<typeof mockJobRoleDao.getJobRoleById>
+			>,
+		);
+
 		vi.mocked(mockJobRoleDao.updateJobRole).mockResolvedValue(
 			mockJobRoleData as unknown as Awaited<
 				ReturnType<typeof mockJobRoleDao.updateJobRole>
@@ -261,18 +281,42 @@ describe("JobRoleService", () => {
 		const result = await jobRoleService.updateJobRole(1, updateInput);
 
 		expect(result).toEqual(expectedResponse);
+		expect(mockJobRoleDao.getJobRoleById).toHaveBeenCalledWith(1);
 		expect(mockJobRoleDao.updateJobRole).toHaveBeenCalledWith(1, updateInput);
 	});
 
 	it("should delete a job role", async () => {
+		const closingDate = new Date("2026-02-09");
+		const mockExistingJobRole: JobRoleData = {
+			jobRoleId: 1,
+			roleName: "Software Engineer",
+			jobLocation: "Manchester",
+			closingDate: closingDate,
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			numberOfOpenPositions: 3,
+			capability: { capabilityId: 1, capabilityName: "Engineering" },
+			band: { bandId: 1, bandName: "Associate" },
+			status: { statusId: 1, statusName: "Open" },
+		};
+
+		vi.mocked(mockJobRoleDao.getJobRoleById).mockResolvedValue(
+			mockExistingJobRole as unknown as Awaited<
+				ReturnType<typeof mockJobRoleDao.getJobRoleById>
+			>,
+		);
+
 		vi.mocked(mockJobRoleDao.deleteJobRole).mockResolvedValue(
 			undefined as unknown as Awaited<
 				ReturnType<typeof mockJobRoleDao.deleteJobRole>
 			>,
 		);
 
-		await jobRoleService.deleteJobRole(1);
+		const result = await jobRoleService.deleteJobRole(1);
 
+		expect(result).toBe(true);
+		expect(mockJobRoleDao.getJobRoleById).toHaveBeenCalledWith(1);
 		expect(mockJobRoleDao.deleteJobRole).toHaveBeenCalledWith(1);
 	});
 });

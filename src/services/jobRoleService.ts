@@ -34,12 +34,23 @@ export class JobRoleService {
 	public async updateJobRole(
 		id: number,
 		data: UpdateJobRoleInput,
-	): Promise<JobRoleResponse> {
+	): Promise<JobRoleResponse | null> {
+		// Check if job role exists first
+		const existingJobRole = await this.jobRoleDao.getJobRoleById(id);
+		if (!existingJobRole) {
+			return null;
+		}
 		const jobRoleData = await this.jobRoleDao.updateJobRole(id, data);
 		return JobRoleMapper.toResponse(jobRoleData);
 	}
 
-	public async deleteJobRole(id: number): Promise<void> {
+	public async deleteJobRole(id: number): Promise<boolean> {
+		// Check if job role exists first
+		const existingJobRole = await this.jobRoleDao.getJobRoleById(id);
+		if (!existingJobRole) {
+			return false;
+		}
 		await this.jobRoleDao.deleteJobRole(id);
+		return true;
 	}
 }

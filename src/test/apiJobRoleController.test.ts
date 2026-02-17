@@ -270,6 +270,20 @@ describe("PUT /api/job-roles/:id", () => {
 		expect(response.body).toEqual(mockJobRoleResponse);
 	});
 
+	it("should return 404 if job role not found", async () => {
+		vi.mocked(mockJobRoleService.updateJobRole).mockResolvedValue(null);
+
+		const controller = new ApiJobRoleController(mockJobRoleService);
+		const app = createApp(controller);
+
+		const response = await request(app).put("/api/job-roles/999").send({
+			roleName: "Senior Software Engineer",
+		});
+
+		expect(response.status).toBe(404);
+		expect(response.body).toEqual({ message: "Job role not found" });
+	});
+
 	it("should return 500 if service throws an error", async () => {
 		vi.mocked(mockJobRoleService.updateJobRole).mockRejectedValue(
 			new Error("Database error"),
@@ -301,7 +315,7 @@ describe("DELETE /api/job-roles/:id", () => {
 	});
 
 	it("should delete a job role", async () => {
-		vi.mocked(mockJobRoleService.deleteJobRole).mockResolvedValue(undefined);
+		vi.mocked(mockJobRoleService.deleteJobRole).mockResolvedValue(true);
 
 		const controller = new ApiJobRoleController(mockJobRoleService);
 		const app = createApp(controller);
@@ -309,6 +323,18 @@ describe("DELETE /api/job-roles/:id", () => {
 		const response = await request(app).delete("/api/job-roles/1");
 
 		expect(response.status).toBe(204);
+	});
+
+	it("should return 404 if job role not found", async () => {
+		vi.mocked(mockJobRoleService.deleteJobRole).mockResolvedValue(false);
+
+		const controller = new ApiJobRoleController(mockJobRoleService);
+		const app = createApp(controller);
+
+		const response = await request(app).delete("/api/job-roles/999");
+
+		expect(response.status).toBe(404);
+		expect(response.body).toEqual({ message: "Job role not found" });
 	});
 
 	it("should return 500 if service throws an error", async () => {
