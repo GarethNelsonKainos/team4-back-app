@@ -27,38 +27,54 @@ async function main() {
     process.env.SEED_APPLICANT_PASSWORD || "ChangeMe123!";
 
   // Create Statuses first
-  const openStatus = await prisma.status.create({
-    data: { statusName: "Open" },
+  const openStatus = await prisma.status.upsert({
+    where: { statusName: "Open" },
+    update: {},
+    create: { statusName: "Open" },
   });
 
-  const _closedStatus = await prisma.status.create({
-    data: { statusName: "Closed" },
+  const _closedStatus = await prisma.status.upsert({
+    where: { statusName: "Closed" },
+    update: {},
+    create: { statusName: "Closed" },
   });
 
   // Create Bands
-  const associateBand = await prisma.band.create({
-    data: { bandName: "Associate" },
+  const associateBand = await prisma.band.upsert({
+    where: { bandName: "Associate" },
+    update: {},
+    create: { bandName: "Associate" },
   });
 
-  const seniorAssociateBand = await prisma.band.create({
-    data: { bandName: "Senior Associate" },
+  const seniorAssociateBand = await prisma.band.upsert({
+    where: { bandName: "Senior Associate" },
+    update: {},
+    create: { bandName: "Senior Associate" },
   });
 
-  const consultantBand = await prisma.band.create({
-    data: { bandName: "Consultant" },
+  const consultantBand = await prisma.band.upsert({
+    where: { bandName: "Consultant" },
+    update: {},
+    create: { bandName: "Consultant" },
   });
 
   // Create Capabilities
-  const engineeringCapability = await prisma.capability.create({
-    data: { capabilityName: "Engineering" },
+  const engineeringCapability = await prisma.capability.upsert({
+    where: { capabilityName: "Engineering" },
+    update: {},
+    create: { capabilityName: "Engineering" },
   });
 
-  const dataAndAICapability = await prisma.capability.create({
-    data: { capabilityName: "Data & AI" },
+  const dataAndAICapability = await prisma.capability.upsert({
+    where: { capabilityName: "Data & AI" },
+    update: {},
+    create: { capabilityName: "Data & AI" },
   });
 
-  const platformsCapability = await prisma.capability.create({
-    data: { capabilityName: "Platforms" },
+  const platformsCapability = await prisma.capability.upsert({
+    where: { capabilityName: "Platforms" },
+    update: {},
+    create: { capabilityName: "Platforms" },
   });
 
   // Create Job Roles with all required fields

@@ -14,7 +14,7 @@ enum UserRole {
 
 model Band {
   bandId   Int       @id @default(autoincrement()) @map("bandid")
-  bandName String?   @db.VarChar(100) @map("bandname")
+  bandName String    @unique @db.VarChar(100) @map("bandname")
   jobRoles JobRole[]
 
   @@map("band")
@@ -22,7 +22,7 @@ model Band {
 
 model Capability {
   capabilityId   Int       @id @default(autoincrement()) @map("capabilityid")
-  capabilityName String?   @db.VarChar(100) @map("capabilityname")
+  capabilityName String    @unique @db.VarChar(100) @map("capabilityname")
   jobRoles       JobRole[]
 
   @@map("capability")

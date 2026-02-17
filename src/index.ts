@@ -50,23 +50,12 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
   //logout currently deactivated until frontend linkup
   // app.post("/api/logout", loginController.logout);
 
+  // Public Job Roles endpoints (no authentication required)
+  app.get("/api/job-roles", controller.getJobRoles);
+  app.get("/api/job-roles/:id", controller.getJobRoleById);
+
   // Protected routes (authentication required)
   app.use("/api", authMiddleware);
-
-  // Job Roles endpoints
-  // List all job roles - ADMIN and APPLICANT can view
-  app.get(
-    "/api/job-roles",
-    requireRoles(["ADMIN", "APPLICANT"]),
-    controller.getJobRoles,
-  );
-
-  // Get specific job role - ADMIN and APPLICANT can view
-  app.get(
-    "/api/job-roles/:id",
-    requireRoles(["ADMIN", "APPLICANT"]),
-    controller.getJobRoleById,
-  );
 
   // Create job role - ADMIN only
   app.post("/api/job-roles", requireRoles(["ADMIN"]), controller.createJobRole);
