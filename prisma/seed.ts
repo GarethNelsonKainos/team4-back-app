@@ -40,12 +40,16 @@ async function main() {
 	});
 
 	// Create Bands
-	const _apprenticeBand = await prisma.band.create({
-		data: { bandName: "Apprentice" },
+	const _apprenticeBand = await prisma.band.upsert({
+		where: { bandName: "Apprentice" },
+		update: {},
+		create: { bandName: "Apprentice" },
 	});
 
-	const _traineeBand = await prisma.band.create({
-		data: { bandName: "Trainee" },
+	const _traineeBand = await prisma.band.upsert({
+		where: { bandName: "Trainee" },
+		update: {},
+		create: { bandName: "Trainee" },
 	});
 
 	const _associateBand = await prisma.band.upsert({
@@ -66,16 +70,22 @@ async function main() {
 		create: { bandName: "Consultant" },
 	});
 
-	const managerBand = await prisma.band.create({
-		data: { bandName: "Manager" },
+	const managerBand = await prisma.band.upsert({
+		where: { bandName: "Manager" },
+		update: {},
+		create: { bandName: "Manager" },
 	});
 
-	const principalBand = await prisma.band.create({
-		data: { bandName: "Principal" },
+	const principalBand = await prisma.band.upsert({
+		where: { bandName: "Principal" },
+		update: {},
+		create: { bandName: "Principal" },
 	});
 
-	const leadershipCommunityBand = await prisma.band.create({
-		data: { bandName: "Leadership Community" },
+	const leadershipCommunityBand = await prisma.band.upsert({
+		where: { bandName: "Leadership Community" },
+		update: {},
+		create: { bandName: "Leadership Community" },
 	});
 
 	// Create Capabilities
@@ -91,12 +101,16 @@ async function main() {
 		create: { capabilityName: "Strategy and Planning" },
 	});
 
-	const architectureCapability = await prisma.capability.create({
-		data: { capabilityName: "Architecture" },
+	const architectureCapability = await prisma.capability.upsert({
+		where: { capabilityName: "Architecture" },
+		update: {},
+		create: { capabilityName: "Architecture" },
 	});
 
-	const testingAndQualityAssuranceCapability = await prisma.capability.create({
-		data: { capabilityName: "Testing and Quality Assurance" },
+	const testingAndQualityAssuranceCapability = await prisma.capability.upsert({
+		where: { capabilityName: "Testing and Quality Assurance" },
+		update: {},
+		create: { capabilityName: "Testing and Quality Assurance" },
 	});
 
 	const productSpecialistCapability = await prisma.capability.upsert({
@@ -105,8 +119,10 @@ async function main() {
 		create: { capabilityName: "Product Specialist" },
 	});
 
-	const lowCodeEngineeringCapability = await prisma.capability.create({
-		data: { capabilityName: "Low Code Engineering" },
+	const lowCodeEngineeringCapability = await prisma.capability.upsert({
+		where: { capabilityName: "Low Code Engineering" },
+		update: {},
+		create: { capabilityName: "Low Code Engineering" },
 	});
 
 	const adminHashedPassword = await bcrypt.hash(adminPassword, saltRounds);
