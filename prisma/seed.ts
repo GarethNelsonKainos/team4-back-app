@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
+import bcrypt from "bcrypt";
 import pg from "pg";
 import * as prismaPkg from "../src/generated/client";
 
@@ -17,140 +18,138 @@ const prisma = new prismaPkg.PrismaClient({ adapter });
 async function main() {
 	console.log("Seeding database");
 
+	const saltRounds = Number(process.env.SALT_ROUNDS || 10);
+	const adminEmail = process.env.SEED_ADMIN_EMAIL || "admin@example.com";
+	const adminPassword = process.env.SEED_ADMIN_PASSWORD || "ChangeMe123!";
+	const applicantEmail =
+		process.env.SEED_APPLICANT_EMAIL || "applicant@example.com";
+	const applicantPassword =
+		process.env.SEED_APPLICANT_PASSWORD || "ChangeMe123!";
+
 	// Create Statuses first
-	const openStatus = await prisma.status.create({
-		data: { statusName: "Open" },
+	const openStatus = await prisma.status.upsert({
+		where: { statusName: "Open" },
+		update: {},
+		create: { statusName: "Open" },
 	});
 
-	const _closedStatus = await prisma.status.create({
-		data: { statusName: "Closed" },
+	const _closedStatus = await prisma.status.upsert({
+		where: { statusName: "Closed" },
+		update: {},
+		create: { statusName: "Closed" },
 	});
 
 	// Create Bands
-	const _apprenticeBand = await prisma.band.create({
+	const _apprenticeBand = await prisma.band.findFirst({
+		where: { bandName: "Apprentice" },
+	}) ?? await prisma.band.create({
 		data: { bandName: "Apprentice" },
 	});
 
-	const _traineeBand = await prisma.band.create({
+	const _traineeBand = await prisma.band.findFirst({
+		where: { bandName: "Trainee" },
+	}) ?? await prisma.band.create({
 		data: { bandName: "Trainee" },
 	});
 
-	const associateBand = await prisma.band.create({
+	const _associateBand = await prisma.band.findFirst({
+		where: { bandName: "Associate" },
+	}) ?? await prisma.band.create({
 		data: { bandName: "Associate" },
 	});
 
-	const seniorAssociateBand = await prisma.band.create({
+	const _seniorAssociateBand = await prisma.band.findFirst({
+		where: { bandName: "Senior Associate" },
+	}) ?? await prisma.band.create({
 		data: { bandName: "Senior Associate" },
 	});
 
-	const consultantBand = await prisma.band.create({
+	const consultantBand = await prisma.band.findFirst({
+		where: { bandName: "Consultant" },
+	}) ?? await prisma.band.create({
 		data: { bandName: "Consultant" },
 	});
 
-	const managerBand = await prisma.band.create({
+	const managerBand = await prisma.band.findFirst({
+		where: { bandName: "Manager" },
+	}) ?? await prisma.band.create({
 		data: { bandName: "Manager" },
 	});
 
-	const principalBand = await prisma.band.create({
+	const principalBand = await prisma.band.findFirst({
+		where: { bandName: "Principal" },
+	}) ?? await prisma.band.create({
 		data: { bandName: "Principal" },
 	});
 
-	const leadershipCommunityBand = await prisma.band.create({
+	const leadershipCommunityBand = await prisma.band.findFirst({
+		where: { bandName: "Leadership Community" },
+	}) ?? await prisma.band.create({
 		data: { bandName: "Leadership Community" },
 	});
 
 	// Create Capabilities
-	const engineeringCapability = await prisma.capability.create({
+	const engineeringCapability = await prisma.capability.findFirst({
+		where: { capabilityName: "Engineering" },
+	}) ?? await prisma.capability.create({
 		data: { capabilityName: "Engineering" },
 	});
 
-	const strategyAndPlanningCapability = await prisma.capability.create({
+	const strategyAndPlanningCapability = await prisma.capability.findFirst({
+		where: { capabilityName: "Strategy and Planning" },
+	}) ?? await prisma.capability.create({
 		data: { capabilityName: "Strategy and Planning" },
 	});
 
-	const architectureCapability = await prisma.capability.create({
+	const architectureCapability = await prisma.capability.findFirst({
+		where: { capabilityName: "Architecture" },
+	}) ?? await prisma.capability.create({
 		data: { capabilityName: "Architecture" },
 	});
 
-	const testingAndQualityAssuranceCapability = await prisma.capability.create({
+	const testingAndQualityAssuranceCapability = await prisma.capability.findFirst({
+		where: { capabilityName: "Testing and Quality Assurance" },
+	}) ?? await prisma.capability.create({
 		data: { capabilityName: "Testing and Quality Assurance" },
 	});
 
-	const productSpecialistCapability = await prisma.capability.create({
+	const productSpecialistCapability = await prisma.capability.findFirst({
+		where: { capabilityName: "Product Specialist" },
+	}) ?? await prisma.capability.create({
 		data: { capabilityName: "Product Specialist" },
 	});
 
-	const lowCodeEngineeringCapability = await prisma.capability.create({
+	const lowCodeEngineeringCapability = await prisma.capability.findFirst({
+		where: { capabilityName: "Low Code Engineering" },
+	}) ?? await prisma.capability.create({
 		data: { capabilityName: "Low Code Engineering" },
 	});
 
-	// Create Job Roles with all required fields
-	await prisma.jobRole.create({
-		data: {
-			roleName: "Software Engineer",
-			jobLocation: "London",
-			capabilityId: engineeringCapability.capabilityId,
-			bandId: associateBand.bandId,
-			closingDate: new Date("2026-03-31"),
-			description: "Join our Engineering team as a Software Engineer...",
-			responsibilities: "Design and develop software solutions...",
-			sharepointUrl:
-				"https://kainos.sharepoint.com/sites/careers/software-engineer",
-			statusId: openStatus.statusId,
-			numberOfOpenPositions: 3,
+	const adminHashedPassword = await bcrypt.hash(adminPassword, saltRounds);
+	const applicantHashedPassword = await bcrypt.hash(
+		applicantPassword,
+		saltRounds,
+	);
+
+	await prisma.user.upsert({
+		where: { userEmail: adminEmail },
+		update: {
+			userPassword: adminHashedPassword,
+		},
+		create: {
+			userEmail: adminEmail,
+			userPassword: adminHashedPassword,
 		},
 	});
 
-	await prisma.jobRole.create({
-		data: {
-			roleName: "Senior Software Engineer",
-			jobLocation: "Manchester",
-			capabilityId: engineeringCapability.capabilityId,
-			bandId: seniorAssociateBand.bandId,
-			closingDate: new Date("2026-04-15"),
-			description: "Lead technical projects as a Senior Software Engineer...",
-			responsibilities:
-				"Lead development teams and mentor junior developers...",
-			sharepointUrl:
-				"https://kainos.sharepoint.com/sites/careers/senior-software-engineer",
-			statusId: openStatus.statusId,
-			numberOfOpenPositions: 2,
+	await prisma.user.upsert({
+		where: { userEmail: applicantEmail },
+		update: {
+			userPassword: applicantHashedPassword,
 		},
-	});
-
-	await prisma.jobRole.create({
-		data: {
-			roleName: "Data Scientist",
-			jobLocation: "Belfast",
-			capabilityId: engineeringCapability.capabilityId,
-			bandId: seniorAssociateBand.bandId,
-			closingDate: new Date("2026-03-20"),
-			description:
-				"Apply advanced analytics and machine learning techniques...",
-			responsibilities:
-				"Develop predictive models and analyze large datasets...",
-			sharepointUrl:
-				"https://kainos.sharepoint.com/sites/careers/data-scientist",
-			statusId: openStatus.statusId,
-			numberOfOpenPositions: 1,
-		},
-	});
-
-	await prisma.jobRole.create({
-		data: {
-			roleName: "Platform Engineer",
-			jobLocation: "Edinburgh",
-			capabilityId: architectureCapability.capabilityId,
-			bandId: consultantBand.bandId,
-			closingDate: new Date("2026-04-01"),
-			description:
-				"Build and maintain cloud infrastructure and deployment pipelines...",
-			responsibilities:
-				"Design scalable cloud architectures and automate deployments...",
-			sharepointUrl:
-				"https://kainos.sharepoint.com/sites/careers/platform-engineer",
-			statusId: openStatus.statusId,
-			numberOfOpenPositions: 2,
+		create: {
+			userEmail: applicantEmail,
+			userPassword: applicantHashedPassword,
 		},
 	});
 
