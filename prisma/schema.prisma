@@ -47,6 +47,7 @@ model JobRole {
   band         Band       @relation(fields: [bandId], references: [bandId])
   capability   Capability @relation(fields: [capabilityId], references: [capabilityId])
   status       Status     @relation(fields: [statusId], references: [statusId])
+  applications Application[]
 
   @@map("jobroles")
 }
@@ -57,6 +58,23 @@ model User {
   userPassword  String    @db.VarChar(255) @map("userpassword")
   createdAt     DateTime  @default(now()) @map("createdat")
   updatedAt     DateTime  @updatedAt @map("updatedat")
+  applications  Application[]
 
   @@map("user")
+}
+
+model Application {
+  applicationId     Int               @id @default(autoincrement()) @map("applicationid")
+  userId           Int               @map("userid")
+  jobRoleId        Int               @map("jobroleid")
+  cvUrl            String            @map("cvurl")
+  applicationStatus String           @map("applicationstatus")
+  appliedAt        DateTime          @default(now()) @map("appliedat")
+  updatedAt        DateTime          @updatedAt @map("updatedat")
+  
+  user             User              @relation(fields: [userId], references: [userId])
+  jobRole          JobRole           @relation(fields: [jobRoleId], references: [jobRoleId])
+
+  @@unique([userId, jobRoleId], name: "unique_user_job_application")
+  @@map("applications")
 }
