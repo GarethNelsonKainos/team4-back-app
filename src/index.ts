@@ -80,7 +80,7 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
 	);
 
 	app.post(
-		"/api/applications/apply",
+		"/api/uploads/cv",
 		authMiddleware,
 		upload.single("cv"),
 		applicationController.applyForJob,
