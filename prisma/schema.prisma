@@ -9,7 +9,7 @@ datasource db {
 
 model Band {
   bandId   Int       @id @default(autoincrement()) @map("bandid")
-  bandName String?   @db.VarChar(100) @map("bandname")
+  bandName String?   @unique @db.VarChar(100) @map("bandname")
   jobRoles JobRole[]
 
   @@map("band")
@@ -17,7 +17,7 @@ model Band {
 
 model Capability {
   capabilityId   Int       @id @default(autoincrement()) @map("capabilityid")
-  capabilityName String?   @db.VarChar(100) @map("capabilityname")
+  capabilityName String?   @unique @db.VarChar(100) @map("capabilityname")
   jobRoles       JobRole[]
 
   @@map("capability")
@@ -31,9 +31,17 @@ model Status {
   @@map("status")
 }
 
+model UserRole {
+  roleId   Int    @id @default(autoincrement()) @map("roleid")
+  roleName String @unique @db.VarChar(100) @map("rolename")
+  users    User[]
+
+  @@map("userrole")
+}
+
 model JobRole {
   jobRoleId    Int        @id @default(autoincrement()) @map("jobroleid")
-  roleName     String     @db.VarChar(200) @map("rolename")
+  roleName     String     @unique @db.VarChar(200) @map("rolename")
   jobLocation  String     @db.VarChar(100) @map("joblocation")
   capabilityId Int        @map("capabilityid")
   bandId       Int        @map("bandid")
@@ -56,9 +64,12 @@ model User {
   userId        Int       @id @default(autoincrement()) @map("userid")
   userEmail     String    @unique @db.VarChar(200) @map("useremail")
   userPassword  String    @db.VarChar(255) @map("userpassword")
+  userRoleId    Int       @default(2) @map("userroleid")
   createdAt     DateTime  @default(now()) @map("createdat")
   updatedAt     DateTime  @updatedAt @map("updatedat")
   applications  Application[]
+  
+  userRole      UserRole  @relation(fields: [userRoleId], references: [roleId])
 
   @@map("user")
 }
@@ -78,3 +89,4 @@ model Application {
   @@unique([userId, jobRoleId], name: "unique_user_job_application")
   @@map("applications")
 }
+
