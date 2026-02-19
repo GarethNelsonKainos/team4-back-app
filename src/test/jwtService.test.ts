@@ -37,7 +37,11 @@ describe("JwtService", () => {
 
 		it("should throw an error if userId is invalid", () => {
 			try {
-				jwtService.generateToken(null as unknown as number, "test@example.com");
+				jwtService.generateToken(
+					null as unknown as number,
+					"test@example.com",
+					"ADMIN",
+				);
 				expect.fail("Should have thrown an error");
 			} catch (error: unknown) {
 				expect((error as Error).message).toContain(
@@ -51,6 +55,7 @@ describe("JwtService", () => {
 				jwtService.generateToken(
 					"123" as unknown as number,
 					"test@example.com",
+					"ADMIN",
 				);
 				expect.fail("Should have thrown an error");
 			} catch (error: unknown) {
@@ -149,6 +154,7 @@ describe("JwtService", () => {
 
 			expect(decoded.userId).toBe(userId);
 			expect(decoded.userEmail).toBe(userEmail);
+			expect(decoded.userRole).toBe("APPLICANT");
 		});
 	});
 });

@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import type { UserRole } from "../generated/client";
 import { JwtService } from "../services/jwtService";
 
 declare global {
@@ -50,4 +51,20 @@ export const authMiddleware = (
 		console.error("Error during token verification:", error);
 		res.status(401).json({ message: "Invalid or expired token" });
 	}
+};
+
+export const requireRoles = (allowedRoles: UserRole[]) => {
+	return (req: Request, res: Response, next: NextFunction): void => {
+		if (!req.userRole) {
+			res.status(403).json({ message: "User role is missing" });
+			return;
+		}
+
+		if (!allowedRoles.includes(req.userRole)) {
+			res.status(403).json({ message: "Insufficient permissions" });
+			return;
+		}
+
+		next();
+	};
 };

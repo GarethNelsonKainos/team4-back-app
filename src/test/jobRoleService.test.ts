@@ -12,6 +12,9 @@ describe("JobRoleService", () => {
 		mockJobRoleDao = {
 			getJobRoles: vi.fn(),
 			getJobRoleById: vi.fn(),
+			createJobRole: vi.fn(),
+			updateJobRole: vi.fn(),
+			deleteJobRole: vi.fn(),
 		} as unknown as JobRoleDao;
 
 		jobRoleService = new JobRoleService(mockJobRoleDao);
@@ -109,98 +112,211 @@ describe("JobRoleService", () => {
 		expect(mockJobRoleDao.getJobRoles).toHaveBeenCalledOnce();
 	});
 
-	describe("getJobRoleById", () => {
-		it("should return mapped job role response when DAO returns a role", async () => {
-			const closingDate = new Date("2026-02-09");
-			const mockPrismaJobRole: JobRoleData = {
-				jobRoleId: 1,
-				roleName: "Software Engineer",
-				jobLocation: "Manchester",
-				closingDate: closingDate,
-				description: "A role for software engineers",
-				responsibilities: "Develop software solutions",
-				sharepointUrl: "https://sharepoint.example.com/job/1",
-				numberOfOpenPositions: 3,
-				capability: { capabilityId: 1, capabilityName: "Engineering" },
-				band: { bandId: 1, bandName: "Associate" },
-				status: { statusId: 1, statusName: "Open" },
-			};
+	it("should get a job role by id and map it to response", async () => {
+		const closingDate = new Date("2026-02-09");
+		const mockJobRoleData: JobRoleData = {
+			jobRoleId: 1,
+			roleName: "Software Engineer",
+			jobLocation: "Manchester",
+			closingDate: closingDate,
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			numberOfOpenPositions: 3,
+			capability: { capabilityId: 1, capabilityName: "Engineering" },
+			band: { bandId: 1, bandName: "Associate" },
+			status: { statusId: 1, statusName: "Open" },
+		};
 
-			const expectedResponse: JobRoleResponse = {
-				jobRoleId: 1,
-				roleName: "Software Engineer",
-				location: "Manchester",
-				capability: "Engineering",
-				band: "Associate",
-				closingDate: "2026-02-09",
-				description: "A role for software engineers",
-				responsibilities: "Develop software solutions",
-				sharepointUrl: "https://sharepoint.example.com/job/1",
-				status: "Open",
-				numberOfOpenPositions: 3,
-			};
+		const expectedResponse: JobRoleResponse = {
+			jobRoleId: 1,
+			roleName: "Software Engineer",
+			location: "Manchester",
+			capability: "Engineering",
+			band: "Associate",
+			closingDate: "2026-02-09",
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			status: "Open",
+			numberOfOpenPositions: 3,
+		};
 
-			vi.mocked(mockJobRoleDao.getJobRoleById).mockResolvedValue(
-				mockPrismaJobRole as unknown as Awaited<
-					ReturnType<typeof mockJobRoleDao.getJobRoleById>
-				>,
-			);
+		vi.mocked(mockJobRoleDao.getJobRoleById).mockResolvedValue(
+			mockJobRoleData as unknown as Awaited<
+				ReturnType<typeof mockJobRoleDao.getJobRoleById>
+			>,
+		);
 
-			const result = await jobRoleService.getJobRoleById(1);
+		const result = await jobRoleService.getJobRoleById(1);
 
-			expect(result).toEqual(expectedResponse);
-			expect(mockJobRoleDao.getJobRoleById).toHaveBeenCalledWith(1);
-		});
+		expect(result).toEqual(expectedResponse);
+		expect(mockJobRoleDao.getJobRoleById).toHaveBeenCalledWith(1);
+	});
 
-		it("should return null when DAO returns null", async () => {
-			vi.mocked(mockJobRoleDao.getJobRoleById).mockResolvedValue(null);
+	it("should return null if job role not found", async () => {
+		vi.mocked(mockJobRoleDao.getJobRoleById).mockResolvedValue(null);
 
-			const result = await jobRoleService.getJobRoleById(999);
+		const result = await jobRoleService.getJobRoleById(999);
 
-			expect(result).toBeNull();
-			expect(mockJobRoleDao.getJobRoleById).toHaveBeenCalledWith(999);
-		});
+		expect(result).toBeNull();
+		expect(mockJobRoleDao.getJobRoleById).toHaveBeenCalledWith(999);
+	});
 
-		it("should handle missing relations when DAO returns a role", async () => {
-			const closingDate = new Date("2026-02-09");
-			const mockPrismaJobRole: JobRoleData = {
-				jobRoleId: 1,
-				roleName: "Software Engineer",
-				jobLocation: "Manchester",
-				closingDate: closingDate,
-				description: "A role for software engineers",
-				responsibilities: "Develop software solutions",
-				sharepointUrl: "https://sharepoint.example.com/job/1",
-				numberOfOpenPositions: 3,
-				capability: null,
-				band: null,
-				status: null,
-			};
+	it("should create a new job role", async () => {
+		const closingDate = new Date("2026-02-09");
+		const createInput = {
+			roleName: "Software Engineer",
+			jobLocation: "Manchester",
+			capabilityId: 1,
+			bandId: 1,
+			closingDate: closingDate,
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			statusId: 1,
+			numberOfOpenPositions: 3,
+		};
 
-			const expectedResponse: JobRoleResponse = {
-				jobRoleId: 1,
-				roleName: "Software Engineer",
-				location: "Manchester",
-				capability: "Unknown",
-				band: "Unknown",
-				closingDate: "2026-02-09",
-				description: "A role for software engineers",
-				responsibilities: "Develop software solutions",
-				sharepointUrl: "https://sharepoint.example.com/job/1",
-				status: "Unknown",
-				numberOfOpenPositions: 3,
-			};
+		const mockJobRoleData: JobRoleData = {
+			jobRoleId: 1,
+			roleName: "Software Engineer",
+			jobLocation: "Manchester",
+			closingDate: closingDate,
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			numberOfOpenPositions: 3,
+			capability: { capabilityId: 1, capabilityName: "Engineering" },
+			band: { bandId: 1, bandName: "Associate" },
+			status: { statusId: 1, statusName: "Open" },
+		};
 
-			vi.mocked(mockJobRoleDao.getJobRoleById).mockResolvedValue(
-				mockPrismaJobRole as unknown as Awaited<
-					ReturnType<typeof mockJobRoleDao.getJobRoleById>
-				>,
-			);
+		const expectedResponse: JobRoleResponse = {
+			jobRoleId: 1,
+			roleName: "Software Engineer",
+			location: "Manchester",
+			capability: "Engineering",
+			band: "Associate",
+			closingDate: "2026-02-09",
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			status: "Open",
+			numberOfOpenPositions: 3,
+		};
 
-			const result = await jobRoleService.getJobRoleById(1);
+		vi.mocked(mockJobRoleDao.createJobRole).mockResolvedValue(
+			mockJobRoleData as unknown as Awaited<
+				ReturnType<typeof mockJobRoleDao.createJobRole>
+			>,
+		);
 
-			expect(result).toEqual(expectedResponse);
-			expect(mockJobRoleDao.getJobRoleById).toHaveBeenCalledWith(1);
-		});
+		const result = await jobRoleService.createJobRole(createInput);
+
+		expect(result).toEqual(expectedResponse);
+		expect(mockJobRoleDao.createJobRole).toHaveBeenCalledWith(createInput);
+	});
+
+	it("should update a job role", async () => {
+		const closingDate = new Date("2026-02-09");
+		const updateInput = {
+			roleName: "Senior Software Engineer",
+		};
+
+		const mockExistingJobRole: JobRoleData = {
+			jobRoleId: 1,
+			roleName: "Software Engineer",
+			jobLocation: "Manchester",
+			closingDate: closingDate,
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			numberOfOpenPositions: 3,
+			capability: { capabilityId: 1, capabilityName: "Engineering" },
+			band: { bandId: 1, bandName: "Associate" },
+			status: { statusId: 1, statusName: "Open" },
+		};
+
+		const mockJobRoleData: JobRoleData = {
+			jobRoleId: 1,
+			roleName: "Senior Software Engineer",
+			jobLocation: "Manchester",
+			closingDate: closingDate,
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			numberOfOpenPositions: 3,
+			capability: { capabilityId: 1, capabilityName: "Engineering" },
+			band: { bandId: 1, bandName: "Associate" },
+			status: { statusId: 1, statusName: "Open" },
+		};
+
+		const expectedResponse: JobRoleResponse = {
+			jobRoleId: 1,
+			roleName: "Senior Software Engineer",
+			location: "Manchester",
+			capability: "Engineering",
+			band: "Associate",
+			closingDate: "2026-02-09",
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			status: "Open",
+			numberOfOpenPositions: 3,
+		};
+
+		vi.mocked(mockJobRoleDao.getJobRoleById).mockResolvedValue(
+			mockExistingJobRole as unknown as Awaited<
+				ReturnType<typeof mockJobRoleDao.getJobRoleById>
+			>,
+		);
+
+		vi.mocked(mockJobRoleDao.updateJobRole).mockResolvedValue(
+			mockJobRoleData as unknown as Awaited<
+				ReturnType<typeof mockJobRoleDao.updateJobRole>
+			>,
+		);
+
+		const result = await jobRoleService.updateJobRole(1, updateInput);
+
+		expect(result).toEqual(expectedResponse);
+		expect(mockJobRoleDao.getJobRoleById).toHaveBeenCalledWith(1);
+		expect(mockJobRoleDao.updateJobRole).toHaveBeenCalledWith(1, updateInput);
+	});
+
+	it("should delete a job role", async () => {
+		const closingDate = new Date("2026-02-09");
+		const mockExistingJobRole: JobRoleData = {
+			jobRoleId: 1,
+			roleName: "Software Engineer",
+			jobLocation: "Manchester",
+			closingDate: closingDate,
+			description: "A role for software engineers",
+			responsibilities: "Develop software solutions",
+			sharepointUrl: "https://sharepoint.example.com/job/1",
+			numberOfOpenPositions: 3,
+			capability: { capabilityId: 1, capabilityName: "Engineering" },
+			band: { bandId: 1, bandName: "Associate" },
+			status: { statusId: 1, statusName: "Open" },
+		};
+
+		vi.mocked(mockJobRoleDao.getJobRoleById).mockResolvedValue(
+			mockExistingJobRole as unknown as Awaited<
+				ReturnType<typeof mockJobRoleDao.getJobRoleById>
+			>,
+		);
+
+		vi.mocked(mockJobRoleDao.deleteJobRole).mockResolvedValue(
+			undefined as unknown as Awaited<
+				ReturnType<typeof mockJobRoleDao.deleteJobRole>
+			>,
+		);
+
+		const result = await jobRoleService.deleteJobRole(1);
+
+		expect(result).toBe(true);
+		expect(mockJobRoleDao.getJobRoleById).toHaveBeenCalledWith(1);
+		expect(mockJobRoleDao.deleteJobRole).toHaveBeenCalledWith(1);
 	});
 });
