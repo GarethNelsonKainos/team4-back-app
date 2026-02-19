@@ -28,6 +28,7 @@ describe("UserDao", () => {
 			userId: 1,
 			userEmail: "test@example.com",
 			userPassword: "$2b$10$hashedpassword",
+			userRole: "ADMIN",
 			createdAt: new Date(),
 			updatedAt: new Date(),
 		};
