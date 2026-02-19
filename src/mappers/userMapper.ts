@@ -5,6 +5,7 @@ export function toUserResponse(user: User): UserResponse {
 	return {
 		userId: user.userId,
 		userEmail: user.userEmail,
+		userRole: user.userRoleId.toString(),
 		createdAt: user.createdAt,
 	};
 }

@@ -1,5 +1,6 @@
 import { prisma } from "../db";
 import type { User } from "../generated/client";
+import UserRole from "../models/userRole";
 
 export class UserDao {
 	async getUserByEmail(email: string): Promise<User | null> {
@@ -14,11 +15,16 @@ export class UserDao {
 		});
 	}
 
-	async createUser(email: string, hashedPassword: string): Promise<User> {
+	async createUser(
+		email: string,
+		hashedPassword: string,
+		userRole: UserRole = UserRole.APPLICANT,
+	): Promise<User> {
 		return prisma.user.create({
 			data: {
 				userEmail: email,
 				userPassword: hashedPassword,
+				userRole: userRole,
 			},
 		});
 	}
@@ -36,6 +42,8 @@ export class UserDao {
 	async getUserById(userId: number): Promise<User | null> {
 		return prisma.user.findUnique({
 			where: { userId },
+			include: { userRole: true },
 		});
 	}
 }
+
