@@ -39,19 +39,6 @@ async function main() {
 		create: { statusName: "Closed" },
 	});
 
-	// Create User Roles
-	const adminRole = await prisma.userRole.upsert({
-		where: { roleName: "ADMIN" },
-		update: {},
-		create: { roleName: "ADMIN" },
-	});
-
-	const applicantRole = await prisma.userRole.upsert({
-		where: { roleName: "APPLICANT" },
-		update: {},
-		create: { roleName: "APPLICANT" },
-	});
-
 	// Create Bands
 	const _apprenticeBand = await prisma.band.findFirst({
 		where: { bandName: "Apprentice" },
@@ -144,29 +131,31 @@ async function main() {
 		saltRounds,
 	);
 
-	await prisma.user.upsert({
-		where: { userEmail: adminEmail },
-		update: {
-			userPassword: adminHashedPassword,
-		},
-		create: {
-			userEmail: adminEmail,
-			userPassword: adminHashedPassword,
-			userRoleId: adminRole.roleId,
-		},
-	});
+	    await prisma.user.upsert({
+        where: { userEmail: adminEmail },
+        update: {
+            userPassword: adminHashedPassword,
+            userRole: 'ADMIN',
+        },
+        create: {
+            userEmail: adminEmail,
+            userPassword: adminHashedPassword,
+            userRole: 'ADMIN',
+        },
+    });
 
-	await prisma.user.upsert({
-		where: { userEmail: applicantEmail },
-		update: {
-			userPassword: applicantHashedPassword,
-		},
-		create: {
-			userEmail: applicantEmail,
-			userPassword: applicantHashedPassword,
-			userRoleId: applicantRole.roleId,
-		},
-	});
+    await prisma.user.upsert({
+        where: { userEmail: applicantEmail },
+        update: {
+            userPassword: applicantHashedPassword,
+            userRole: 'APPLICANT'
+        },
+        create: {
+            userEmail: applicantEmail,
+            userPassword: applicantHashedPassword,
+            userRole: 'APPLICANT'
+        },
+    });
 
 	await prisma.jobRole.upsert({
 		where: { roleName: "Intelligent Automation Solution Architect" },
