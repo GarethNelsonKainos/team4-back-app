@@ -119,6 +119,7 @@ describe("UserDao", () => {
 				data: {
 					userEmail: "test@example.com",
 					userPassword: "hashedpassword123",
+					userRole: "APPLICANT",
 				},
 			});
 		});

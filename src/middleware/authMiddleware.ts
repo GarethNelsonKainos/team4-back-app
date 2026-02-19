@@ -32,7 +32,7 @@ export const authMiddleware = (
 			return;
 		}
 
-		console.log(authHeader)
+		console.log(authHeader);
 
 		const token = parts[1];
 
