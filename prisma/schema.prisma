@@ -5,6 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
@@ -61,7 +62,7 @@ model User {
   userId        Int       @id @default(autoincrement()) @map("userid")
   userEmail     String    @unique @db.VarChar(200) @map("useremail")
   userPassword  String    @db.VarChar(255) @map("userpassword")
-  userRole      String    
+  userRole      String
   createdAt     DateTime  @default(now()) @map("createdat")
   updatedAt     DateTime  @updatedAt @map("updatedat")
   applications  Application[]
