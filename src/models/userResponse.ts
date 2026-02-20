@@ -1,4 +1,4 @@
-import type { UserRole } from "../generated/client";
+import type UserRole from "./userRole";
 
 export interface UserResponse {
 	userId: number;

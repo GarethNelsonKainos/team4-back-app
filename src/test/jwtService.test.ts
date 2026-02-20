@@ -52,7 +52,7 @@ describe("JwtService", () => {
 				jwtService.generateToken(
 					null as unknown as number,
 					"test@example.com",
-					"ADMIN",
+					UserRole.ADMIN,
 				);
 				expect.fail("Should have thrown an error");
 			} catch (error: unknown) {
@@ -67,7 +67,7 @@ describe("JwtService", () => {
 				jwtService.generateToken(
 					"123" as unknown as number,
 					"test@example.com",
-					"ADMIN",
+					UserRole.ADMIN,
 				);
 				expect.fail("Should have thrown an error");
 			} catch (error: unknown) {

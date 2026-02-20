@@ -18,7 +18,7 @@ export class UserDao {
 	async createUser(
 		email: string,
 		hashedPassword: string,
-		userRole: string = UserRole.APPLICANT,
+		userRole: UserRole = UserRole.APPLICANT,
 	): Promise<User> {
 		return prisma.user.create({
 			data: {
