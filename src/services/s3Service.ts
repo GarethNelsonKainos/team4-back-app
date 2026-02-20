@@ -16,11 +16,13 @@ export class S3Service {
 		});
 		this.bucketName = process.env.S3_BUCKET_NAME || "";
 
+		const isTestEnv = process.env.NODE_ENV === "test";
 		if (
-			!this.bucketName ||
-			!process.env.AWS_REGION ||
-			!process.env.AWS_ACCESS_KEY_ID ||
-			!process.env.AWS_SECRET_ACCESS_KEY
+			!isTestEnv &&
+			(!this.bucketName ||
+				!process.env.AWS_REGION ||
+				!process.env.AWS_ACCESS_KEY_ID ||
+				!process.env.AWS_SECRET_ACCESS_KEY)
 		) {
 			throw new Error(
 				"AWS S3 configuration is missing. Please check your environment variables.",
