@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import type { UserRole } from "../generated/client";
+import type UserRole from "../models/userRole";
 import { JwtService } from "../services/jwtService";
 
 declare global {
@@ -35,29 +35,6 @@ export const authMiddleware = (
 
 		const token = parts[1];
 
-		// Validate token is in correct JWT format (header.payload.signature)
-		if (!token || token.trim() === "") {
-			res.status(401).json({ message: "Token is empty" });
-			return;
-		}
-
-		const tokenParts = token.split(".");
-		if (tokenParts.length !== 3) {
-			res.status(401).json({
-				message:
-					"Invalid token format. JWT must have 3 parts (header.payload.signature)",
-			});
-			return;
-		}
-
-		// Ensure each part is non-empty
-		if (tokenParts.some((part) => !part || part.trim() === "")) {
-			res
-				.status(401)
-				.json({ message: "Invalid token format. JWT parts cannot be empty" });
-			return;
-		}
-
 		const jwtService = new JwtService();
 		const decoded = jwtService.verifyToken(token);
 
@@ -70,20 +47,4 @@ export const authMiddleware = (
 		console.error("Error during token verification:", error);
 		res.status(401).json({ message: "Invalid or expired token" });
 	}
-};
-
-export const requireRoles = (allowedRoles: UserRole[]) => {
-	return (req: Request, res: Response, next: NextFunction): void => {
-		if (!req.userRole) {
-			res.status(403).json({ message: "User role is missing" });
-			return;
-		}
-
-		if (!allowedRoles.includes(req.userRole)) {
-			res.status(403).json({ message: "Insufficient permissions" });
-			return;
-		}
-
-		next();
-	};
 };

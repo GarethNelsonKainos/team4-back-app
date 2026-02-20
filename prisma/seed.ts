@@ -40,90 +40,118 @@ async function main() {
 	});
 
 	// Create Bands
-	const _apprenticeBand = await prisma.band.upsert({
-		where: { bandName: "Apprentice" },
-		update: {},
-		create: { bandName: "Apprentice" },
-	});
+	const _apprenticeBand =
+		(await prisma.band.findFirst({
+			where: { bandName: "Apprentice" },
+		})) ??
+		(await prisma.band.create({
+			data: { bandName: "Apprentice" },
+		}));
 
-	const _traineeBand = await prisma.band.upsert({
-		where: { bandName: "Trainee" },
-		update: {},
-		create: { bandName: "Trainee" },
-	});
+	const _traineeBand =
+		(await prisma.band.findFirst({
+			where: { bandName: "Trainee" },
+		})) ??
+		(await prisma.band.create({
+			data: { bandName: "Trainee" },
+		}));
 
-	const _associateBand = await prisma.band.upsert({
-		where: { bandName: "Associate" },
-		update: {},
-		create: { bandName: "Associate" },
-	});
+	const _associateBand =
+		(await prisma.band.findFirst({
+			where: { bandName: "Associate" },
+		})) ??
+		(await prisma.band.create({
+			data: { bandName: "Associate" },
+		}));
 
-	const _seniorAssociateBand = await prisma.band.upsert({
-		where: { bandName: "Senior Associate" },
-		update: {},
-		create: { bandName: "Senior Associate" },
-	});
+	const _seniorAssociateBand =
+		(await prisma.band.findFirst({
+			where: { bandName: "Senior Associate" },
+		})) ??
+		(await prisma.band.create({
+			data: { bandName: "Senior Associate" },
+		}));
 
-	const consultantBand = await prisma.band.upsert({
-		where: { bandName: "Consultant" },
-		update: {},
-		create: { bandName: "Consultant" },
-	});
+	const consultantBand =
+		(await prisma.band.findFirst({
+			where: { bandName: "Consultant" },
+		})) ??
+		(await prisma.band.create({
+			data: { bandName: "Consultant" },
+		}));
 
-	const managerBand = await prisma.band.upsert({
-		where: { bandName: "Manager" },
-		update: {},
-		create: { bandName: "Manager" },
-	});
+	const managerBand =
+		(await prisma.band.findFirst({
+			where: { bandName: "Manager" },
+		})) ??
+		(await prisma.band.create({
+			data: { bandName: "Manager" },
+		}));
 
-	const principalBand = await prisma.band.upsert({
-		where: { bandName: "Principal" },
-		update: {},
-		create: { bandName: "Principal" },
-	});
+	const principalBand =
+		(await prisma.band.findFirst({
+			where: { bandName: "Principal" },
+		})) ??
+		(await prisma.band.create({
+			data: { bandName: "Principal" },
+		}));
 
-	const leadershipCommunityBand = await prisma.band.upsert({
-		where: { bandName: "Leadership Community" },
-		update: {},
-		create: { bandName: "Leadership Community" },
-	});
+	const leadershipCommunityBand =
+		(await prisma.band.findFirst({
+			where: { bandName: "Leadership Community" },
+		})) ??
+		(await prisma.band.create({
+			data: { bandName: "Leadership Community" },
+		}));
 
 	// Create Capabilities
-	const engineeringCapability = await prisma.capability.upsert({
-		where: { capabilityName: "Engineering" },
-		update: {},
-		create: { capabilityName: "Engineering" },
-	});
+	const engineeringCapability =
+		(await prisma.capability.findFirst({
+			where: { capabilityName: "Engineering" },
+		})) ??
+		(await prisma.capability.create({
+			data: { capabilityName: "Engineering" },
+		}));
 
-	const strategyAndPlanningCapability = await prisma.capability.upsert({
-		where: { capabilityName: "Data & AI" },
-		update: {},
-		create: { capabilityName: "Strategy and Planning" },
-	});
+	const strategyAndPlanningCapability =
+		(await prisma.capability.findFirst({
+			where: { capabilityName: "Strategy and Planning" },
+		})) ??
+		(await prisma.capability.create({
+			data: { capabilityName: "Strategy and Planning" },
+		}));
 
-	const architectureCapability = await prisma.capability.upsert({
-		where: { capabilityName: "Architecture" },
-		update: {},
-		create: { capabilityName: "Architecture" },
-	});
+	const architectureCapability =
+		(await prisma.capability.findFirst({
+			where: { capabilityName: "Architecture" },
+		})) ??
+		(await prisma.capability.create({
+			data: { capabilityName: "Architecture" },
+		}));
 
-	const testingAndQualityAssuranceCapability = await prisma.capability.upsert({
-		where: { capabilityName: "Testing and Quality Assurance" },
-		update: {},
-		create: { capabilityName: "Testing and Quality Assurance" },
-	});
+	const testingAndQualityAssuranceCapability =
+		(await prisma.capability.findFirst({
+			where: { capabilityName: "Testing and Quality Assurance" },
+		})) ??
+		(await prisma.capability.create({
+			data: { capabilityName: "Testing and Quality Assurance" },
+		}));
 
-	const productSpecialistCapability = await prisma.capability.upsert({
-		where: { capabilityName: "Platforms" },
-		update: {},
-		create: { capabilityName: "Product Specialist" },
-	});
+	const productSpecialistCapability =
+		(await prisma.capability.findFirst({
+			where: { capabilityName: "Product Specialist" },
+		})) ??
+		(await prisma.capability.create({
+			data: { capabilityName: "Product Specialist" },
+		}));
 
-	const lowCodeEngineeringCapability = await prisma.capability.upsert({
-		where: { capabilityName: "Low Code Engineering" },
-		update: {},
-		create: { capabilityName: "Low Code Engineering" },
-	});
+	const lowCodeEngineeringCapability =
+		(await prisma.capability.findFirst({
+			where: { capabilityName: "Low Code Engineering" },
+		})) ??
+		(await prisma.capability.create({
+			data: { capabilityName: "Low Code Engineering" },
+		}));
 
 	const adminHashedPassword = await bcrypt.hash(adminPassword, saltRounds);
 	const applicantHashedPassword = await bcrypt.hash(
@@ -135,12 +163,12 @@ async function main() {
 		where: { userEmail: adminEmail },
 		update: {
 			userPassword: adminHashedPassword,
-			userRole: prismaPkg.UserRole.ADMIN,
+			userRole: "ADMIN",
 		},
 		create: {
 			userEmail: adminEmail,
 			userPassword: adminHashedPassword,
-			userRole: prismaPkg.UserRole.ADMIN,
+			userRole: "ADMIN",
 		},
 	});
 
@@ -148,18 +176,33 @@ async function main() {
 		where: { userEmail: applicantEmail },
 		update: {
 			userPassword: applicantHashedPassword,
-			userRole: prismaPkg.UserRole.APPLICANT,
+			userRole: "APPLICANT",
 		},
 		create: {
 			userEmail: applicantEmail,
 			userPassword: applicantHashedPassword,
-			userRole: prismaPkg.UserRole.APPLICANT,
+			userRole: "APPLICANT",
 		},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Intelligent Automation Solution Architect" },
+		create: {
 			roleName: "Intelligent Automation Solution Architect",
+			jobLocation: "Belfast",
+			capabilityId: productSpecialistCapability.capabilityId,
+			bandId: managerBand.bandId,
+			closingDate: new Date("2026-04-30"),
+			description:
+				"As an Intelligent Automation Solution Architect (Manager) in Kainos, you will lead multi-skilled delivery teams to design and deliver high quality Intelligent Automation solutions which delight our customers and impact the lives of users worldwide.",
+			responsibilities:
+				"MINIMUM (ESSENTIAL) REQUIREMENTS:\n• Experience delivering software designs for multi-tiered modern software applications including significant Intelligent Automation components\n• Experience of technical ownership for IA areas, including integrations, architecture, estimation, product planning and user story/requirement creation\n• Experience in communicating and negotiating whole solution architecture concepts with customer stakeholders\n• Experience prioritising non-functional concerns for customers and has experience incorporating these into the application design\n• Experience with public cloud platforms, such as AWS and Azure, including SaaS and PaaS offerings\n• Understanding of RPA concepts and product landscape including expertise in at least one of: UiPath, MS Power Platform\n• Able to simply and clearly communicate technical design in conversation, documentation and presentations including to senior technical and non-technical stakeholders\n• Able to make effective decisions within fast-moving delivery\n• Experience mentoring and coaching members of your team and wider community\n\nDESIRABLE:\n• Active participation in knowledge sharing activities, both within the team and at a wider capability level and externally where appropriate\n• Has pro-actively developed business across an account with sales and account managers\n• Experience producing estimates for implementation options as part of presales activity\n• Actively maintains a knowledge of competitor landscape including alternative products and their relative strengths and weaknesses\n• Professional level certification in at least one of: UiPath, MS Power Platform, Automation Anywhere, BluePrism\n• Experience of core business processes, including Hire to Retire, Order to Cash, Procure to Pay",
+			sharepointUrl:
+				"https://kainossoftwareltd.sharepoint.com/sites/Career/JobProfiles/Engineering/Job%20Profile%20-%20Intelligent%20Automation%20Solution%20Architect%20(M).pdf",
+			statusId: openStatus.statusId,
+			numberOfOpenPositions: 1,
+		},
+		update: {
 			jobLocation: "Belfast",
 			capabilityId: productSpecialistCapability.capabilityId,
 			bandId: managerBand.bandId,
@@ -175,8 +218,9 @@ async function main() {
 		},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Technology Leader" },
+		create: {
 			roleName: "Technology Leader",
 			jobLocation: "Belfast",
 			capabilityId: strategyAndPlanningCapability.capabilityId,
@@ -191,10 +235,12 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 1,
 		},
+		update: {},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Principal Architect" },
+		create: {
 			roleName: "Principal Architect",
 			jobLocation: "Belfast",
 			capabilityId: architectureCapability.capabilityId,
@@ -209,10 +255,12 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 1,
 		},
+		update: {},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Principal Test Architect" },
+		create: {
 			roleName: "Principal Test Architect",
 			jobLocation: "Belfast",
 			capabilityId: testingAndQualityAssuranceCapability.capabilityId,
@@ -227,10 +275,12 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 1,
 		},
+		update: {},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Low Code Principal Architect" },
+		create: {
 			roleName: "Low Code Principal Architect",
 			jobLocation: "Belfast",
 			capabilityId: lowCodeEngineeringCapability.capabilityId,
@@ -245,10 +295,12 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 1,
 		},
+		update: {},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Dynamics 365 / Power Platform Solution Architect" },
+		create: {
 			roleName: "Dynamics 365 / Power Platform Solution Architect",
 			jobLocation: "Belfast",
 			capabilityId: productSpecialistCapability.capabilityId,
@@ -263,10 +315,12 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 1,
 		},
+		update: {},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Low Code Solution Architect" },
+		create: {
 			roleName: "Low Code Solution Architect",
 			jobLocation: "Belfast",
 			capabilityId: lowCodeEngineeringCapability.capabilityId,
@@ -281,10 +335,12 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 1,
 		},
+		update: {},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Innovation Lead" },
+		create: {
 			roleName: "Innovation Lead",
 			jobLocation: "Belfast",
 			capabilityId: engineeringCapability.capabilityId,
@@ -299,10 +355,12 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 1,
 		},
+		update: {},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Lead Software Engineer" },
+		create: {
 			roleName: "Lead Software Engineer",
 			jobLocation: "Belfast",
 			capabilityId: engineeringCapability.capabilityId,
@@ -317,10 +375,12 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 2,
 		},
+		update: {},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Lead Managed Services Engineer" },
+		create: {
 			roleName: "Lead Managed Services Engineer",
 			jobLocation: "Belfast",
 			capabilityId: engineeringCapability.capabilityId,
@@ -335,10 +395,12 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 1,
 		},
+		update: {},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Technical Architect" },
+		create: {
 			roleName: "Technical Architect",
 			jobLocation: "Belfast",
 			capabilityId: architectureCapability.capabilityId,
@@ -353,10 +415,12 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 2,
 		},
+		update: {},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Lead Test Engineer" },
+		create: {
 			roleName: "Lead Test Engineer",
 			jobLocation: "Belfast",
 			capabilityId: testingAndQualityAssuranceCapability.capabilityId,
@@ -371,10 +435,12 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 1,
 		},
+		update: {},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Lead NFT Engineer" },
+		create: {
 			roleName: "Lead NFT Engineer",
 			jobLocation: "Belfast",
 			capabilityId: testingAndQualityAssuranceCapability.capabilityId,
@@ -389,10 +455,12 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 1,
 		},
+		update: {},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Test Manager" },
+		create: {
 			roleName: "Test Manager",
 			jobLocation: "Belfast",
 			capabilityId: testingAndQualityAssuranceCapability.capabilityId,
@@ -407,10 +475,12 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 1,
 		},
+		update: {},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Lead Product Specialist" },
+		create: {
 			roleName: "Lead Product Specialist",
 			jobLocation: "Belfast",
 			capabilityId: productSpecialistCapability.capabilityId,
@@ -425,10 +495,12 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 1,
 		},
+		update: {},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Low Code Technical Architect" },
+		create: {
 			roleName: "Low Code Technical Architect",
 			jobLocation: "Belfast",
 			capabilityId: lowCodeEngineeringCapability.capabilityId,
@@ -443,10 +515,12 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 1,
 		},
+		update: {},
 	});
 
-	await prisma.jobRole.create({
-		data: {
+	await prisma.jobRole.upsert({
+		where: { roleName: "Lead Low Code Engineer" },
+		create: {
 			roleName: "Lead Low Code Engineer",
 			jobLocation: "Belfast",
 			capabilityId: lowCodeEngineeringCapability.capabilityId,
@@ -461,6 +535,7 @@ async function main() {
 			statusId: openStatus.statusId,
 			numberOfOpenPositions: 1,
 		},
+		update: {},
 	});
 
 	console.log("Seeding completed!");

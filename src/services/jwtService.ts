@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import type { UserRole } from "../generated/client";
+import UserRole from "../models/userRole";
 
 export interface JwtPayload {
 	userId: number;
@@ -20,8 +20,8 @@ export class JwtService {
 				throw new Error("User email must be a valid string");
 			}
 
-			if (!userRole || typeof userRole !== "string") {
-				throw new Error("User role must be a valid string");
+			if (!userRole || !Object.values(UserRole).includes(userRole)) {
+				throw new Error("User role must be a valid UserRole");
 			}
 
 			const secret = process.env.JWT_SECRET;
