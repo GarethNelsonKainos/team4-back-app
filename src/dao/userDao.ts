@@ -18,7 +18,7 @@ export class UserDao {
 	async createUser(
 		email: string,
 		hashedPassword: string,
-		userRole: UserRole = UserRole.APPLICANT,
+		userRole: string = UserRole.APPLICANT,
 	): Promise<User> {
 		return prisma.user.create({
 			data: {
@@ -42,7 +42,6 @@ export class UserDao {
 	async getUserById(userId: number): Promise<User | null> {
 		return prisma.user.findUnique({
 			where: { userId },
-			include: { userRole: true },
 		});
 	}
 }
