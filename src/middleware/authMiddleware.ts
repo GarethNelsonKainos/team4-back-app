@@ -33,9 +33,7 @@ export const authMiddleware = (
 			return;
 		}
 
-
 		const token = parts[1];
-
 
 		const jwtService = new JwtService();
 		const decoded = jwtService.verifyToken(token);
