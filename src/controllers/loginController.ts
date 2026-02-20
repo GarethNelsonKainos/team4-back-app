@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import type { UserDao } from "../dao/userDao";
 import { toUserResponse } from "../mappers/userMapper";
+import type UserRole from "../models/userRole";
 import type { JwtService } from "../services/jwtService";
 import type { PasswordService } from "../services/passwordService";
 
@@ -48,7 +49,7 @@ export class LoginController {
 			const token = this.jwtService.generateToken(
 				user.userId,
 				user.userEmail,
-				user.userRole,
+				user.userRole as UserRole,
 			);
 			res.status(200).json({ token });
 		} catch (error) {

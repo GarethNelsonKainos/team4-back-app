@@ -2,6 +2,7 @@ import type { JobRoleDao } from "../dao/jobRoleDao";
 import { JobRoleMapper } from "../mappers/jobRoleMapper";
 import type {
 	CreateJobRoleInput,
+	JobRoleData,
 	UpdateJobRoleInput,
 } from "../models/jobRoleData";
 import type { JobRoleResponse } from "../models/jobRoleResponse";
@@ -15,7 +16,9 @@ export class JobRoleService {
 
 	public async getJobRoles(): Promise<JobRoleResponse[]> {
 		const jobRolesData = await this.jobRoleDao.getJobRoles();
-		return jobRolesData.map((jobRole) => JobRoleMapper.toResponse(jobRole));
+		return jobRolesData.map((jobRole: JobRoleData) =>
+			JobRoleMapper.toResponse(jobRole),
+		);
 	}
 
 	public async getJobRoleById(id: number): Promise<JobRoleResponse | null> {
