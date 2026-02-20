@@ -6,11 +6,18 @@ import { createApp } from "../index";
 import type { JobRoleResponse } from "../models/jobRoleResponse";
 import type { JobRoleService } from "../services/jobRoleService";
 
+interface AuthenticatedRequest extends Request {
+	user?: { role: string };
+}
+
 vi.mock("../services/jobRoleService");
 vi.mock("../middleware/authMiddleware", () => ({
-	authMiddleware: (req: Request, _res: Response, next: NextFunction) => {
-		(req as Request & { userId: number }).userId = 1; // Set a fake userId for testing
-		(req as Request & { userRole: string }).userRole = "ADMIN";
+	authMiddleware: (
+		req: AuthenticatedRequest,
+		_res: Response,
+		next: NextFunction,
+	) => {
+		req.user = { role: "ADMIN" }; // Set a fake user role for testing
 		next();
 	},
 	requireRoles: () => (_req: Request, _res: Response, next: NextFunction) => {

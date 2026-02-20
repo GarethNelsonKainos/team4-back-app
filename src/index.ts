@@ -18,6 +18,24 @@ import { JwtService } from "./services/jwtService";
 import { PasswordService } from "./services/passwordService";
 import { S3Service } from "./services/s3Service";
 
+interface AuthenticatedRequest extends express.Request {
+	user?: { role: string };
+}
+
+function requireRoles(roles: string[]) {
+	return (
+		req: AuthenticatedRequest,
+		res: express.Response,
+		next: express.NextFunction,
+	) => {
+		const userRole = req.user?.role;
+		if (!userRole || !roles.includes(userRole)) {
+			return res.status(403).json({ error: "Forbidden" });
+		}
+		next();
+	};
+}
+
 export function createApp(jobRoleController?: ApiJobRoleController) {
 	const app = express();
 
