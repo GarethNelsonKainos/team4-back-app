@@ -1,6 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { JwtService } from "../services/jwtService.js";
 import UserRole from "../models/userRole.js";
+import { JwtService } from "../services/jwtService.js";
 
 describe("JwtService", () => {
 	let jwtService: JwtService;
@@ -20,7 +20,11 @@ describe("JwtService", () => {
 		it("should generate a valid JWT token", () => {
 			const userId = 123;
 			const userEmail = "test@example.com";
-			const token = jwtService.generateToken(userId, userEmail, UserRole.APPLICANT);
+			const token = jwtService.generateToken(
+				userId,
+				userEmail,
+				UserRole.APPLICANT,
+			);
 
 			expect(token).toBeDefined();
 			expect(typeof token).toBe("string");
@@ -29,8 +33,16 @@ describe("JwtService", () => {
 		});
 
 		it("should generate different tokens for different users", () => {
-			const token1 = jwtService.generateToken(1, "user1@example.com", UserRole.APPLICANT);
-			const token2 = jwtService.generateToken(2, "user2@example.com", UserRole.ADMIN);
+			const token1 = jwtService.generateToken(
+				1,
+				"user1@example.com",
+				UserRole.APPLICANT,
+			);
+			const token2 = jwtService.generateToken(
+				2,
+				"user2@example.com",
+				UserRole.ADMIN,
+			);
 
 			expect(token1).not.toBe(token2);
 		});
@@ -88,7 +100,11 @@ describe("JwtService", () => {
 		let validToken: string;
 
 		beforeEach(() => {
-			validToken = jwtService.generateToken(123, "test@example.com", UserRole.APPLICANT);
+			validToken = jwtService.generateToken(
+				123,
+				"test@example.com",
+				UserRole.APPLICANT,
+			);
 		});
 
 		it("should verify and decode a valid token", () => {
@@ -149,7 +165,11 @@ describe("JwtService", () => {
 		it("should contain correct payload data", () => {
 			const userId = 456;
 			const userEmail = "user456@example.com";
-			const token = jwtService.generateToken(userId, userEmail, UserRole.APPLICANT);
+			const token = jwtService.generateToken(
+				userId,
+				userEmail,
+				UserRole.APPLICANT,
+			);
 			const decoded = jwtService.verifyToken(token);
 
 			expect(decoded.userId).toBe(userId);
