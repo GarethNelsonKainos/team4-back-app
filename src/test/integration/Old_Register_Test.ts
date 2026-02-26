@@ -1,7 +1,7 @@
 import request from "supertest";
-import { beforeEach, describe, expect, it, afterAll } from "vitest";
-import { createApp } from "../../index";
+import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import { prisma } from "../../db";
+import { createApp } from "../../index";
 
 describe("Register Integration Tests", () => {
 	const app = createApp();
@@ -41,12 +41,10 @@ describe("Register Integration Tests", () => {
 			const testEmail = generateTestEmail();
 			const testPassword = "validPassword123";
 
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: testPassword,
-				});
+			const response = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: testPassword,
+			});
 
 			// Verify response
 			expect(response.status).toBe(201);
@@ -59,12 +57,10 @@ describe("Register Integration Tests", () => {
 			const testEmail = generateTestEmail();
 			const testPassword = "validPassword123";
 
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: testPassword,
-				});
+			const response = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: testPassword,
+			});
 
 			const user = response.body.user;
 
@@ -84,12 +80,10 @@ describe("Register Integration Tests", () => {
 			const testEmail = generateTestEmail();
 			const testPassword = "validPassword123";
 
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: testPassword,
-				});
+			const response = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: testPassword,
+			});
 
 			const user = response.body.user;
 
@@ -104,12 +98,10 @@ describe("Register Integration Tests", () => {
 			const testEmail = generateTestEmail();
 			const testPassword = "validPassword123";
 
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: testPassword,
-				});
+			const response = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: testPassword,
+			});
 
 			const userId = response.body.user.userId;
 
@@ -126,12 +118,10 @@ describe("Register Integration Tests", () => {
 			const testEmail = generateTestEmail();
 			const testPassword = "validPassword123";
 
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: testPassword,
-				});
+			const response = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: testPassword,
+			});
 
 			const userId = response.body.user.userId;
 
@@ -154,12 +144,10 @@ describe("Register Integration Tests", () => {
 			const testEmail = generateTestEmail();
 			const testPassword = "validPassword123";
 
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: testPassword,
-				});
+			const response = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: testPassword,
+			});
 
 			const userId = response.body.user.userId;
 
@@ -181,12 +169,10 @@ describe("Register Integration Tests", () => {
 			const testEmail = generateTestEmail();
 			const testPassword = "validPassword123";
 
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: testPassword,
-				});
+			const response = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: testPassword,
+			});
 
 			const userId = response.body.user.userId;
 
@@ -203,19 +189,15 @@ describe("Register Integration Tests", () => {
 			const email2 = generateTestEmail();
 			const password = "validPassword123";
 
-			const response1 = await request(app)
-				.post("/api/register")
-				.send({
-					email: email1,
-					password,
-				});
+			const response1 = await request(app).post("/api/register").send({
+				email: email1,
+				password,
+			});
 
-			const response2 = await request(app)
-				.post("/api/register")
-				.send({
-					email: email2,
-					password,
-				});
+			const response2 = await request(app).post("/api/register").send({
+				email: email2,
+				password,
+			});
 
 			const userId1 = response1.body.user.userId;
 			const userId2 = response2.body.user.userId;
@@ -236,67 +218,65 @@ describe("Register Integration Tests", () => {
 
 	describe("POST /api/register - Input Validation", () => {
 		it("should return 400 if email is missing", async () => {
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					password: "validPassword123",
-				});
+			const response = await request(app).post("/api/register").send({
+				password: "validPassword123",
+			});
 
 			expect(response.status).toBe(400);
-			expect(response.body.message).toContain("Email and password are required");
+			expect(response.body.message).toContain(
+				"Email and password are required",
+			);
 		});
 
 		it("should return 400 if password is missing", async () => {
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: generateTestEmail(),
-				});
+			const response = await request(app).post("/api/register").send({
+				email: generateTestEmail(),
+			});
 
 			expect(response.status).toBe(400);
-			expect(response.body.message).toContain("Email and password are required");
+			expect(response.body.message).toContain(
+				"Email and password are required",
+			);
 		});
 
 		it("should return 400 if both email and password are missing", async () => {
-			const response = await request(app)
-				.post("/api/register")
-				.send({});
+			const response = await request(app).post("/api/register").send({});
 
 			expect(response.status).toBe(400);
-			expect(response.body.message).toContain("Email and password are required");
+			expect(response.body.message).toContain(
+				"Email and password are required",
+			);
 		});
 
 		it("should return 400 if email is empty string", async () => {
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: "",
-					password: "validPassword123",
-				});
+			const response = await request(app).post("/api/register").send({
+				email: "",
+				password: "validPassword123",
+			});
 
 			expect(response.status).toBe(400);
-			expect(response.body.message).toContain("Email and password are required");
+			expect(response.body.message).toContain(
+				"Email and password are required",
+			);
 		});
 
 		it("should return 400 if password is empty string", async () => {
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: generateTestEmail(),
-					password: "",
-				});
+			const response = await request(app).post("/api/register").send({
+				email: generateTestEmail(),
+				password: "",
+			});
 
 			expect(response.status).toBe(400);
-			expect(response.body.message).toContain("Email and password are required");
+			expect(response.body.message).toContain(
+				"Email and password are required",
+			);
 		});
 
 		it("should return 400 if password is less than 6 characters", async () => {
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: generateTestEmail(),
-					password: "short", // 5 characters
-				});
+			const response = await request(app).post("/api/register").send({
+				email: generateTestEmail(),
+				password: "short", // 5 characters
+			});
 
 			expect(response.status).toBe(400);
 			expect(response.body.message).toContain(
@@ -306,12 +286,10 @@ describe("Register Integration Tests", () => {
 
 		it("should accept password with exactly 6 characters", async () => {
 			const testEmail = generateTestEmail();
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: "sixchr", // Exactly 6 characters
-				});
+			const response = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: "sixchr", // Exactly 6 characters
+			});
 
 			expect(response.status).toBe(201);
 			expect(response.body.user.userEmail).toBe(testEmail);
@@ -319,12 +297,10 @@ describe("Register Integration Tests", () => {
 
 		it("should accept password with more than 6 characters", async () => {
 			const testEmail = generateTestEmail();
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: "longerPassword123",
-				});
+			const response = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: "longerPassword123",
+			});
 
 			expect(response.status).toBe(201);
 			expect(response.body.user.userEmail).toBe(testEmail);
@@ -337,20 +313,16 @@ describe("Register Integration Tests", () => {
 			const testPassword = "validPassword123";
 
 			// First registration
-			await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: testPassword,
-				});
+			await request(app).post("/api/register").send({
+				email: testEmail,
+				password: testPassword,
+			});
 
 			// Second registration with same email
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: "differentPassword456",
-				});
+			const response = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: "differentPassword456",
+			});
 
 			expect(response.status).toBe(409);
 			expect(response.body.message).toBe("Email is already registered");
@@ -362,12 +334,10 @@ describe("Register Integration Tests", () => {
 			const password2 = "secondPassword456";
 
 			// First registration
-			const response1 = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: password1,
-				});
+			const response1 = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: password1,
+			});
 
 			const userId = response1.body.user.userId;
 			const originalHash = (
@@ -377,12 +347,10 @@ describe("Register Integration Tests", () => {
 			)?.userPassword;
 
 			// Second registration with same email
-			await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: password2,
-				});
+			await request(app).post("/api/register").send({
+				email: testEmail,
+				password: password2,
+			});
 
 			// Verify original user's password hash is unchanged
 			const updatedUser = await prisma.user.findUnique({
@@ -398,20 +366,16 @@ describe("Register Integration Tests", () => {
 			const password = "validPassword123";
 
 			// First registration
-			await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password,
-				});
+			await request(app).post("/api/register").send({
+				email: testEmail,
+				password,
+			});
 
 			// Second registration with uppercase email
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: upperCaseEmail,
-					password,
-				});
+			const response = await request(app).post("/api/register").send({
+				email: upperCaseEmail,
+				password,
+			});
 
 			// This depends on your database configuration
 			// Typically databases are case-insensitive on email
@@ -427,12 +391,10 @@ describe("Register Integration Tests", () => {
 
 			// This test assumes the app handles unexpected errors gracefully
 			// We'll send valid data but we're testing the error handler
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: testPassword,
-				});
+			const response = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: testPassword,
+			});
 
 			// Should succeed normally
 			expect([201, 500]).toContain(response.status);
@@ -441,12 +403,10 @@ describe("Register Integration Tests", () => {
 		it("should not expose sensitive error details in response", async () => {
 			const testEmail = generateTestEmail();
 
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: "password", // Too short
-				});
+			const response = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: "password", // Too short
+			});
 
 			// Verify no sensitive stack traces or internal details
 			expect(response.body).not.toHaveProperty("stack");
@@ -461,19 +421,15 @@ describe("Register Integration Tests", () => {
 			const email1 = generateTestEmail();
 			const email2 = generateTestEmail();
 
-			const response1 = await request(app)
-				.post("/api/register")
-				.send({
-					email: email1,
-					password,
-				});
+			const response1 = await request(app).post("/api/register").send({
+				email: email1,
+				password,
+			});
 
-			const response2 = await request(app)
-				.post("/api/register")
-				.send({
-					email: email2,
-					password,
-				});
+			const response2 = await request(app).post("/api/register").send({
+				email: email2,
+				password,
+			});
 
 			const userId1 = response1.body.user.userId;
 			const userId2 = response2.body.user.userId;
@@ -489,12 +445,12 @@ describe("Register Integration Tests", () => {
 			expect(user1?.userPassword).not.toBe(user2?.userPassword);
 
 			// Both should still be bcrypt format
-			expect(
-				/^\$2[aby]\$\d{2}\$.{53}$/.test(user1?.userPassword || ""),
-			).toBe(true);
-			expect(
-				/^\$2[aby]\$\d{2}\$.{53}$/.test(user2?.userPassword || ""),
-			).toBe(true);
+			expect(/^\$2[aby]\$\d{2}\$.{53}$/.test(user1?.userPassword || "")).toBe(
+				true,
+			);
+			expect(/^\$2[aby]\$\d{2}\$.{53}$/.test(user2?.userPassword || "")).toBe(
+				true,
+			);
 		});
 	});
 
@@ -503,12 +459,10 @@ describe("Register Integration Tests", () => {
 			const testEmail = generateTestEmail();
 			const testPassword = "validPassword123";
 
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: testPassword,
-				});
+			const response = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: testPassword,
+			});
 
 			expect(response.type).toContain("application/json");
 		});
@@ -517,12 +471,10 @@ describe("Register Integration Tests", () => {
 			const testEmail = generateTestEmail();
 			const testPassword = "validPassword123";
 
-			const response = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: testPassword,
-				});
+			const response = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: testPassword,
+			});
 
 			// Verify no password or user tokens in response headers
 			const headerString = JSON.stringify(response.headers);
@@ -536,22 +488,18 @@ describe("Register Integration Tests", () => {
 			const testPassword = "validPassword123";
 
 			// Register
-			const registerResponse = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: testPassword,
-				});
+			const registerResponse = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: testPassword,
+			});
 
 			expect(registerResponse.status).toBe(201);
 
 			// Login with same credentials
-			const loginResponse = await request(app)
-				.post("/api/login")
-				.send({
-					email: testEmail,
-					password: testPassword,
-				});
+			const loginResponse = await request(app).post("/api/login").send({
+				email: testEmail,
+				password: testPassword,
+			});
 
 			expect(loginResponse.status).toBe(200);
 			expect(loginResponse.body).toHaveProperty("token");
@@ -563,23 +511,19 @@ describe("Register Integration Tests", () => {
 			const testPassword = "validPassword123";
 
 			// Register
-			const registerResponse = await request(app)
-				.post("/api/register")
-				.send({
-					email: testEmail,
-					password: testPassword,
-				});
+			const registerResponse = await request(app).post("/api/register").send({
+				email: testEmail,
+				password: testPassword,
+			});
 
 			const registeredUserId = registerResponse.body.user.userId;
 			const registeredUserEmail = registerResponse.body.user.userEmail;
 
 			// Login
-			const loginResponse = await request(app)
-				.post("/api/login")
-				.send({
-					email: testEmail,
-					password: testPassword,
-				});
+			const loginResponse = await request(app).post("/api/login").send({
+				email: testEmail,
+				password: testPassword,
+			});
 
 			// Decode token to verify it was issued for correct user
 			const token = loginResponse.body.token;
