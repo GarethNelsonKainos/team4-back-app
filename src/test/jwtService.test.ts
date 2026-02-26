@@ -77,6 +77,32 @@ describe("JwtService", () => {
 			}
 		});
 
+		it("should throw an error if user email is invalid", () => {
+			try {
+				jwtService.generateToken(123, "" as string, UserRole.ADMIN);
+				expect.fail("Should have thrown an error");
+			} catch (error: unknown) {
+				expect((error as Error).message).toContain(
+					"User email must be a valid string",
+				);
+			}
+		});
+
+		it("should throw an error if user role is invalid", () => {
+			try {
+				jwtService.generateToken(
+					123,
+					"test@example.com",
+					"NO_ROLE" as UserRole,
+				);
+				expect.fail("Should have thrown an error");
+			} catch (error: unknown) {
+				expect((error as Error).message).toContain(
+					"User role must be a valid UserRole",
+				);
+			}
+		});
+
 		it("should throw an error if JWT_SECRET is not set", () => {
 			// Temporarily remove JWT_SECRET
 			const originalSecret = process.env.JWT_SECRET;

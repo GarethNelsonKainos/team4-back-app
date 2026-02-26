@@ -155,10 +155,12 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
 
 const app = createApp();
 
+/* c8 ignore start */
 if (process.env.NODE_ENV !== "test") {
 	app.listen(process.env.API_PORT, () => {
 		console.log(`Server listening on port ${process.env.API_PORT}`);
 	});
 }
+/* c8 ignore stop */
 
 export { app };
