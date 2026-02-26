@@ -43,6 +43,12 @@ vi.mock("../middleware/authMiddleware.js", () => ({
 	},
 }));
 
+vi.mock("../services/jwtService.js", () => ({
+	JwtService: class {
+		generateToken = vi.fn().mockReturnValue("mock_jwt_token");
+	},
+}));
+
 describe("Login Integration Tests", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
