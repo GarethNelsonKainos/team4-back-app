@@ -164,4 +164,27 @@ describe("UserDao", () => {
 			).rejects.toThrow("User not found");
 		});
 	});
+
+	describe("getUserById", () => {
+		it("should return user when id exists", async () => {
+			userDao = new UserDao();
+			vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(mockUser);
+
+			const result = await userDao.getUserById(1);
+
+			expect(result).toEqual(mockUser);
+			expect(prisma.user.findUnique).toHaveBeenCalledWith({
+				where: { userId: 1 },
+			});
+		});
+
+		it("should return null when id does not exist", async () => {
+			userDao = new UserDao();
+			vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(null);
+
+			const result = await userDao.getUserById(999);
+
+			expect(result).toBeNull();
+		});
+	});
 });
