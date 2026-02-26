@@ -3,7 +3,7 @@ import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as dbModule from "../db.js";
 import { createApp } from "../index.js";
-import UserRole from "../models/userRole";
+import UserRole from "../models/userRole.js";
 
 interface AuthenticatedRequest extends Request {
 	user?: { role: string };

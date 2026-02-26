@@ -3,21 +3,27 @@ import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as dbModule from "../db.js";
 import { createApp } from "../index.js";
-import UserRole from "../models/userRole";
+import UserRole from "../models/userRole.js";
 
 interface AuthenticatedRequest extends Request {
 	user?: { role: string };
 }
 
 // Mock Prisma database layer
-vi.mock("../db.js", () => ({
-	prisma: {
-		user: {
-			findUnique: vi.fn(),
-			create: vi.fn(),
+vi.mock("../db.js", async () => {
+	const actual = await vi.importActual<typeof import("../db.js")>("../db.js");
+	return {
+		...actual,
+		prisma: {
+			...actual.prisma,
+			user: {
+				...actual.prisma.user,
+				findUnique: vi.fn(),
+				create: vi.fn(),
+			},
 		},
-	},
-}));
+	};
+});
 
 // Mock PasswordService
 vi.mock("../services/passwordService.js", () => {
