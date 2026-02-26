@@ -285,6 +285,18 @@ describe("JobRoleService", () => {
 		expect(mockJobRoleDao.updateJobRole).toHaveBeenCalledWith(1, updateInput);
 	});
 
+	it("should return null when updating a missing job role", async () => {
+		vi.mocked(mockJobRoleDao.getJobRoleById).mockResolvedValue(null);
+
+		const result = await jobRoleService.updateJobRole(999, {
+			roleName: "Missing Role",
+		});
+
+		expect(result).toBeNull();
+		expect(mockJobRoleDao.getJobRoleById).toHaveBeenCalledWith(999);
+		expect(mockJobRoleDao.updateJobRole).not.toHaveBeenCalled();
+	});
+
 	it("should delete a job role", async () => {
 		const closingDate = new Date("2026-02-09");
 		const mockExistingJobRole: JobRoleData = {
@@ -318,5 +330,15 @@ describe("JobRoleService", () => {
 		expect(result).toBe(true);
 		expect(mockJobRoleDao.getJobRoleById).toHaveBeenCalledWith(1);
 		expect(mockJobRoleDao.deleteJobRole).toHaveBeenCalledWith(1);
+	});
+
+	it("should return false when deleting a missing job role", async () => {
+		vi.mocked(mockJobRoleDao.getJobRoleById).mockResolvedValue(null);
+
+		const result = await jobRoleService.deleteJobRole(999);
+
+		expect(result).toBe(false);
+		expect(mockJobRoleDao.getJobRoleById).toHaveBeenCalledWith(999);
+		expect(mockJobRoleDao.deleteJobRole).not.toHaveBeenCalled();
 	});
 });

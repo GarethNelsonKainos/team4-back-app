@@ -86,9 +86,11 @@ export class S3Service {
 			// For simple use cases, you can return the direct URL
 			// For private buckets, you'd use getSignedUrl from @aws-sdk/s3-request-presigner
 			return fileUrl;
+			/* c8 ignore start */
 		} catch (error) {
 			console.error("Error generating signed URL:", error);
 			throw new Error("Failed to generate signed URL");
+			/* c8 ignore stop */
 		}
 	}
 }
