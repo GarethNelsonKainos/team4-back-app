@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import bcrypt from "bcrypt";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { PasswordService } from "../services/passwordService.js";
 
 describe("passwordService", () => {
@@ -49,6 +50,18 @@ describe("passwordService", () => {
 					);
 				}
 			});
+
+			it("should throw an error if bcrypt.hash fails", async () => {
+				const hashSpy = vi
+					.spyOn(bcrypt, "hash")
+					.mockRejectedValueOnce(new Error("Hash failed"));
+
+				await expect(passwordService.hashPassword("password")).rejects.toThrow(
+					"Hash failed",
+				);
+
+				hashSpy.mockRestore();
+			});
 		});
 
 		describe("verifyPassword", () => {
@@ -92,6 +105,18 @@ describe("passwordService", () => {
 				} catch (error: unknown) {
 					expect(error).toBeDefined();
 				}
+			});
+
+			it("should throw an error if bcrypt.compare fails", async () => {
+				const compareSpy = vi
+					.spyOn(bcrypt, "compare")
+					.mockRejectedValueOnce(new Error("Compare failed"));
+
+				await expect(
+					passwordService.verifyPassword("password", "hash"),
+				).rejects.toThrow("Compare failed");
+
+				compareSpy.mockRestore();
 			});
 		});
 	});

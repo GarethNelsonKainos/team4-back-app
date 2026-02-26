@@ -130,9 +130,47 @@ describe("LoginController", () => {
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith({ token: "fake.jwt.token" });
 		});
+
+		it("should return 500 if login throws", async () => {
+			mockUserDao.getUserForLogin.mockRejectedValueOnce(
+				new Error("Database error"),
+			);
+
+			const req = {
+				body: { email: "test@example.com", password: "password123" },
+			} as Request;
+			const res = {
+				status: vi.fn().mockReturnThis(),
+				json: vi.fn(),
+			} as unknown as Response;
+
+			await loginController.login(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(500);
+			expect(res.json).toHaveBeenCalledWith({
+				message: "Internal server error",
+			});
+		});
 	});
 
 	describe("register", () => {
+		it("should return 400 if email is missing", async () => {
+			const req = {
+				body: { password: "password123" },
+			} as Request;
+			const res = {
+				status: vi.fn().mockReturnThis(),
+				json: vi.fn(),
+			} as unknown as Response;
+
+			await loginController.register(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(400);
+			expect(res.json).toHaveBeenCalledWith({
+				message: "Email and password are required",
+			});
+		});
+
 		it("should return 400 if password is too short", async () => {
 			const req = {
 				body: { email: "test@example.com", password: "short" },
@@ -185,6 +223,27 @@ describe("LoginController", () => {
 
 			expect(res.status).toHaveBeenCalledWith(201);
 			expect(res.json).toHaveBeenCalled();
+		});
+
+		it("should return 500 if registration throws", async () => {
+			mockUserDao.getUserByEmail.mockRejectedValueOnce(
+				new Error("Database error"),
+			);
+
+			const req = {
+				body: { email: "newuser@example.com", password: "password123" },
+			} as Request;
+			const res = {
+				status: vi.fn().mockReturnThis(),
+				json: vi.fn(),
+			} as unknown as Response;
+
+			await loginController.register(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(500);
+			expect(res.json).toHaveBeenCalledWith({
+				message: "Internal server error",
+			});
 		});
 	});
 
