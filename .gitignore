@@ -6,6 +6,7 @@ dist/
 .DS_Store
 coverage/
 dist/
+.github/prompts
 
 # Playwright
 /test-results/
