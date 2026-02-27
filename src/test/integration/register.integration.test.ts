@@ -1,9 +1,10 @@
 import request from "supertest";
-import { afterAll, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { prisma } from "../../db";
 import { createApp } from "../../index";
 
 describe("Register Integration Tests", () => {
+	const originalEnv = { ...process.env };
 	const app = createApp();
 	const baseTestEmail = `test-register-${Date.now()}`;
 	let testCounter = 0;
@@ -13,6 +14,14 @@ describe("Register Integration Tests", () => {
 		testCounter++;
 		return `${baseTestEmail}-${testCounter}@example.com`;
 	};
+
+	beforeAll(() => {
+		process.env = {
+			...process.env,
+			JWT_SECRET: process.env.JWT_SECRET || "test-jwt-secret",
+			SALT_ROUNDS: process.env.SALT_ROUNDS || "10",
+		};
+	});
 
 	beforeEach(async () => {
 		// Clean up all test users before each test
@@ -34,6 +43,8 @@ describe("Register Integration Tests", () => {
 				},
 			},
 		});
+
+		process.env = { ...originalEnv };
 	});
 
 	describe("POST /api/register - Happy Path", () => {
