@@ -1,6 +1,6 @@
-import { prisma } from "../db";
-import type { User } from "../generated/client";
-import UserRole from "../models/userRole";
+import { prisma } from "../db.js";
+import type { User } from "../generated/client.js";
+import UserRole from "../models/userRole.js";
 
 export class UserDao {
 	async getUserByEmail(email: string): Promise<User | null> {

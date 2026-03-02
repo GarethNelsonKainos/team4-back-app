@@ -1,4 +1,4 @@
-import type UserRole from "./userRole";
+import type UserRole from "./userRole.js";
 
 export interface UserResponse {
 	userId: number;
