@@ -1,0 +1,60 @@
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: team4-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: joshuaculbert
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: jobSite
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U joshuaculbert -d jobSite"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: team4-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    env_file: .env
+    environment:
+      # Database connection (using docker service name)
+      DATABASE_URL: postgresql://joshuaculbert:pass@db:5432/jobSite
+      
+      # AWS S3 Configuration (from .env file)
+      AWS_REGION: ${AWS_REGION}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME}
+      
+      # JWT Secret (from .env file if it exists)
+      JWT_SECRET: ${JWT_SECRET:-default-secret-change-in-production}
+      
+      # Node TLS for Prisma engine downloads
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      
+      # API Configuration
+      API_PORT: 8080
+      
+      NODE_ENV: development
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      # Mount source code for hot-reload during development
+      - ./src:/app/src
+      - ./prisma:/app/prisma
+
+volumes:
+  postgres_data:
