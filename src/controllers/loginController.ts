@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
-import type { UserDao } from "../dao/userDao";
-import { toUserResponse } from "../mappers/userMapper";
-import type UserRole from "../models/userRole";
-import type { JwtService } from "../services/jwtService";
-import type { PasswordService } from "../services/passwordService";
+import type { UserDao } from "../dao/userDao.js";
+import { toUserResponse } from "../mappers/userMapper.js";
+import type UserRole from "../models/userRole.js";
+import type { JwtService } from "../services/jwtService.js";
+import type { PasswordService } from "../services/passwordService.js";
 
 export class LoginController {
 	private userDao: UserDao;

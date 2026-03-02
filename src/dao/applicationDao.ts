@@ -1,4 +1,4 @@
-import type { Application, PrismaClient } from "../generated/client";
+import type { Application, PrismaClient } from "../generated/client.js";
 
 export interface CreateApplicationData {
 	userId: number;

@@ -2,7 +2,7 @@ import "dotenv/config";
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
-import * as prismaPkg from "./generated/client";
+import * as prismaPkg from "./generated/client.js";
 
 // Create a connection pool using the DATABASE_URL from .env
 const pool = new pg.Pool({
