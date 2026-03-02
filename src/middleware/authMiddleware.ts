@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import type UserRole from "../models/userRole";
-import { JwtService } from "../services/jwtService";
+import type UserRole from "../models/userRole.js";
+import { JwtService } from "../services/jwtService.js";
 
 declare global {
 	namespace Express {

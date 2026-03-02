@@ -1,5 +1,5 @@
-import type { JobRoleData } from "../models/jobRoleData";
-import type { JobRoleResponse } from "../models/jobRoleResponse";
+import type { JobRoleData } from "../models/jobRoleData.js";
+import type { JobRoleResponse } from "../models/jobRoleResponse.js";
 
 export namespace JobRoleMapper {
 	export function toResponse(jobRoleData: JobRoleData): JobRoleResponse {

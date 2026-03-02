@@ -1,8 +1,8 @@
-import type { PrismaClient } from "../generated/client";
+import type { PrismaClient } from "../generated/client.js";
 import type {
 	CreateJobRoleInput,
 	UpdateJobRoleInput,
-} from "../models/jobRoleData";
+} from "../models/jobRoleData.js";
 
 export class JobRoleDao {
 	private prisma: PrismaClient;

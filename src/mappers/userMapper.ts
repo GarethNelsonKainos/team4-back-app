@@ -1,6 +1,6 @@
-import type { User } from "../generated/client";
-import type { UserResponse } from "../models/userResponse";
-import type UserRole from "../models/userRole";
+import type { User } from "../generated/client.js";
+import type { UserResponse } from "../models/userResponse.js";
+import type UserRole from "../models/userRole.js";
 
 export function toUserResponse(user: User): UserResponse {
 	return {

@@ -2,8 +2,8 @@ import type {
 	ApplicationDao,
 	ApplicationWithIncludes,
 	CreateApplicationData,
-} from "../dao/applicationDao";
-import type { JobRoleDao } from "../dao/jobRoleDao";
+} from "../dao/applicationDao.js";
+import type { JobRoleDao } from "../dao/jobRoleDao.js";
 
 export interface JobApplicationRequest {
 	jobRoleId: number;
