@@ -137,7 +137,7 @@ jobs:
 
       - name: Terraform plan
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform plan -input=false -out=tfplan
+        run: terraform plan -input=false -lock-timeout=10m -out=tfplan
 
   terraform-deploy:
     name: Terraform Deploy (main, dev)
@@ -180,11 +180,11 @@ jobs:
 
       - name: Terraform plan
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform plan -input=false -out=tfplan
+        run: terraform plan -input=false -lock-timeout=10m -out=tfplan
 
       - name: Terraform apply
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform apply -input=false -auto-approve tfplan
+        run: terraform apply -input=false -lock-timeout=10m -auto-approve tfplan
 
   publish-acr:
     name: Publish to ACR (main only)
