@@ -1,0 +1,9 @@
+node_modules
+coverage
+output
+.git
+.gitignore
+.DS_Store
+.env
+.env.example
+npm-debug.log

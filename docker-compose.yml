@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: app_user
+      POSTGRES_PASSWORD: app_password
+      POSTGRES_DB: app_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "8080:3000"
+    environment:
+      API_PORT: "3000"
+      DATABASE_URL: "postgresql://app_user:app_password@db:5432/app_db"
+      JWT_SECRET: "change-me"
+      JWT_EXPIRATION: "1h"
+      JWT_EXPIRES_IN: "1h"
+      SALT_ROUNDS: "10"
+      AWS_REGION: "us-east-1"
+      AWS_ACCESS_KEY_ID: "your-access-key-id"
+      AWS_SECRET_ACCESS_KEY: "your-secret-access-key"
+      S3_BUCKET_NAME: "your-bucket-name"
+
+volumes:
+  pgdata:
