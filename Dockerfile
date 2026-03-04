@@ -27,11 +27,11 @@ RUN npm ci --only=production
 # Copy prisma schema and migrations
 COPY prisma ./prisma
 
+# Generate Prisma Client
+RUN npx prisma generate
+
 # Copy compiled output from builder
 COPY --from=builder /app/dist ./dist
-
-# Copy generated Prisma client from builder (contains generated code)
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 EXPOSE 8080
 
