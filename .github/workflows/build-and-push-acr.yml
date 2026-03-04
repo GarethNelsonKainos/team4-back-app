@@ -2,7 +2,7 @@ name: Build and Push to ACR
 
 on:
   push:
-    branches: [ main, josh-docker ]
+    branches: [ main ]
   workflow_dispatch:
 
 env:
