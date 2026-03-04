@@ -1,9 +1,3 @@
-variable "resource_group_name" {
-  description = "Name of the Azure Resource Group"
-  type        = string
-  default     = "team4-back-app-rg"
-}
-
 variable "location" {
   description = "Azure region for resources"
   type        = string
