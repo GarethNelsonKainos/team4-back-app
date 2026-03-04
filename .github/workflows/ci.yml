@@ -168,6 +168,12 @@ jobs:
           terraform state list | grep -q "module.team4_rg.azurerm_resource_group.this" || \
           terraform import module.team4_rg.azurerm_resource_group.this /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID_BLAKE }}/resourceGroups/blake-team4-rg
 
+      - name: Import existing container app if not in state
+        working-directory: ./my-infrastructure
+        run: |
+          terraform state list | grep -q "azurerm_container_app.backend" || \
+          terraform import azurerm_container_app.backend /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID_BLAKE }}/resourceGroups/blake-team4-rg/providers/Microsoft.App/containerApps/blake-team4-backend-dev
+
       - name: Terraform Apply
         working-directory: ./my-infrastructure
         run: terraform apply -auto-approve -input=false
