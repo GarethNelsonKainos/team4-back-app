@@ -143,7 +143,6 @@ jobs:
       TF_VAR_resource_group_name: blake-team4-rg
       TF_VAR_location: UK South
       TF_VAR_acr_login_server: ${{ secrets.ACR_LOGIN_SERVER_BLAKE }}
-      TF_VAR_acr_name: academyacrj3r5dv
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

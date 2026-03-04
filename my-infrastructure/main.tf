@@ -24,11 +24,6 @@ data "azurerm_resource_group" "this" {
   name = "blake-team4-rg"
 }
 
-data "azurerm_container_registry" "acr" {
-  name                = var.acr_name
-  resource_group_name = "rg-academy-acr"
-}
-
 data "azurerm_container_app_environment" "env" {
   name                = "blake-team4-env-dev"
   resource_group_name = data.azurerm_resource_group.this.name
@@ -52,17 +47,6 @@ module "team4_rg" {
   }
 }
 
-# ── ACR role assignment for managed identity ──────────────────────────────────
-
-resource "azurerm_role_assignment" "acr_pull" {
-  scope                = data.azurerm_container_registry.acr.id
-  role_definition_name = "AcrPull"
-  principal_id         = data.azurerm_user_assigned_identity.identity.principal_id
-
-  lifecycle {
-    ignore_changes = [principal_id]
-  }
-}
 
 # ── Backend Container App ─────────────────────────────────────────────────────
 

@@ -43,11 +43,6 @@ variable "acr_login_server" {
   type        = string
 }
 
-variable "acr_name" {
-  description = "The name of the Azure Container Registry."
-  type        = string
-}
-
 variable "backend_image_tag" {
   description = "The image tag (short git SHA) to deploy for the backend container."
   type        = string

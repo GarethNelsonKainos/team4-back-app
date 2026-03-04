@@ -5,7 +5,6 @@ resource_group_name = "blake-team4-rg"
 location            = "UK South"
 environment         = "dev"
 acr_login_server    = "academyacrj3r5dv.azurecr.io"
-acr_name            = "academyacrj3r5dv"
 backend_image_tag   = "abc1234"
 
 tags = {
