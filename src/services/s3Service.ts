@@ -7,25 +7,23 @@ export class S3Service {
 	private bucketName: string;
 
 	constructor() {
-		this.s3Client = new S3Client({
-			region: process.env.AWS_REGION,
-			credentials: {
-				accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
-				secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
-			},
-		});
+		const region = process.env.S3_REGION || "eu-west-2";
+		const accessKeyId = process.env.S3_ACCESS_KEY_ID || "";
+		const secretAccessKey = process.env.S3_SECRET_ACCESS_KEY || "";
 		this.bucketName = process.env.S3_BUCKET_NAME || "";
 
+		this.s3Client = new S3Client({
+			region,
+			credentials: {
+				accessKeyId,
+				secretAccessKey,
+			},
+		});
+
 		const isTestEnv = process.env.NODE_ENV === "test";
-		if (
-			!isTestEnv &&
-			(!this.bucketName ||
-				!process.env.AWS_REGION ||
-				!process.env.AWS_ACCESS_KEY_ID ||
-				!process.env.AWS_SECRET_ACCESS_KEY)
-		) {
+		if (!isTestEnv && (!this.bucketName || !accessKeyId || !secretAccessKey)) {
 			throw new Error(
-				"AWS S3 configuration is missing. Please check your environment variables.",
+				"S3 configuration is missing. Please check your environment variables: S3_BUCKET_NAME, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY.",
 			);
 		}
 	}
@@ -53,7 +51,8 @@ export class S3Service {
 			await upload.done();
 
 			// Return the S3 URL
-			return `https://${this.bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+			const region = process.env.S3_REGION || "eu-west-2";
+			return `https://${this.bucketName}.s3.${region}.amazonaws.com/${fileName}`;
 		} catch (error) {
 			console.error("Error uploading file to S3:", error);
 			throw new Error("Failed to upload file to S3");
