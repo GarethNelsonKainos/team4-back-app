@@ -5,7 +5,6 @@ terraform {
     resource_group_name  = "team4-back-app-dev-rg"
     storage_account_name = "t4backappstate632722"
     container_name       = "tfstate"
-    key                  = "team4-back-app.tfstate"
   }
 
   required_providers {

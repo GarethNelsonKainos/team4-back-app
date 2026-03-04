@@ -125,7 +125,7 @@ jobs:
 
       - name: Terraform init
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform init -input=false
+        run: terraform init -input=false -backend-config="key=team4-back-app-${{ env.TF_VAR_environment }}.tfstate"
 
       - name: Terraform fmt check
         working-directory: ${{ env.TF_WORKING_DIR }}
@@ -160,7 +160,7 @@ jobs:
 
       - name: Terraform init
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform init -input=false
+        run: terraform init -input=false -backend-config="key=team4-back-app-${{ env.TF_VAR_environment }}.tfstate"
 
       - name: Terraform plan
         working-directory: ${{ env.TF_WORKING_DIR }}

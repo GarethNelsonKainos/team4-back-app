@@ -81,6 +81,10 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
 
 	app.use(express.json());
 
+	app.get("/health", (_req, res) => {
+		res.status(200).json({ status: "ok" });
+	});
+
 	// Public routes (no authentication required)
 	app.post("/api/login", loginController.login);
 	app.post("/api/register", loginController.register);
@@ -157,8 +161,9 @@ const app = createApp();
 
 /* c8 ignore start */
 if (process.env.NODE_ENV !== "test") {
-	app.listen(process.env.API_PORT, () => {
-		console.log(`Server listening on port ${process.env.API_PORT}`);
+	const port = process.env.API_PORT ?? "8080";
+	app.listen(port, () => {
+		console.log(`Server listening on port ${port}`);
 	});
 }
 /* c8 ignore stop */
