@@ -31,35 +31,35 @@ module "acr" {
 }
 
 module "container_instance" {
-  count               = var.enable_container_instance ? 1 : 0
-  source              = "./modules/container-instance"
-  resource_group_name = module.resource_group.name
-  location            = module.resource_group.location
+  count                = var.enable_container_instance ? 1 : 0
+  source               = "./modules/container-instance"
+  resource_group_name  = module.resource_group.name
+  location             = module.resource_group.location
   container_group_name = "${var.project_name}-${var.environment}-cg"
-  container_name      = "${var.project_name}-app"
-  container_image     = var.container_image
-  container_port      = var.container_port
-  cpu                 = var.container_cpu
-  memory              = var.container_memory
-  
+  container_name       = "${var.project_name}-app"
+  container_image      = var.container_image
+  container_port       = var.container_port
+  cpu                  = var.container_cpu
+  memory               = var.container_memory
+
   environment_variables = {
-    NODE_ENV        = var.environment
-    API_PORT        = tostring(var.container_port)
-    AWS_REGION      = var.aws_region
-    S3_BUCKET_NAME  = var.s3_bucket_name
+    NODE_ENV       = var.environment
+    API_PORT       = tostring(var.container_port)
+    AWS_REGION     = var.aws_region
+    S3_BUCKET_NAME = var.s3_bucket_name
   }
 
   secure_environment_variables = {
-    DATABASE_URL             = module.database.connection_string
-    AWS_ACCESS_KEY_ID        = var.aws_access_key_id
-    AWS_SECRET_ACCESS_KEY    = var.aws_secret_access_key
+    DATABASE_URL          = module.database.connection_string
+    AWS_ACCESS_KEY_ID     = var.aws_access_key_id
+    AWS_SECRET_ACCESS_KEY = var.aws_secret_access_key
   }
 
   image_registry_server   = module.acr.login_server
   image_registry_username = var.acr_admin_enabled ? module.acr.admin_username : ""
   image_registry_password = var.acr_admin_enabled ? module.acr.admin_password : ""
-  
-  dns_name_label = var.dns_name_label
+
+  dns_name_label  = var.dns_name_label
   ip_address_type = var.container_ip_address_type
 
   tags = local.common_tags
