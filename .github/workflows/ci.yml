@@ -8,6 +8,7 @@ on:
     branches: [ "**" ]
   pull_request:
     branches: [ "**" ]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -141,8 +142,8 @@ jobs:
   terraform-deploy:
     name: Terraform Deploy (main, dev)
     runs-on: ubuntu-latest
-    needs: [test, publish-acr]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: test
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     env:
       TF_IN_AUTOMATION: true
 
