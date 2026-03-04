@@ -8,6 +8,13 @@ coverage/
 dist/
 .github/prompts
 
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+!*.tfvars.example
+
 # Playwright
 /test-results/
 /playwright-report/
