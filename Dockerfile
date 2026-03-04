@@ -8,9 +8,9 @@ COPY package*.json ./
 COPY tsconfig.json ./
 COPY prisma ./prisma/
 COPY src ./src/
+COPY src/generated ./src/generated/
 
 RUN npm ci
-RUN npx prisma generate
 RUN npm run build
 
 
