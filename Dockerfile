@@ -1,65 +1,50 @@
-# Build stage
-FROM node:20-alpine3.20 AS builder
+FROM node:20-alpine AS production
+
+# Install runtime dependencies in one layer
+RUN apk add --no-cache openssl libc6-compat && \
+    npm config set strict-ssl false
+
+# Create non-root user early (before copying files)
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001 -G nodejs
 
 WORKDIR /app
 
-# Install system certificates for Prisma engine downloads
-RUN apk add --no-cache ca-certificates
+# Change ownership of working directory
+RUN chown nodejs:nodejs /app
 
-# Install dependencies
-COPY package.json package-lock.json* ./
-RUN npm ci
+# Switch to non-root user before installing dependencies
+USER nodejs
 
-# Copy source and build
-COPY tsconfig.json ./
-COPY prisma.config.ts ./
-COPY prisma ./prisma
-COPY src ./src
-ARG PRISMA_DISABLE_TLS_VERIFY=0
-RUN if [ "$PRISMA_DISABLE_TLS_VERIFY" = "1" ]; then \
-	NODE_TLS_REJECT_UNAUTHORIZED=0 npx prisma generate; \
-else \
-	npx prisma generate; \
-fi
-RUN npm run build
-# Post-process compiled JS to add .js extensions to Prisma imports/exports so ESM resolution works
-RUN find dist/generated -name "*.js" -type f -exec sed -i "s|from '\(\./[^']*\)'|from '\1.js'|g; s|from \"\(\./[^\"]*\)\"|from \"\1.js\"|g; s|\.js\.js|.js|g" {} +
-# Copy Prisma client JS files into dist so runtime ESM imports resolve
-RUN mkdir -p dist/generated && cp -R src/generated/. dist/generated/
-
-# Runtime stage
-FROM node:20-alpine3.20 AS runner
-
-WORKDIR /app
+# Set NODE_ENV to production (ensures only production deps are installed)
 ENV NODE_ENV=production
 
-# Install system certificates and create non-root user
-RUN apk add --no-cache ca-certificates \
-	&& addgroup -S appgroup \
-	&& adduser -S appuser -G appgroup
+# Copy package files and Prisma schema
+COPY --chown=nodejs:nodejs package*.json ./
+COPY --chown=nodejs:nodejs prisma ./prisma/
 
-# Install production dependencies
-COPY --chown=appuser:appgroup package.json package-lock.json* ./
-RUN npm ci --omit=dev --no-audit --no-fund \
-	&& npm cache clean --force \
-	&& rm -rf /root/.npm /home/appuser/.npm
+# Install production dependencies, tsx for runtime, generate Prisma client, and clean up
+ENV NODE_TLS_REJECT_UNAUTHORIZED=0
+RUN npm ci --omit=dev --ignore-scripts && \
+    npm install tsx --no-save && \
+    npx prisma generate && \
+    rm -rf node_modules/prisma node_modules/@prisma/dev node_modules/typescript \
+           node_modules/@types node_modules/react-dom node_modules/@electric-sql \
+           node_modules/effect node_modules/remeda node_modules/lodash \
+           node_modules/fast-check node_modules/@biomejs && \
+    npm cache clean --force && \
+    rm -rf ~/.npm /tmp/*
+ENV NODE_TLS_REJECT_UNAUTHORIZED=1
 
-# Copy built output and Prisma assets with correct ownership
-COPY --chown=appuser:appgroup --from=builder /app/dist ./dist
-COPY --chown=appuser:appgroup --from=builder /app/prisma ./prisma
-COPY --chown=appuser:appgroup --from=builder /app/prisma.config.ts ./
-COPY --chown=appuser:appgroup entrypoint.sh ./
-COPY --chown=appuser:appgroup healthcheck.sh ./
+# Copy source code
+COPY --chown=nodejs:nodejs src ./src
 
-# Set permissions and switch to non-root user
-RUN chmod +x ./entrypoint.sh ./healthcheck.sh \
-	&& chmod 755 /app
-USER appuser
+# Expose the port your app runs on
+EXPOSE 8080
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-	CMD ./healthcheck.sh
+# Health check (optional but recommended)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:8080/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-EXPOSE 3000
-ENTRYPOINT ["./entrypoint.sh"]
-CMD ["node", "--experimental-specifier-resolution=node", "dist/index.js"]
+# Start the application with tsx
+CMD ["npx", "tsx", "src/index.ts"]
