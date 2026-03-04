@@ -2,7 +2,6 @@ name: CI
 
 permissions:
   contents: read
-  id-token: write
 
 on:
   push:
@@ -111,8 +110,8 @@ jobs:
     if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main')
     env:
       TF_IN_AUTOMATION: true
-      ARM_USE_OIDC: true
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID_CAMERON }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET_CAMERON }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID_CAMERON }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID_CAMERON }}
 
@@ -126,6 +125,7 @@ jobs:
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID_CAMERON }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET_CAMERON }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID_CAMERON }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_CAMERON }}
 
@@ -152,8 +152,8 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     env:
       TF_IN_AUTOMATION: true
-      ARM_USE_OIDC: true
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID_CAMERON }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET_CAMERON }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID_CAMERON }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID_CAMERON }}
 
@@ -166,7 +166,9 @@ jobs:
       - name: Azure login (Service Principal)
         uses: azure/login@v2
         with:
+          auth-type: SERVICE_PRINCIPAL
           client-id: ${{ secrets.AZURE_CLIENT_ID_CAMERON }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET_CAMERON }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID_CAMERON }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_CAMERON }}
 
@@ -197,7 +199,9 @@ jobs:
       - name: Azure login (Service Principal)
         uses: azure/login@v2
         with:
+          auth-type: SERVICE_PRINCIPAL
           client-id: ${{ secrets.AZURE_CLIENT_ID_CAMERON }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET_CAMERON }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID_CAMERON }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_CAMERON }}
 
