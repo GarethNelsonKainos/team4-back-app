@@ -47,3 +47,15 @@ variable "backend_image_tag" {
   description = "The image tag (short git SHA) to deploy for the backend container."
   type        = string
 }
+
+variable "db_admin_username" {
+  description = "Administrator username for the PostgreSQL server."
+  type        = string
+  default     = "team4admin"
+}
+
+variable "db_admin_password" {
+  description = "Administrator password for the PostgreSQL server."
+  type        = string
+  sensitive   = true
+}

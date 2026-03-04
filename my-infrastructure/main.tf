@@ -48,6 +48,38 @@ module "team4_rg" {
 }
 
 
+# ── PostgreSQL Flexible Server ───────────────────────────────────────────────
+
+resource "azurerm_postgresql_flexible_server" "db" {
+  name                   = "blake-team4-db-dev"
+  resource_group_name    = data.azurerm_resource_group.this.name
+  location               = data.azurerm_resource_group.this.location
+  version                = "16"
+  administrator_login    = var.db_admin_username
+  administrator_password = var.db_admin_password
+  storage_mb             = 32768
+  sku_name               = "B_Standard_B1ms"
+  zone                   = "1"
+
+  tags = {
+    owner       = "team4"
+    project     = "backend"
+    environment = var.environment
+  }
+}
+
+resource "azurerm_postgresql_flexible_server_database" "app_db" {
+  name      = "team4db"
+  server_id = azurerm_postgresql_flexible_server.db.id
+}
+
+resource "azurerm_postgresql_flexible_server_firewall_rule" "allow_azure" {
+  name             = "allow-azure-services"
+  server_id        = azurerm_postgresql_flexible_server.db.id
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
+}
+
 # ── Backend Container App ─────────────────────────────────────────────────────
 
 resource "azurerm_container_app" "backend" {
@@ -85,6 +117,11 @@ resource "azurerm_container_app" "backend" {
       env {
         name  = "API_PORT"
         value = "8080"
+      }
+
+      env {
+        name  = "DATABASE_URL"
+        value = "postgresql://${var.db_admin_username}:${var.db_admin_password}@${azurerm_postgresql_flexible_server.db.fqdn}:5432/${azurerm_postgresql_flexible_server_database.app_db.name}?sslmode=require"
       }
     }
   }

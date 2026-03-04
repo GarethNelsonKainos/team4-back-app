@@ -6,6 +6,8 @@ location            = "UK South"
 environment         = "dev"
 acr_login_server    = "academyacrj3r5dv.azurecr.io"
 backend_image_tag   = "abc1234"
+db_admin_username   = "team4admin"
+db_admin_password   = "YourSecurePasswordHere!"
 
 tags = {
   owner   = "team4"
