@@ -1,5 +1,5 @@
 variable "resource_group_name" {
-  description = "The name of the Azure Resource Group to create."
+  description = "The name of the Azure Resource Group."
   type        = string
 
   validation {
@@ -36,4 +36,19 @@ variable "tags" {
   default = {
     project = "team4-back-app"
   }
+}
+
+variable "acr_login_server" {
+  description = "The login server URL of the Azure Container Registry."
+  type        = string
+}
+
+variable "acr_name" {
+  description = "The name of the Azure Container Registry."
+  type        = string
+}
+
+variable "backend_image_tag" {
+  description = "The image tag (short git SHA) to deploy for the backend container."
+  type        = string
 }

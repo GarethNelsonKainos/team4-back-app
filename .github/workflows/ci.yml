@@ -86,7 +86,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: false
-          tags: team4-backend:${{ env.SHORT_SHA }}
+          platforms: linux/amd64
+          tags: blake-team4-backend:${{ env.SHORT_SHA }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -122,11 +123,12 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ env.ACR_LOGIN_SERVER_BLAKE }}/team4-backend:${{ env.SHORT_SHA }}
+          platforms: linux/amd64
+          tags: ${{ env.ACR_LOGIN_SERVER_BLAKE }}/blake-team4-backend:${{ env.SHORT_SHA }}
 
       - name: Verify image in ACR
         run: |
-          echo "Image pushed: ${{ env.ACR_LOGIN_SERVER_BLAKE }}/team4-backend:${{ env.SHORT_SHA }}"
+          echo "Image pushed: ${{ env.ACR_LOGIN_SERVER_BLAKE }}/blake-team4-backend:${{ env.SHORT_SHA }}"
 
   terraform-deploy:
     name: Terraform Deploy Infrastructure
@@ -138,11 +140,16 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID_BLAKE }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID_BLAKE }}
       TF_VAR_environment: dev
-      TF_VAR_resource_group_name: Blake-team4-rg
+      TF_VAR_resource_group_name: blake-team4-rg
       TF_VAR_location: UK South
+      TF_VAR_acr_login_server: ${{ secrets.ACR_LOGIN_SERVER_BLAKE }}
+      TF_VAR_acr_name: academyacrj3r5dv
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set backend image tag
+        run: echo "TF_VAR_backend_image_tag=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -153,14 +160,15 @@ jobs:
 
       - name: Terraform Plan
         working-directory: ./my-infrastructure
-        run: terraform plan -input=false -var "environment=${{ env.TF_VAR_environment }}"
+        run: terraform plan -input=false
 
       - name: Import existing resource group if not in state
         working-directory: ./my-infrastructure
         run: |
+          terraform state list | grep -q "data.azurerm_resource_group.this" || true
           terraform state list | grep -q "module.team4_rg.azurerm_resource_group.this" || \
-          terraform import module.team4_rg.azurerm_resource_group.this /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID_BLAKE }}/resourceGroups/Blake-team4-rg
+          terraform import module.team4_rg.azurerm_resource_group.this /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID_BLAKE }}/resourceGroups/blake-team4-rg
 
       - name: Terraform Apply
         working-directory: ./my-infrastructure
-        run: terraform apply -auto-approve -input=false -var "environment=${{ env.TF_VAR_environment }}"
+        run: terraform apply -auto-approve -input=false
