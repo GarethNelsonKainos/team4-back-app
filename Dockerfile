@@ -9,6 +9,9 @@ COPY tsconfig.json .
 COPY prisma ./prisma
 COPY scripts ./scripts
 
+# Generate Prisma Client before building TypeScript
+RUN npx prisma generate
+
 RUN npm run build
 
 # Runtime stage: Run compiled application
@@ -26,6 +29,9 @@ COPY prisma ./prisma
 
 # Copy compiled output from builder
 COPY --from=builder /app/dist ./dist
+
+# Copy generated Prisma client from builder (contains generated code)
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 EXPOSE 8080
 
