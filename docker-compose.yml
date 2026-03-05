@@ -2,7 +2,9 @@ version: '3.9'
 
 services:
   postgres:
-    image: postgres:16-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
     container_name: team4-postgres-dev
     environment:
       POSTGRES_USER: postgres
