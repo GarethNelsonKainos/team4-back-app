@@ -21,43 +21,12 @@ variable "project_name" {
   default     = "team4-back-app"
 }
 
-# Database variables
-variable "db_admin_username" {
-  description = "PostgreSQL admin username"
+# Database variables (managed separately in Azure)
+variable "database_url" {
+  description = "PostgreSQL database connection URL"
   type        = string
-  default     = "psqladmin"
+  default     = ""
   sensitive   = true
-}
-
-variable "db_admin_password" {
-  description = "PostgreSQL admin password"
-  type        = string
-  default     = "Team4DevPassword123!"
-  sensitive   = true
-}
-
-variable "db_name" {
-  description = "PostgreSQL database name"
-  type        = string
-  default     = "team4db"
-}
-
-variable "db_sku_name" {
-  description = "PostgreSQL SKU name"
-  type        = string
-  default     = "B_Gen5_1"
-}
-
-variable "db_postgres_version" {
-  description = "PostgreSQL version"
-  type        = string
-  default     = "11"
-}
-
-variable "db_storage_mb" {
-  description = "PostgreSQL storage size in MB"
-  type        = number
-  default     = 51200 # 50GB
 }
 
 # ACR variables
