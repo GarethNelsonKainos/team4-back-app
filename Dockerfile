@@ -40,5 +40,5 @@ COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 EXPOSE 8080
 ENV API_PORT=8080
-ENV DATABASE_URL="postgresql://postgres:team4pass@localhost:5432/team4db"
+ENV DATABASE_URL="postgresql://postgres:team4pass@127.0.0.1:5432/team4db"
 CMD ["/docker-entrypoint.sh"]
