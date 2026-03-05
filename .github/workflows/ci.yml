@@ -166,10 +166,10 @@ jobs:
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform plan -input=false -lock-timeout=10m -out=tfplan
 
-  terraform-deploy:
-    name: Terraform Deploy (main, dev)
+  terraform-apply:
+    name: Terraform Apply (main, dev)
     runs-on: ubuntu-latest
-    needs: test
+    needs: [publish-app-acr, publish-postgres-acr]
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     env:
       TF_IN_AUTOMATION: true
