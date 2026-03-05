@@ -1,0 +1,57 @@
+name: Build and Push to ACR
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: team4-back-app
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Debug secrets
+        run: |
+          echo "Checking secret values..."
+          echo "ACR_LOGIN_SERVER_ben: ${{ secrets.ACR_LOGIN_SERVER_ben != '' && 'SET' || 'NOT SET' }}"
+          echo "ACR_USERNAME_ben: ${{ secrets.ACR_USERNAME_ben != '' && 'SET' || 'NOT SET' }}"
+          echo "ACR_PASSWORD_ben: ${{ secrets.ACR_PASSWORD_ben != '' && 'SET' || 'NOT SET' }}"
+          echo "Registry value length: ${{ secrets.ACR_LOGIN_SERVER_ben }} | length: $(echo -n '${{ secrets.ACR_LOGIN_SERVER_ben }}' | wc -c)"
+          echo "Username value length: $(echo -n '${{ secrets.ACR_USERNAME_ben }}' | wc -c)"
+          echo "Password value length: $(echo -n '${{ secrets.ACR_PASSWORD_ben }}' | wc -c)"
+
+      - name: Login to Azure Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ACR_LOGIN_SERVER_ben }}
+          username: ${{ secrets.ACR_USERNAME_ben }}
+          password: ${{ secrets.ACR_PASSWORD_ben }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.ACR_LOGIN_SERVER_ben }}/${{ env.IMAGE_NAME }}:latest
+            ${{ secrets.ACR_LOGIN_SERVER_ben }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=registry,ref=${{ secrets.ACR_LOGIN_SERVER_ben }}/${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ secrets.ACR_LOGIN_SERVER_ben }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+      - name: Log successful push
+        run: |
+          echo "✅ Image successfully pushed to ACR"
+          echo "Image: ${{ secrets.ACR_LOGIN_SERVER_ben }}/${{ env.IMAGE_NAME }}:latest"
+          echo "Commit: ${{ github.sha }}"

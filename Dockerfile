@@ -14,6 +14,7 @@ RUN npm ci
 COPY tsconfig.json ./
 COPY prisma.config.ts ./
 COPY prisma ./prisma
+COPY scripts ./scripts
 COPY src ./src
 ARG PRISMA_DISABLE_TLS_VERIFY=0
 RUN if [ "$PRISMA_DISABLE_TLS_VERIFY" = "1" ]; then \
@@ -60,6 +61,6 @@ USER appuser
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 	CMD ./healthcheck.sh
 
-EXPOSE 3000
+EXPOSE 8080
 ENTRYPOINT ["./entrypoint.sh"]
 CMD ["node", "--experimental-specifier-resolution=node", "dist/index.js"]

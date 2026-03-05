@@ -39,10 +39,15 @@ function requireRoles(roles: string[]) {
 export function createApp(jobRoleController?: ApiJobRoleController) {
 	const app = express();
 
-	// Enable CORS for frontend (allow requests from port 3000)
+	// Enable CORS for frontend
+	const corsOrigin =
+		process.env.NODE_ENV === "production"
+			? process.env.FRONTEND_URL || "http://localhost:3000"
+			: "http://localhost:3000";
+
 	app.use(
 		cors({
-			origin: "http://localhost:3000",
+			origin: corsOrigin,
 			credentials: true,
 		}),
 	);
@@ -150,6 +155,11 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
 	);
 	*/
 
+	// Health check endpoint
+	app.get("/health", (req, res) => {
+		res.status(200).json({ status: "ok" });
+	});
+
 	return app;
 }
 
@@ -157,8 +167,9 @@ const app = createApp();
 
 /* c8 ignore start */
 if (process.env.NODE_ENV !== "test") {
-	app.listen(process.env.API_PORT, () => {
-		console.log(`Server listening on port ${process.env.API_PORT}`);
+	const port = process.env.PORT || "8080";
+	app.listen(port, () => {
+		console.log(`Server listening on port ${port}`);
 	});
 }
 /* c8 ignore stop */

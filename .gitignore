@@ -6,6 +6,7 @@ dist/
 .DS_Store
 coverage/
 dist/
+.github/prompts
 
 # Playwright
 /test-results/
@@ -13,3 +14,12 @@ dist/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+*.tfplan
+crash.log
+secrets.tfvars

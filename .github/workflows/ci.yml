@@ -46,6 +46,9 @@ jobs:
     
      - name: Generate Prisma Client
        run: npx prisma generate
+
+     - name: Apply Prisma migrations
+       run: npx prisma migrate deploy
     
      - name: Run Biome checks
        run: npm run ci:check
@@ -61,6 +64,3 @@ jobs:
        with:
          name: code-coverage-report
          path: coverage/
-
-     
-
