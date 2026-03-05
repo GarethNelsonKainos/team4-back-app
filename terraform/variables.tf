@@ -32,6 +32,7 @@ variable "db_admin_username" {
 variable "db_admin_password" {
   description = "PostgreSQL admin password"
   type        = string
+  default     = "Team4DevPassword123!"
   sensitive   = true
 }
 
