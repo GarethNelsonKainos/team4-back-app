@@ -1,4 +1,4 @@
-import type { ApplicationWithIncludes } from "../dao/applicationDao";
+import type { ApplicationWithIncludes } from "../dao/applicationDao.js";
 
 export function toApplicationResponse(application: ApplicationWithIncludes) {
 	return {

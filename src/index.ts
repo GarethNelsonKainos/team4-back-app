@@ -4,19 +4,19 @@ import cors from "cors";
 import express from "express";
 import multer from "multer";
 
-import { ApiJobRoleController } from "./controllers/apiJobRoleController";
-import { ApplicationController } from "./controllers/applicationController";
-import { LoginController } from "./controllers/loginController";
-import { ApplicationDao } from "./dao/applicationDao";
-import { JobRoleDao } from "./dao/jobRoleDao";
-import { UserDao } from "./dao/userDao";
-import { prisma } from "./db";
-import { authMiddleware } from "./middleware/authMiddleware";
-import { ApplicationService } from "./services/applicationService";
-import { JobRoleService } from "./services/jobRoleService";
-import { JwtService } from "./services/jwtService";
-import { PasswordService } from "./services/passwordService";
-import { S3Service } from "./services/s3Service";
+import { ApiJobRoleController } from "./controllers/apiJobRoleController.js";
+import { ApplicationController } from "./controllers/applicationController.js";
+import { LoginController } from "./controllers/loginController.js";
+import { ApplicationDao } from "./dao/applicationDao.js";
+import { JobRoleDao } from "./dao/jobRoleDao.js";
+import { UserDao } from "./dao/userDao.js";
+import { prisma } from "./db.js";
+import { authMiddleware } from "./middleware/authMiddleware.js";
+import { ApplicationService } from "./services/applicationService.js";
+import { JobRoleService } from "./services/jobRoleService.js";
+import { JwtService } from "./services/jwtService.js";
+import { PasswordService } from "./services/passwordService.js";
+import { S3Service } from "./services/s3Service.js";
 
 interface AuthenticatedRequest extends express.Request {
 	user?: { role: string };
@@ -80,6 +80,10 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
 	);
 
 	app.use(express.json());
+
+	app.get("/health", (_req, res) => {
+		res.status(200).json({ status: "ok" });
+	});
 
 	// Public routes (no authentication required)
 	app.post("/api/login", loginController.login);
@@ -157,8 +161,9 @@ const app = createApp();
 
 /* c8 ignore start */
 if (process.env.NODE_ENV !== "test") {
-	app.listen(process.env.API_PORT, () => {
-		console.log(`Server listening on port ${process.env.API_PORT}`);
+	const port = process.env.API_PORT ?? "8080";
+	app.listen(port, () => {
+		console.log(`Server listening on port ${port}`);
 	});
 }
 /* c8 ignore stop */

@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
 
-import type { ApplicationWithIncludes } from "../dao/applicationDao";
-import { toApplicationResponse } from "../mappers/applicationMapper";
-import type { ApplicationService } from "../services/applicationService";
-import type { S3Service } from "../services/s3Service";
+import type { ApplicationWithIncludes } from "../dao/applicationDao.js";
+import { toApplicationResponse } from "../mappers/applicationMapper.js";
+import type { ApplicationService } from "../services/applicationService.js";
+import type { S3Service } from "../services/s3Service.js";
 
 export class ApplicationController {
 	private applicationService: ApplicationService;

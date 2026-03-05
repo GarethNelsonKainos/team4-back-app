@@ -1,0 +1,14 @@
+FROM postgres:16-alpine
+
+# Add any PostgreSQL extensions or custom configuration here
+# RUN apk add --no-cache postgresql-contrib
+
+# Copy initialization scripts if needed
+# COPY ./init-scripts/*.sql /docker-entrypoint-initdb.d/
+
+# Environment variables
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=postgres
+ENV POSTGRES_DB=team4_dev
+
+EXPOSE 5432

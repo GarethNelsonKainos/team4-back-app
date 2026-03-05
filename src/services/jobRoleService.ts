@@ -1,11 +1,11 @@
-import type { JobRoleDao } from "../dao/jobRoleDao";
-import { JobRoleMapper } from "../mappers/jobRoleMapper";
+import type { JobRoleDao } from "../dao/jobRoleDao.js";
+import { JobRoleMapper } from "../mappers/jobRoleMapper.js";
 import type {
 	CreateJobRoleInput,
 	JobRoleData,
 	UpdateJobRoleInput,
-} from "../models/jobRoleData";
-import type { JobRoleResponse } from "../models/jobRoleResponse";
+} from "../models/jobRoleData.js";
+import type { JobRoleResponse } from "../models/jobRoleResponse.js";
 
 export class JobRoleService {
 	private jobRoleDao: JobRoleDao;
