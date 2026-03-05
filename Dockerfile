@@ -24,9 +24,11 @@ EXPOSE 8080
 ENV API_PORT=8080
 CMD ["npx", "tsx", "src/index.ts"]
 
-# Stage 3: production
+# Stage 3: production — Node.js + PostgreSQL in one container
 FROM --platform=linux/amd64 node:20-alpine AS production
-RUN apk add --no-cache openssl ca-certificates
+RUN apk add --no-cache openssl ca-certificates postgresql postgresql-client su-exec
+RUN mkdir -p /var/lib/postgresql/data /run/postgresql && \
+    chown -R postgres:postgres /var/lib/postgresql /run/postgresql
 WORKDIR /app
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/src/generated ./src/generated
@@ -34,6 +36,9 @@ COPY prisma ./prisma
 COPY prisma.config.ts ./
 COPY tsconfig.json ./
 COPY src ./src
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 EXPOSE 8080
 ENV API_PORT=8080
-CMD ["sh", "-c", "npx prisma migrate deploy && npx tsx src/index.ts"]
+ENV DATABASE_URL="postgresql://postgres:team4pass@localhost:5432/team4db"
+CMD ["/docker-entrypoint.sh"]

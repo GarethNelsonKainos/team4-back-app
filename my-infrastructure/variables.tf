@@ -48,14 +48,8 @@ variable "backend_image_tag" {
   type        = string
 }
 
-variable "db_admin_username" {
-  description = "Administrator username for the PostgreSQL server."
-  type        = string
-  default     = "team4admin"
-}
-
-variable "db_admin_password" {
-  description = "Administrator password for the PostgreSQL server."
+variable "jwt_secret" {
+  description = "JWT secret for the backend app."
   type        = string
   sensitive   = true
 }
