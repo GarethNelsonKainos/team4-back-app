@@ -6,6 +6,7 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY tsconfig.json ./
+COPY prisma.config.ts ./
 COPY prisma ./prisma/
 COPY src ./src/
 
@@ -27,6 +28,7 @@ ENV NODE_ENV=production
 ENV API_PORT=8080
 
 COPY --chown=nodejs:nodejs package*.json ./
+COPY --chown=nodejs:nodejs prisma.config.ts ./
 COPY --chown=nodejs:nodejs prisma ./prisma/
 
 RUN npm ci --omit=dev
