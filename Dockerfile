@@ -9,6 +9,9 @@ WORKDIR /app
 ARG DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
 ENV DATABASE_URL=${DATABASE_URL}
 
+# Allow skipping prisma generate if it's already cached
+ARG RUN_PRISMA_GENERATE=true
+
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY prisma.config.ts ./
@@ -16,7 +19,7 @@ COPY prisma ./prisma/
 COPY src ./src/
 
 RUN npm ci
-RUN npx prisma generate
+RUN if [ "$RUN_PRISMA_GENERATE" = "true" ]; then npx prisma generate; else echo "Skipping prisma generate"; fi
 RUN npm run build
 
 
@@ -43,6 +46,8 @@ COPY --chown=nodejs:nodejs prisma ./prisma/
 RUN npm ci --omit=dev
 
 COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
+COPY --from=builder --chown=nodejs:nodejs /app/src/generated ./src/generated
+COPY --from=builder --chown=nodejs:nodejs /app/src ./src
 
 USER nodejs
 
@@ -51,4 +56,4 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
   CMD node -e "require('http').get('http://localhost:8080/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run seed && exec node dist/index.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && (npx tsx prisma/seed.ts || true) && exec node dist/index.js"]
