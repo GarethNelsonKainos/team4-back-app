@@ -39,10 +39,11 @@ function requireRoles(roles: string[]) {
 export function createApp(jobRoleController?: ApiJobRoleController) {
 	const app = express();
 
-	// Enable CORS for frontend (allow requests from port 3000)
+	// Enable CORS for frontend (configurable via CORS_ORIGIN env var, defaults to localhost:3000)
+	// Expected format: http://localhost:3000 or https://your-domain.com
 	app.use(
 		cors({
-			origin: "http://localhost:3000",
+			origin: process.env.CORS_ORIGIN || "http://localhost:3000",
 			credentials: true,
 		}),
 	);

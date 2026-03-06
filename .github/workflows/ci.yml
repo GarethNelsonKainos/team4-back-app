@@ -23,8 +23,36 @@ env:
   TF_VAR_project_name: team4-back-app
 
 jobs:
-  test:
-    name: Test & Quality
+  quality:
+    name: Quality
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Run Biome checks
+        run: npm run ci:check
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+  tests:
+    name: Tests
     runs-on: ubuntu-latest
 
     env:
@@ -55,19 +83,13 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --prefer-offline --no-audit
 
       - name: Generate Prisma Client
         run: npx prisma generate
 
       - name: Apply Prisma migrations
         run: npx prisma migrate deploy
-
-      - name: Run Biome checks
-        run: npm run ci:check
-
-      - name: Build
-        run: npm run build
 
       - name: Run tests with coverage
         run: npm run coverage
@@ -81,7 +103,7 @@ jobs:
   build-image:
     name: Build Container
     runs-on: ubuntu-latest
-    needs: test
+    needs: [quality, tests]
 
     steps:
       - uses: actions/checkout@v4
@@ -98,6 +120,9 @@ jobs:
         with:
           context: .
           push: false
+          provenance: false
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
           tags: |
             team4-back-app:${{ steps.vars.outputs.image_tag }}
             team4-back-app:ci-${{ github.run_number }}
@@ -107,7 +132,7 @@ jobs:
   build-postgres-image:
     name: Build Postgres Container
     runs-on: ubuntu-latest
-    needs: test
+    needs: [quality, tests]
 
     steps:
       - uses: actions/checkout@v4
@@ -125,6 +150,9 @@ jobs:
           context: .
           file: ./Dockerfile.postgres
           push: false
+          provenance: false
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
           tags: |
             team4-postgres:${{ steps.vars.outputs.image_tag }}
             team4-postgres:ci-${{ github.run_number }}
@@ -136,7 +164,7 @@ jobs:
   publish-app-acr:
     name: Publish App Image to ACR (main only)
     runs-on: ubuntu-latest
-    needs: [test, build-image]
+    needs: build-image
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
 
     steps:
@@ -164,6 +192,9 @@ jobs:
         with:
           context: .
           push: true
+          provenance: false
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
           tags: |
             ${{ env.ACR_LOGIN_SERVER }}/${{ env.ACR_REPOSITORY }}:latest
             ${{ env.ACR_LOGIN_SERVER }}/${{ env.ACR_REPOSITORY }}:sha-${{ steps.vars.outputs.image_sha }}
@@ -177,7 +208,7 @@ jobs:
   publish-postgres-acr:
     name: Publish Postgres Image to ACR (main only)
     runs-on: ubuntu-latest
-    needs: [test, build-postgres-image]
+    needs: build-postgres-image
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
 
     steps:
@@ -206,6 +237,9 @@ jobs:
           context: .
           file: ./Dockerfile.postgres
           push: true
+          provenance: false
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
           tags: |
             ${{ env.ACR_LOGIN_SERVER }}/team4-postgres:latest
             ${{ env.ACR_LOGIN_SERVER }}/team4-postgres:sha-${{ steps.vars.outputs.image_sha }}
