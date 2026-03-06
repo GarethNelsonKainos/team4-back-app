@@ -42,7 +42,7 @@ export function createApp(jobRoleController?: ApiJobRoleController) {
 	// Enable CORS for frontend (allow requests from port 3000)
 	app.use(
 		cors({
-			origin: "http://localhost:3000",
+			origin: process.env.CORS_ORIGIN || "http://localhost:3000",
 			credentials: true,
 		}),
 	);
