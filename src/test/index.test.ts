@@ -21,6 +21,15 @@ vi.mock("../middleware/authMiddleware", () => ({
 }));
 
 describe("createApp", () => {
+	it("should return 200 for health endpoint", async () => {
+		const app = createApp();
+
+		const response = await request(app).get("/health");
+
+		expect(response.status).toBe(200);
+		expect(response.body).toEqual({ status: "ok" });
+	});
+
 	it("should return 403 for non-admin job role creation", async () => {
 		const mockJobRoleService = {
 			getJobRoles: vi.fn(),
