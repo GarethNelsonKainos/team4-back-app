@@ -4,6 +4,11 @@ RUN apk add --no-cache openssl libc6-compat
 
 WORKDIR /app
 
+# Prisma v7 reads DATABASE_URL from prisma.config.ts during generate.
+# Use a non-secret placeholder for build-time commands.
+ARG DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+ENV DATABASE_URL=${DATABASE_URL}
+
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY prisma.config.ts ./
@@ -26,6 +31,10 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV API_PORT=8080
+
+# Keep a fallback value so Prisma CLI can start; deployment env should override this.
+ARG DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+ENV DATABASE_URL=${DATABASE_URL}
 
 COPY --chown=nodejs:nodejs package*.json ./
 COPY --chown=nodejs:nodejs prisma.config.ts ./
