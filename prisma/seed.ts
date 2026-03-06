@@ -161,10 +161,7 @@ async function main() {
 
 	await prisma.user.upsert({
 		where: { userEmail: adminEmail },
-		update: {
-			userPassword: adminHashedPassword,
-			userRole: "ADMIN",
-		},
+		update: {},
 		create: {
 			userEmail: adminEmail,
 			userPassword: adminHashedPassword,
@@ -174,10 +171,7 @@ async function main() {
 
 	await prisma.user.upsert({
 		where: { userEmail: applicantEmail },
-		update: {
-			userPassword: applicantHashedPassword,
-			userRole: "APPLICANT",
-		},
+		update: {},
 		create: {
 			userEmail: applicantEmail,
 			userPassword: applicantHashedPassword,
